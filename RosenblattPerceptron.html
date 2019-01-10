@@ -13,7 +13,7 @@ to research
 * updaten van waarden in  de grafiek met waarden iuit de tekst die worden aangepast
 -->
 <head>
-	<script type="text/javascript" src="./d3/d3.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<style>
 		svg {
 			font: 10px sans-serif;
@@ -22,6 +22,17 @@ to research
 
 		rect {
 			fill: #fff;
+		}
+
+		.vectorline {
+			stroke: #000000;
+		}
+		.vectorline {
+			fill: #000000;
+		}
+		.vectorendpoint {
+			stroke: #000000;
+			fill: #ff0000;
 		}
 
 		.axis path,
@@ -57,8 +68,9 @@ to research
 
 
 		svg.append("svg:defs").append("marker")
+			.attr("class", "vectorline")
 			.attr("id", "arrow")
-			.attr("refX", 6)
+			.attr("refX", 12)
 			.attr("refY", 6)
 			.attr("markerWidth", 30)
 			.attr("markerHeight", 30)
@@ -66,7 +78,8 @@ to research
 			.attr("orient", "auto")
 			.append("path")
 			.attr("d", "M 0 0 12 6 0 12 3 6")
-			.style("fill", "black");
+			//.style("fill", "black")
+			;
 
 
 		svg.append("g")
@@ -101,18 +114,55 @@ to research
 			.attr("class", "vector");
 
 		g.append("circle")
+			.attr("class", "vectorendpoint")
+			//.style("stroke", "black")  // colour the line
 			.attr("cx", function (d) { return x(d.p2.x); })
 			.attr("cy", function (d) { return y(d.p2.y); })
 			.attr("r", "8px")
-			.attr("fill", "red");
+			//.attr("fill", "red");
 
 		g.append("line")          // attach a line
-			.style("stroke", "black")  // colour the line
+			.attr("class", "vectorline")
+			//.style("stroke", "black")  // colour the line
 			.attr("x1", function (d) { return x(d.p1.x); })     // x position of the first end of the line
 			.attr("y1", function (d) { return x(d.p1.y); })      // y position of the first end of the line
 			.attr("x2", function (d) { return x(d.p2.x); })     // x position of the second end of the line
 			.attr("y2", function (d) { return y(d.p2.y); })    // y position of the second end of the line
 			.attr("marker-end", "url(#arrow)");
+
+
+		let drag = d3.drag()
+			.on('start', dragstarted)
+			.on('drag', dragged)
+			.on('end', dragended);
+
+		svg.selectAll('.vectorendpoint')
+			.call(drag);
+
+		function dragstarted(d) {
+			//d3.select(this).raise().classed('active', true);
+		}
+		function dragged(d) {
+			d[0] = x.invert(d3.event.x);
+			d[1] = y.invert(d3.event.y);
+
+			d3.select(this)
+				.attr('cx', x(d[0]))
+				.attr('cy', y(d[1]))
+			//focus.select('path').attr('d', line);
+			//console.log(d3.select(this.parentNode)
+			//	.select('.vectorline'));
+
+			d3.select(this.parentNode)
+				.select('.vectorline')
+				.attr("x2", x(d[0]))    // x position of the second end of the line
+				.attr("y2", y(d[1]))    // y position of the second end of the line
+
+
+		}
+		function dragended(d) {
+			d3.select(this).classed('active', false);
+		}
 
 	</script>
 </body>
