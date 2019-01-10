@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>KnockoutJS Simple Example</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+</head>
+
+<body>
+	<!-- This is called "view" of HTML markup that defines the appearance of UI -->
+
+	<p>First String: <input data-bind="value: vector()[0].x()" /></p>
+	<p>Second String: <input data-bind="value: vector()[1].x()" /></p>
+
+	<p>First String: <strong data-bind="text: vector()[0].x()">Hi</strong></p>
+	<p>Second String: <strong data-bind="text: vector()[1].x()">There</strong></p>
+
+	<!--<p>Derived String: <strong data-bind="text: thirdString"></strong></p>-->
+
+	<script>
+		function AppViewModel() {
+			this.firstString = ko.observable("Enter First String");
+			this.secondString = ko.observable("Enter Second String");
+
+			this.thirdString = ko.computed(function () {
+				return this.firstString() + " " + this.secondString();
+			}, this);
+		}
+
+		function MyViewModel() {
+			this.vector = ko.observableArray([{ x: ko.observable("Enter First String") }, { x: ko.observable("Enter Second String") }]);
+		}
+
+		// Activates knockout.js
+		ko.applyBindings(new MyViewModel());
+	</script>
+
+</body>
+</html>
