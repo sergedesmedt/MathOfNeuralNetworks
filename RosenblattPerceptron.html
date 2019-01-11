@@ -26,11 +26,21 @@ to research
 
 		.vectorline {
 			stroke: #000000;
+			fill: #000000;
 		}
-		.vectorline {
+		.vectorp1x {
+			stroke: #808080;
+			fill: #000000;
+		}
+		.vectorp2x {
+			stroke: #808080;
 			fill: #000000;
 		}
 		.vectorendpoint {
+			stroke: #000000;
+			fill: #ff0000;
+		}
+		.vectorstartpoint {
 			stroke: #000000;
 			fill: #ff0000;
 		}
@@ -45,41 +55,27 @@ to research
 <body>
 	<div id="viz"></div>
 	<script type="text/javascript">
-		var margin = { top: 20, right: 20, bottom: 20, left: 20 },
-			width = 500 - margin.left - margin.right,
-			height = 500 - margin.top - margin.bottom;
+		var margin = { top: 40, right: 40, bottom: 40, left: 40 },
+			width = 200,
+			height = 200;
 		var x = d3.scaleLinear()
-			.domain([-width / 2, width / 2])
+			.domain([0, width/2])
 			.range([0, width]);
 		var y = d3.scaleLinear()
-			.domain([-height / 2, height / 2])
+			.domain([0, height/2])
 			.range([height, 0]);
 		var xAxis = d3.axisBottom()
 			.scale(x)
-			.ticks(20)
+			.ticks(10)
 			.tickSize(-height);
 		var yAxis = d3.axisLeft()
 			.scale(y)
-			.ticks(20)
+			.ticks(10)
 			.tickSize(-width);
 		var svg = d3.select("body").append("svg")
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom);
 
-
-		svg.append("svg:defs").append("marker")
-			.attr("class", "vectorline")
-			.attr("id", "arrow")
-			.attr("refX", 12)
-			.attr("refY", 6)
-			.attr("markerWidth", 30)
-			.attr("markerHeight", 30)
-			.attr("markerUnits", "userSpaceOnUse")
-			.attr("orient", "auto")
-			.append("path")
-			.attr("d", "M 0 0 12 6 0 12 3 6")
-			//.style("fill", "black")
-			;
 
 
 		svg.append("g")
@@ -95,21 +91,36 @@ to research
 			.attr("class", "y axis")
 			.call(yAxis);
 
-
-		//p1 = [10, 50];
-		//p2 = [80, 100];
-
 		v1 = {
-			p1 : { x: 0, y: 0 }, p2 : { x: 20, y: 40}
+			p1 : { x: 0, y: 0 }, p2 : { x: 10, y: 40}
 		};
 		v2 = {
-			p1 : { x: 0, y: 0 }, p2 : { x: 80, y: 100 }
+			p1 : { x: 0, y: 0 }, p2 : { x: 40, y: 55 }
+		};
+		v3 = {
+			p1: { x: 10, y: 20 }, p2: { x: 50, y: 70 }
 		};
 
-		vs = [v1, v2];
+		vs = [v1, v2, v3];
 
-		g = svg.selectAll(".vector")
+		svg.append("svg:defs").append("marker")
+			.attr("class", "vectorline")
+			.attr("id", "arrow")
+			.attr("refX", 12)
+			.attr("refY", 6)
+			.attr("markerWidth", 30)
+			.attr("markerHeight", 30)
+			.attr("markerUnits", "userSpaceOnUse")
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 12 6 0 12 3 6")
+			//.style("fill", "black")
+			;
+
+		data = svg.selectAll(".vector")
 			.data(vs).enter()
+
+		g = data
 			.append("g")
 			.attr("class", "vector");
 
@@ -119,49 +130,132 @@ to research
 			.attr("cx", function (d) { return x(d.p2.x); })
 			.attr("cy", function (d) { return y(d.p2.y); })
 			.attr("r", "8px")
-			//.attr("fill", "red");
+			//.attr("fill", "red")
+			;
+
+		g.append("circle")
+			.attr("class", "vectorstartpoint")
+			//.style("stroke", "black")  // colour the line
+			.attr("cx", function (d) { return x(d.p1.x); })
+			.attr("cy", function (d) { return y(d.p1.y); })
+			.attr("r", "8px")
+			//.attr("fill", "red")
+			;
 
 		g.append("line")          // attach a line
 			.attr("class", "vectorline")
 			//.style("stroke", "black")  // colour the line
 			.attr("x1", function (d) { return x(d.p1.x); })     // x position of the first end of the line
-			.attr("y1", function (d) { return x(d.p1.y); })      // y position of the first end of the line
+			.attr("y1", function (d) { return y(d.p1.y); })      // y position of the first end of the line
 			.attr("x2", function (d) { return x(d.p2.x); })     // x position of the second end of the line
 			.attr("y2", function (d) { return y(d.p2.y); })    // y position of the second end of the line
-			.attr("marker-end", "url(#arrow)");
+			.attr("marker-end", "url(#arrow)")
+			;
+
+		g.append("line")
+			.attr("class", "vectorp1x")
+			.attr("x1", function (d) { return x(d.p1.x); })     // x position of the first end of the line
+			.attr("y1", y(-10))
+			.attr("x2", function (d) { return x(d.p1.x); })     // x position of the second end of the line
+			.attr("y2", function (d) { return y(d.p1.y); })    // y position of the second end of the line
+			;
+
+		g.append("line")
+			.attr("class", "vectorp2x")
+			.attr("x1", function (d) { return x(d.p2.x); })     // x position of the first end of the line
+			.attr("y1", y(-10))
+			.attr("x2", function (d) { return x(d.p2.x); })     // x position of the second end of the line
+			.attr("y2", function (d) { return y(d.p2.y); })    // y position of the second end of the line
+			;
+
+		g.append("text")
+			.attr("class", "vectorvaluedx")
+			.text(function (d) { return (d.p2.x - d.p1.x); })
+			.attr("x", function (d) { return x(d.p1.x + (d.p2.x - d.p1.x)/2); })     // x position of the first end of the line
+			.attr("y", y(-10))
+			;
 
 
-		let drag = d3.drag()
+		let dragp1 = d3.drag()
 			.on('start', dragstarted)
-			.on('drag', dragged)
+			.on('drag', draggedp1)
 			.on('end', dragended);
 
+		let dragp2 = d3.drag()
+			.on('start', dragstarted)
+			.on('drag', draggedp2)
+			.on('end', dragended);
+
+		svg.selectAll('.vectorstartpoint')
+			.call(dragp1);
+
 		svg.selectAll('.vectorendpoint')
-			.call(drag);
+			.call(dragp2);
 
 		function dragstarted(d) {
 			//d3.select(this).raise().classed('active', true);
 		}
-		function dragged(d) {
-			d[0] = x.invert(d3.event.x);
-			d[1] = y.invert(d3.event.y);
+
+		function draggedp1(d) {
+			console.log(d);
+
+			d.p1.x = x.invert(d3.event.x);
+			d.p1.y = y.invert(d3.event.y);
 
 			d3.select(this)
-				.attr('cx', x(d[0]))
-				.attr('cy', y(d[1]))
+				.attr('cx', x(d.p1.x))
+				.attr('cy', y(d.p1.y))
 			//focus.select('path').attr('d', line);
 			//console.log(d3.select(this.parentNode)
 			//	.select('.vectorline'));
 
 			d3.select(this.parentNode)
 				.select('.vectorline')
-				.attr("x2", x(d[0]))    // x position of the second end of the line
-				.attr("y2", y(d[1]))    // y position of the second end of the line
+				.attr("x1", x(d.p1.x))    // x position of the second end of the line
+				.attr("y1", y(d.p1.y))    // y position of the second end of the line
 
+			d3.select(this.parentNode)
+				.select('.vectorp1x')
+				.attr("x1", x(d.p1.x))     // x position of the first end of the line
+				.attr("y1", y(-10))
+				.attr("x2", x(d.p1.x))     // x position of the second end of the line
+				.attr("y2", y(d.p1.y))    // y position of the second end of the line
+
+			d3.select(this.parentNode)
+				.select('.vectorvaluedx')
+				.text((d.p2.x - d.p1.x))
+				.attr("x", x(d.p1.x + (d.p2.x - d.p1.x) / 2))     // x position of the first end of the line
+				.attr("y", y(-10))
 
 		}
+
+		function draggedp2(d) {
+			d.p2.x = x.invert(d3.event.x);
+			d.p2.y = y.invert(d3.event.y);
+
+			d3.select(this)
+				.attr('cx', x(d.p2.x))
+				.attr('cy', y(d.p2.y))
+			//focus.select('path').attr('d', line);
+			//console.log(d3.select(this.parentNode)
+			//	.select('.vectorline'));
+
+			d3.select(this.parentNode)
+				.select('.vectorline')
+				.attr("x2", x(d.p2.x))    // x position of the second end of the line
+				.attr("y2", y(d.p2.y))    // y position of the second end of the line
+
+			d3.select(this.parentNode)
+				.select('.vectorp2x')
+				.attr("x1", x(d.p2.x))     // x position of the first end of the line
+				.attr("y1", y(-10))      
+				.attr("x2", x(d.p2.x))     // x position of the second end of the line
+				.attr("y2", y(d.p2.y))    // y position of the second end of the line
+
+		}
+
 		function dragended(d) {
-			d3.select(this).classed('active', false);
+			//d3.select(this).classed('active', false);
 		}
 
 	</script>
