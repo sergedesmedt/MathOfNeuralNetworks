@@ -67,8 +67,8 @@
 	<!--<p>First String: <input data-bind="value: vector()[0].x, valueUpdate: 'afterkeydown'" /></p>
 	<p>Second String: <input data-bind="value: vector()[1].x, valueUpdate: 'afterkeydown'" /></p>-->
 
-	<p>First String: <input data-bind="value: firstNumeric" /></p>
-	<p>Second String: <input data-bind="value: secondNumeric" /></p>
+	<p>First String: <input data-bind="value: p1x" /></p>
+	<p>Second String: <input data-bind="value: p1y" /></p>
 
 	<p>Derived Sum: <strong data-bind="text: theSum"></strong></p>
 
@@ -76,21 +76,72 @@
 
 	<script type="text/javascript">
 
-		function MyViewModel() {
-			this.firstNumeric = ko.observable(10).extend({ number: true });
-			this.secondNumeric = ko.observable(30).extend({ number: true });
+		var updateFunc = function UpdateD3() {
 
-			this.vector = ko.observableArray([{ x: ko.observable(10).extend({ number: true }) }, { x: ko.observable(20).extend({ number: true }) }]);
+			var vectors = svg.selectAll(".vector")
+				.data(vm.allVectors);
+
+			vectors.select(".vectorstartpoint")
+				//.attr("class", "vectorendpoint")
+				//.style("stroke", "black")  // colour the line
+				.attr("cx", function (d) { return x(d.p1.x()); })
+				.attr("cy", function (d) { return y(d.p1.y()); })
+				//.attr("r", "8px")
+				//.attr("fill", "red")
+				;
+
+			vectors.select(".vectorendpoint")
+				//.attr("class", "vectorendpoint")
+				//.style("stroke", "black")  // colour the line
+				.attr("cx", function (d) { return x(d.p2.x()); })
+				.attr("cy", function (d) { return y(d.p2.y()); })
+				//.attr("r", "8px")
+				//.attr("fill", "red")
+				;
+
+
+			vectors.select(".vectorline")
+				//.attr("class", "vectorline")
+				//.style("stroke", "black")  // colour the line
+				.attr("x1", function (d) { return x(d.p1.x()); })
+				.attr("y1", function (d) { return y(d.p1.y()); })
+				.attr("x2", function (d) { return x(d.p2.x()); })
+				.attr("y2", function (d) { return y(d.p2.y()); })
+				//.attr("marker-end", "url(#arrow)")
+				;
+
+		}
+
+		function MyViewModel() {
+			this.p0x = ko.observable(0)/*.extend({ number: true })*/;
+			this.p0y = ko.observable(0)/*.extend({ number: true })*/;
+			this.p1x = ko.observable(10)/*.extend({ number: true })*/;
+			this.p1y = ko.observable(30)/*.extend({ number: true })*/;
+			this.p2x = ko.observable(90)/*.extend({ number: true })*/;
+			this.p2y = ko.observable(90)/*.extend({ number: true })*/;
+
+			this.p0x.subscribe(function (newValue) { updateFunc(); });
+			this.p0y.subscribe(function (newValue) { updateFunc(); });
+			this.p1x.subscribe(function (newValue) { updateFunc(); });
+			this.p1y.subscribe(function (newValue) { updateFunc(); });
+			this.p2x.subscribe(function (newValue) { updateFunc(); });
+			this.p2y.subscribe(function (newValue) { updateFunc(); });
+
+			this.vector = ko.observableArray([{ x: ko.observable(10)/*.extend({ number: true })*/ }, { x: ko.observable(20)/*.extend({ number: true })*/ }]);
 
 			this.theSum = ko.computed(function () {
-				return Number(this.vector()[0].x()) + Number(this.vector()[1].x());
-				//return Number(this.firstNumeric()) + Number(this.secondNumeric());
+				//return Number(this.vector()[0].x()) + Number(this.vector()[1].x());
+				return Number(this.p1x()) + Number(this.p1y());
 			}, this);
 
 
 			vector1 = {
-				p1: { x: 0, y: 0 }, p2: { x: this.firstNumeric, y: this.secondNumeric }
+				p1: { x: this.p0x, y: this.p0y }, p2: { x: this.p1x, y: this.p1y }
 			};
+			vector2 = {
+				p1: { x: this.p1x, y: this.p1y }, p2: { x: this.p2x, y: this.p2y }
+			};
+
 			//v2 = {
 			//	p1: { x: 0, y: 0 }, p2: { x: 40, y: 55 }
 			//};
@@ -99,13 +150,13 @@
 			//};
 
 			//vs = [v1, v2, v3];
-			this.allVectors = [vector1];
+			this.allVectors = [vector1, vector2];
 
 		}
 
 		var vm = new MyViewModel();
 
-
+		
 
 
 		var margin = { top: 40, right: 40, bottom: 40, left: 40 },
@@ -129,8 +180,6 @@
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom);
 
-
-
 		svg.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		svg.append("rect")
@@ -144,9 +193,9 @@
 			.attr("class", "y axis")
 			.call(yAxis);
 
-		v1 = {
-			p1: { x: 0, y: 0 }, p2: { x: 10, y: 40 }
-		};
+		//v1 = {
+		//	p1: { x: 0, y: 0 }, p2: { x: 10, y: 40 }
+		//};
 		//v2 = {
 		//	p1: { x: 0, y: 0 }, p2: { x: 40, y: 55 }
 		//};
@@ -155,7 +204,7 @@
 		//};
 
 		//vs = [v1, v2, v3];
-		vs = [v1];
+		//vs = [v1];
 
 		svg.append("svg:defs").append("marker")
 			.attr("class", "vectorline")
@@ -187,20 +236,20 @@
 			//.attr("fill", "red")
 			;
 
-		//g.append("circle")
-		//	.attr("class", "vectorstartpoint")
-		//	//.style("stroke", "black")  // colour the line
-		//	.attr("cx", function (d) { return x(d.p1.x); })
-		//	.attr("cy", function (d) { return y(d.p1.y); })
-		//	.attr("r", "8px")
-		//	//.attr("fill", "red")
-		//	;
+		g.append("circle")
+			.attr("class", "vectorstartpoint")
+			//.style("stroke", "black")  // colour the line
+			.attr("cx", function (d) { return x(d.p1.x()); })
+			.attr("cy", function (d) { return y(d.p1.y()); })
+			.attr("r", "8px")
+			//.attr("fill", "red")
+			;
 
 		g.append("line")          // attach a line
 			.attr("class", "vectorline")
 			//.style("stroke", "black")  // colour the line
-			.attr("x1", function (d) { return x(d.p1.x); })
-			.attr("y1", function (d) { return y(d.p1.y); })
+			.attr("x1", function (d) { return x(d.p1.x()); })
+			.attr("y1", function (d) { return y(d.p1.y()); })
 			.attr("x2", function (d) { return x(d.p2.x()); })
 			.attr("y2", function (d) { return y(d.p2.y()); })
 			.attr("marker-end", "url(#arrow)")
@@ -231,18 +280,18 @@
 		//	;
 
 
-		//let dragp1 = d3.drag()
-		//	.on('start', dragstarted)
-		//	.on('drag', draggedp1)
-		//	.on('end', dragended);
+		let dragp1 = d3.drag()
+			.on('start', dragstarted)
+			.on('drag', draggedp1)
+			.on('end', dragended);
 
 		let dragp2 = d3.drag()
 			.on('start', dragstarted)
 			.on('drag', draggedp2)
 			.on('end', dragended);
 
-		//svg.selectAll('.vectorstartpoint')
-		//	.call(dragp1);
+		svg.selectAll('.vectorstartpoint')
+			.call(dragp1);
 
 		svg.selectAll('.vectorendpoint')
 			.call(dragp2);
@@ -251,38 +300,38 @@
 			//d3.select(this).raise().classed('active', true);
 		}
 
-		//function draggedp1(d) {
-		//	console.log(d);
+		function draggedp1(d) {
+			console.log(d);
 
-		//	d.p1.x = x.invert(d3.event.x);
-		//	d.p1.y = y.invert(d3.event.y);
+			d.p1.x(x.invert(d3.event.x));
+			d.p1.y(y.invert(d3.event.y));
 
-		//	d3.select(this)
-		//		.attr('cx', x(d.p1.x))
-		//		.attr('cy', y(d.p1.y))
-		//	//focus.select('path').attr('d', line);
-		//	//console.log(d3.select(this.parentNode)
-		//	//	.select('.vectorline'));
+			d3.select(this)
+				.attr('cx', x(d.p1.x()))
+				.attr('cy', y(d.p1.y()))
+			//focus.select('path').attr('d', line);
+			//console.log(d3.select(this.parentNode)
+			//	.select('.vectorline'));
 
-		//	d3.select(this.parentNode)
-		//		.select('.vectorline')
-		//		.attr("x1", x(d.p1.x))
-		//		.attr("y1", y(d.p1.y))
+			d3.select(this.parentNode)
+				.select('.vectorline')
+				.attr("x1", x(d.p1.x()))
+				.attr("y1", y(d.p1.y()))
 
-		//	d3.select(this.parentNode)
-		//		.select('.vectorp1x')
-		//		.attr("x1", x(d.p1.x))
-		//		.attr("y1", y(-10))
-		//		.attr("x2", x(d.p1.x))
-		//		.attr("y2", y(d.p1.y))
+			//d3.select(this.parentNode)
+			//	.select('.vectorp1x')
+			//	.attr("x1", x(d.p1.x))
+			//	.attr("y1", y(-10))
+			//	.attr("x2", x(d.p1.x))
+			//	.attr("y2", y(d.p1.y))
 
-		//	d3.select(this.parentNode)
-		//		.select('.vectorvaluedx')
-		//		.text((d.p2.x - d.p1.x))
-		//		.attr("x", x(d.p1.x + (d.p2.x - d.p1.x) / 2))
-		//		.attr("y", y(-10))
+			//d3.select(this.parentNode)
+			//	.select('.vectorvaluedx')
+			//	.text((d.p2.x - d.p1.x))
+			//	.attr("x", x(d.p1.x + (d.p2.x - d.p1.x) / 2))
+			//	.attr("y", y(-10))
 
-		//}
+		}
 
 		function draggedp2(d) {
 			d.p2.x(x.invert(d3.event.x));
