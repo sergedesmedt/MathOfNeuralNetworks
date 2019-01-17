@@ -66,7 +66,6 @@
 	</style>
 
 </head>
-
 <body>
 	<p>
 		When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
@@ -178,6 +177,9 @@
 			this.p4x = ko.observable(30)/*.extend({ number: true })*/;
 			this.p4y = ko.observable(30)/*.extend({ number: true })*/;
 
+			this.p5x = ko.observable(60)/*.extend({ number: true })*/;
+			this.p5y = ko.observable(20)/*.extend({ number: true })*/;
+
 			this.p0x.subscribe(function (newValue) { updateFunc(); });
 			this.p0y.subscribe(function (newValue) { updateFunc(); });
 			this.p1x.subscribe(function (newValue) { updateFunc(); });
@@ -210,6 +212,11 @@
 				p1: { x: this.p3x, y: this.p3y },
 				p2: { x: this.p4x, y: this.p4y }
 			};
+			vector4 = {
+				tp: "defp1p2",
+				p1: { x: this.p1x, y: this.p1y },
+				p2: { x: this.p5x, y: this.p5y }
+			};
 
 			//v2 = {
 			//	p1: { x: 0, y: 0 }, p2: { x: 40, y: 55 }
@@ -219,7 +226,7 @@
 			//};
 
 			//vs = [v1, v2, v3];
-			this.allVectors = [vector1, vector2, vector3];
+			this.allVectors = [vector1]; //, vector2, vector3, vector4];
 
 		}
 
@@ -324,6 +331,33 @@
 			.attr("y2", function (d) { return y(d.p2.y()); })
 			.attr("marker-end", "url(#arrow)")
 			;
+
+
+
+		// https://www.dashingd3js.com/svg-paths-and-d3js
+		// https://stackoverflow.com/questions/45120229/how-to-draw-arc-with-d3-js-with-only-outer-radius-or-sector-of-circle
+
+		var lineData = [{ "x": 1, "y": 5 }, { "x": 20, "y": 20 },
+			                 { "x": 40, "y": 10 }, { "x": 60, "y": 40 },
+			                 { "x": 80, "y": 5 }, { "x": 100, "y": 60 }];
+		
+		var lineFunction = d3.line()
+			.x(function (d) { return d.x; })
+			.y(function (d) { return d.y; })
+			.curve(d3.curveLinear);  
+
+		var arc = d3.arc()
+			.innerRadius(50)
+			.outerRadius(50)
+			.startAngle(-Math.PI / 2)
+			.endAngle(170 * Math.PI / 180)
+
+		g.append("path")
+			//.attr("d", lineFunction(lineData))
+			.attr("d", arc)
+			.attr("stroke", "blue")
+			.attr("stroke-width", 2)
+			.attr("fill", "none");
 
 		//g.append("line")
 		//	.attr("class", "vectorp1x")
