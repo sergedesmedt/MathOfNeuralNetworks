@@ -25,11 +25,12 @@ to research
 * OK: slepen van de vector uiteinden
 * OK: updaten van waarden in de tekst van de pagina met waarden uit de grafiek (vooral dan bij het slepen van vector uiteinden)
 * OK: updaten van waarden in de grafiek met waarden uit de tekst die worden aangepast
+* tonen van de hoek tussen twee vectoren die beginnnen in hetzelfde punt
 -->
 
 <html>
 <head>
-	<title>KnockoutJS / D3 Testing ground</title>
+	<title>KnockoutJS / D3 Vector Testing ground</title>
 	<script type="text/javascript" async
 			src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async>
 	</script>
@@ -383,11 +384,11 @@ to research
 			.y(function (d) { return d.y; })
 			.curve(d3.curveLinear);  
 
-		var arc = d3.arc()
-			.innerRadius(50)
-			.outerRadius(50)
-			.startAngle(-Math.PI / 2)
-			.endAngle(170 * Math.PI / 180)
+		//var arc = d3.arc()
+		//	.innerRadius(50)
+		//	.outerRadius(50)
+		//	.startAngle(-Math.PI / 2)
+		//	.endAngle(170 * Math.PI / 180)
 
 		function getAngle(dx, dy) {
 			//return d3.quarterPi;
