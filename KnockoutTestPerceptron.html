@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
 
 	Example for d3 and knockout databinding:
@@ -19,7 +19,7 @@ to research
 ===========
 
 */ OK: define perceptron through weight vector (is this not similar to "line with rico and d" ?)
-*/ define perceptron through vector dragging (the orientation of the vector determines coeff. a and b (rico) and the length of the vector determines coeff. c (distance to origin))
+*/ OK: define perceptron through vector dragging (the orientation of the vector determines coeff. a and b (rico) and the length of the vector determines coeff. c (distance to origin))
 */ OK: show a clickable 2d space and color the clicked points according the result of the perceptron (the two classes)
 		http://bl.ocks.org/WilliamQLiu/76ae20060e19bf42d774
 */ OK: adapt shown points (their classification) to changes of the perceptron coeff. a, b and c
@@ -408,23 +408,42 @@ to research
 
 			//this.pa = ko.observable(a / Math.sqrt(a*a + b*b));
 			//this.pb = ko.observable(b / Math.sqrt(a * a + b * b));
-			this.pa = ko.observable(a);
-			this.pb = ko.observable(b);
-			this.pc = ko.observable(c);
 
-			this.pa.subscribe(function (newValue) { /*console.log("pa.subscribe");*/  updateFunc(); });
-			this.pb.subscribe(function (newValue) { /*console.log("pb.subscribe");*/  updateFunc(); });
-			this.pc.subscribe(function (newValue) { /*console.log("pc.subscribe");*/  updateFunc(); });
+			this.oa = ko.observable(a);
+			this.ob = ko.observable(b);
+			this.oc = ko.observable(c);
 
-			this.pv2x = ko.computed(function () { return Number(this.pa()); }, this);
-			this.pv2y = ko.computed(function () { return Number(this.pb()); }, this);
+			this.oa.subscribe(function (newValue) { /*console.log("pa.subscribe");*/  updateFunc(); });
+			this.ob.subscribe(function (newValue) { /*console.log("pb.subscribe");*/  updateFunc(); });
+			this.oc.subscribe(function (newValue) { /*console.log("pc.subscribe");*/  updateFunc(); });
+
+			this.pv2x = ko.computed(function () { return Number(this.oa()); }, this);
+			this.pv2y = ko.computed(function () { return Number(this.ob()); }, this);
 
 			vectorp = {
 				tp: "defp1delta",
 				p1: { x: ko.observable(0), y: ko.observable(0) },
-				delta: { x: this.pa, y: this.pb },
+				delta: { x: this.oa, y: this.ob },
 				p2: { x: this.pv2x, y: this.pv2y }
 			};
+
+			this.pa = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return a / Math.sqrt(a * a + b * b);
+			}, this);
+
+			this.pb = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return b / Math.sqrt(a * a + b * b);
+			}, this);
+
+			this.pc = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return -1 * Math.sqrt(a * a + b * b);  // *** WAAROM VERMENIGVULDIGEN MET -1 ???? ***
+			}, this);
 
 			perceptron1 = {
 				a: this.pa,
@@ -561,7 +580,7 @@ to research
 
 			var res = -1 * (p.c() + (p.a() * xc)) / p.b();
 
-			console.log("perceptronGetYFromDRico d:" + p.c() + " - xc:" + xc + ", yres:" + res);
+			console.log("perceptronGetX a:" + p.a() + " b:" + p.b() + " c:" + p.c() + " - xc:" + xc + ", xres:" + res);
 			return y(res);
 		}
 
@@ -569,9 +588,9 @@ to research
 			var sr = Math.abs(spaceXMax - spaceXMin) / Math.abs(spaceYMax - spaceYMin);
 			var rr = Math.abs(a()) / Math.abs(b());
 
-			//console.log("calcRaySwap sr=" + sr + ", rr=" + rr);
+			console.log("calcRaySwap sr=" + sr + ", rr=" + rr);
 
-			return false; //sr > rr;
+			return sr > rr;
 		}
 
 		var calcPerceptronX1 = function (d) {

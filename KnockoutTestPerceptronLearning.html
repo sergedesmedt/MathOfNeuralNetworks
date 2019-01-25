@@ -18,18 +18,17 @@
 to research
 ===========
 
-1/ OK:  define a ray / line: starts at the edges of the grid
-2/ OK: define a ray by:
-	1/ OK: a point on the ray and the direction
-	2/ OK: a distance from the origin (not really, but de d factor in ax + by = d) and a vector perpendicular to the line
-3/ IS THE FOLLOWING NOT JUST A CALCULATION TO BE DONE IN HE VIEWMODEL? use a vector to define the d factor of 2.2 > in this case, the d factor is the projection of the vector on the vector perpendicular to the line
+*/ show the precpetron learning procedure (how will we do this ?)
+	we could give points by clicking
+		how will we differentiate between the two classes when clicking to give a point?
+			could we do this through the mousebutton?
+				left mousebutton click > class 1
+				right mousebutton click > class 2
 
-TODO
-currently, for 2.1 the rico is actually a vector perpendicular to the rico (or isn't it?)')
 -->
 <html>
 <head>
-	<title>KnockoutJS / D3 Line Testing ground</title>
+	<title>KnockoutJS / D3 Perceptron Learning Testing ground</title>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 
@@ -44,6 +43,11 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 		}
 
 		.rayline {
+			stroke: #000000;
+			fill: #000000;
+		}
+
+		.perceptronboundary {
 			stroke: #000000;
 			fill: #000000;
 		}
@@ -73,6 +77,21 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 			fill: #ff0000;
 		}
 
+		.perceptronResultPoint {
+			stroke: #000000;
+			fill: #d7d7d7;
+		}
+
+		.perceptronclass1 {
+			stroke: #000000;
+			fill: #ff6a00;
+		}
+
+		.perceptronclass2 {
+			stroke: #000000;
+			fill: #b6ff00;
+		}
+
 		.axis path,
 		.axis line {
 			fill: none;
@@ -98,7 +117,7 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 		var spaceYMax = 75;
 
 		var rayGetYFromPtRico = function (xc, r) {
-			console.log("rayGetYFromPtRico ==================");
+			//console.log("rayGetYFromPtRico ==================");
 			//console.log("rayGetYFromPtRico > xc:" + xc );
 
 			var xn = x(xc);
@@ -123,7 +142,7 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 		}
 
 		var rayGetXFromPtRico = function (yc, r) {
-			console.log("rayGetXFromPtRico ==================");
+			//console.log("rayGetXFromPtRico ==================");
 			//console.log("rayGetXFromPtRico > yc:" + yc);
 
 			var yn = y(yc);
@@ -151,7 +170,7 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 
 			var res = (r.d() - (r.rico.dx() * xc)) / r.rico.dy();
 
-			console.log("rayGetYFromDRico d:" + r.d() + " - xc:" + xc + ", yres:" + res);
+			//console.log("rayGetYFromDRico d:" + r.d() + " - xc:" + xc + ", yres:" + res);
 			return y(res);
 		}
 
@@ -159,7 +178,7 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 
 			var res = (r.d() - (r.rico.dy() * yc)) / r.rico.dx();
 
-			console.log("rayGetXFromDRico d:" + r.d() + " - yc:" + yc + ", xres:" + res);
+			//console.log("rayGetXFromDRico d:" + r.d() + " - yc:" + yc + ", xres:" + res);
 			return x(res);
 		}
 
@@ -196,7 +215,7 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 		//var calcRayPRicoY2 = function (d) { return rayGetYFromPtRico(spaceXMax, d); };
 
 		var updateFunc = function UpdateVector() {
-			console.log("UpdateVector ==================");
+			//console.log("UpdateVector ==================");
 
 			var vectors = svg.selectAll(".vector")
 				.data(vm.allVectors);
@@ -239,16 +258,61 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 				;
 
 
-			var rays = svg.selectAll(".ray")
-				.data(vm.allRays);
+			//var rays = svg.selectAll(".ray")
+			//	.data(vm.allRays);
 
-			rays.select(".rayline")
-				//.attr("class", "rayline")
-				.attr("x1", calcRayPRicoX1)
-				.attr("y1", calcRayPRicoY1)
-				.attr("x2", calcRayPRicoX2)
-				.attr("y2", calcRayPRicoY2)
-				;
+			//rays.select(".rayline")
+			//	//.attr("class", "rayline")
+			//	.attr("x1", calcRayPRicoX1)
+			//	.attr("y1", calcRayPRicoY1)
+			//	.attr("x2", calcRayPRicoX2)
+			//	.attr("y2", calcRayPRicoY2)
+			//	;
+
+
+			var perceptrons = svg.selectAll(".perceptron")
+				.data(vm.allPerceptrons);
+
+			perceptrons.select(".perceptronboundary")
+				//.attr("class", "perceptronboundary")
+				.attr("x1", calcPerceptronX1)
+				.attr("y1", calcPerceptronY1)
+				.attr("x2", calcPerceptronX2)
+				.attr("y2", calcPerceptronY2)
+
+
+			updatePerceptronResults();
+		}
+
+		var updatePerceptronResults = function UpdatePerceptronResults() {
+			//console.log("UpdatePerceptronResults");
+
+			//vm.allPerceptronResults.push({ x: xd, y:yd, class:1});
+
+			var allResults = svg.selectAll(".perceptronResult").data(vm.allPerceptronResults());
+
+			var newData = allResults.enter();
+
+			gnew = newData
+				.append("g")
+				.attr("class", "perceptronResult")
+
+			gnew.append("circle")
+				//.attr("class", "perceptronResultPoint")
+				.attr("class", function (d) { return (d.class == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2"; })
+				.attr("cx", function (d) { return x(d.x); })
+				.attr("cy", function (d) { return y(d.y); })
+				.attr("r", "3px")
+
+			var updateData = allResults;
+
+			var perceptron = vm.allPerceptrons[0];
+			updateData.select(".perceptronResultPoint")
+				.attr("class", function (d) {
+					//d.class = calcPerceptronOutcome(perceptron, d.x, d.y);
+					fillPerceptron(perceptron, d);
+					return (d.class == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2";
+				})
 
 		}
 
@@ -336,6 +400,55 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 				rico: { dx: this.v1dxnormal, dy: this.v1dynormal }
 			}
 
+			var a = -20;
+			var b = 30;
+			var c = 1000;
+
+			//this.pa = ko.observable(a / Math.sqrt(a*a + b*b));
+			//this.pb = ko.observable(b / Math.sqrt(a * a + b * b));
+
+			this.oa = ko.observable(a);
+			this.ob = ko.observable(b);
+			this.oc = ko.observable(c);
+
+			this.oa.subscribe(function (newValue) { /*console.log("pa.subscribe");*/  updateFunc(); });
+			this.ob.subscribe(function (newValue) { /*console.log("pb.subscribe");*/  updateFunc(); });
+			this.oc.subscribe(function (newValue) { /*console.log("pc.subscribe");*/  updateFunc(); });
+
+			this.pv2x = ko.computed(function () { return Number(this.oa()); }, this);
+			this.pv2y = ko.computed(function () { return Number(this.ob()); }, this);
+
+			vectorp = {
+				tp: "defp1delta",
+				p1: { x: ko.observable(0), y: ko.observable(0) },
+				delta: { x: this.oa, y: this.ob },
+				p2: { x: this.pv2x, y: this.pv2y }
+			};
+
+			this.pa = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return a / Math.sqrt(a * a + b * b);
+			}, this);
+
+			this.pb = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return b / Math.sqrt(a * a + b * b);
+			}, this);
+
+			this.pc = ko.computed(function () {
+				var a = Number(this.oa());
+				var b = Number(this.ob());
+				return -1 * Math.sqrt(a * a + b * b);  // *** WAAROM VERMENIGVULDIGEN MET -1 ???? ***
+			}, this);
+
+			perceptron1 = {
+				a: this.pa,
+				b: this.pb,
+				c: this.pc
+			};
+
 			//v2 = {
 			//	p1: { x: 0, y: 0 }, p2: { x: 40, y: 55 }
 			//};
@@ -344,8 +457,11 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 			//};
 
 			//vs = [v1, v2, v3];
-			this.allVectors = [vector1]; //, vector2, vector3, vector4];
-			this.allRays = [ray2];
+			this.allVectors = [vectorp]; //, vector2, vector3, vector4];
+			this.allRays = []; //[ray2];
+			this.allPerceptrons = [perceptron1];
+			this.allPerceptronResults = ko.observableArray([]);
+			this.allPerceptronResults.subscribe(function (newValue) { console.log("allPerceptronResults.subscribe"); updatePerceptronResults(); });
 
 		}
 
@@ -388,6 +504,35 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 			.attr("class", "y axis")
 			.call(yAxis);
 
+		var calcPerceptronOutcome = function CalcPerceptronOutcome(p, x, y) {
+			var r = p.a() * x + p.b() * y + p.c();
+			return (r > 0) ? 1 : 0;
+		}
+
+		var fillPerceptron = function FillPerceptron(p, d) {
+			d.class = calcPerceptronOutcome(p, d.x, d.y);
+		}
+
+		var createPerceptron = function CreatePerceptron(p, x, y) {
+			var pdata = { x: x, y: y, class: 0 };
+			fillPerceptron(p, pdata);
+			return pdata;
+		}
+
+		svg.on("click", function () {
+			var coords = d3.mouse(this);
+
+			var xd = x.invert(coords[0]);
+			var yd = y.invert(coords[1]);
+
+			console.log("svg clicked at coord[" + coords[0] + "," + coords[1] + "], domain[" + xd + "," + yd + "]");
+
+			var perceptron = vm.allPerceptrons[0];
+			vm.allPerceptronResults.push(createPerceptron(perceptron, xd, yd));
+
+
+		});
+
 		//v1 = {
 		//	p1: { x: 0, y: 0 }, p2: { x: 10, y: 40 }
 		//};
@@ -415,6 +560,75 @@ currently, for 2.1 the rico is actually a vector perpendicular to the rico (or i
 			.attr("d", "M 0 0 10 3 0 6")
 			//.style("fill", "black")
 			;
+
+
+
+
+
+
+		var perceptronGetX = function (yc, p) {
+
+			var res = -1 * (p.c() + (p.b() * yc)) / p.a();
+
+			console.log("perceptronGetX a:" + p.a() + " b:" + p.b() + " c:" + p.c() + " - yc:" + yc + ", xres:" + res);
+			return x(res);
+		}
+
+		var perceptronGetY = function (xc, p) {
+
+			var res = -1 * (p.c() + (p.a() * xc)) / p.b();
+
+			console.log("perceptronGetX a:" + p.a() + " b:" + p.b() + " c:" + p.c() + " - xc:" + xc + ", xres:" + res);
+			return y(res);
+		}
+
+		var calcPerceptronSwap = function (a, b) {
+			var sr = Math.abs(spaceXMax - spaceXMin) / Math.abs(spaceYMax - spaceYMin);
+			var rr = Math.abs(a()) / Math.abs(b());
+
+			console.log("calcRaySwap sr=" + sr + ", rr=" + rr);
+
+			return sr > rr;
+		}
+
+		var calcPerceptronX1 = function (d) {
+			var xval = 0;
+			if (calcPerceptronSwap(d.a, d.b)) {
+				xval = x(spaceXMin);
+				//console.log("calcRayPRicoX1 [" + xval +"] > used x");
+			}
+			else {
+				xval = perceptronGetX(spaceYMin, d);
+				//console.log("calcRayPRicoX1 [" + xval +"] > used rayGetXFromPtRico");
+			}
+
+			return xval;
+
+		};
+		var calcPerceptronY1 = function (d) { return calcPerceptronSwap(d.a, d.b) ? perceptronGetY(spaceXMin, d) : y(spaceYMin); };
+		var calcPerceptronX2 = function (d) { return calcPerceptronSwap(d.a, d.b) ? x(spaceXMax) : perceptronGetX(spaceYMax, d); };
+		var calcPerceptronY2 = function (d) { return calcPerceptronSwap(d.a, d.b) ? perceptronGetY(spaceXMax, d) : y(spaceYMax); };
+
+
+
+
+
+		var perceptronData = svg.selectAll(".perceptron")
+			.data(vm.allPerceptrons).enter()
+
+		gperceptron = perceptronData
+			.append("g")
+			.attr("class", "perceptron");
+
+		gperceptron.append("line")
+			.attr("class", "perceptronboundary")
+			.attr("x1", calcPerceptronX1)
+			.attr("y1", calcPerceptronY1)
+			.attr("x2", calcPerceptronX2)
+			.attr("y2", calcPerceptronY2)
+
+
+
 
 
 		rayData = svg.selectAll(".ray")

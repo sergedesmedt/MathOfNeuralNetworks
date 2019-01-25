@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
 
 
@@ -66,8 +66,8 @@ to research
 
 	<!--<input type="range" data-bind="sliderBinding: sliderA, testMe: 'hi'">-->
 
-	<input type="text" data-bind="value: rangeValue" />
-	<input type="range" min="10" max="50" data-bind="value: rangeValue, valueUpdate: 'input'" />
+	<input type="text" data-bind="value: v1dx" />
+	<input type="range" min="10" max="50" data-bind="value: v1dx, valueUpdate: 'input'" />
 
 	<p>First String: <input data-bind="value: p1x" /></p>
 	<p>Second String: <input data-bind="value: p1y" /></p>
@@ -149,7 +149,7 @@ to research
 			this.p0x = ko.observable(20)/*.extend({ number: true })*/;
 			this.p0y = ko.observable(20)/*.extend({ number: true })*/;
 
-			this.v1dx = ko.observable(-20);
+			this.v1dx = ko.observable(20);
 			this.v1dy = ko.observable(30);
 
 			this.p1x = ko.computed(function () { return Number(this.p0x()) + Number(this.v1dx()); }, this);

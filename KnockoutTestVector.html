@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!--
 
 	Example for d3 and knockout databinding:
@@ -25,7 +25,7 @@ to research
 * OK: slepen van de vector uiteinden
 * OK: updaten van waarden in de tekst van de pagina met waarden uit de grafiek (vooral dan bij het slepen van vector uiteinden)
 * OK: updaten van waarden in de grafiek met waarden uit de tekst die worden aangepast
-* tonen van de hoek tussen twee vectoren die beginnnen in hetzelfde punt
+* OK: tonen van de hoek tussen twee vectoren die beginnnen in hetzelfde punt
 -->
 
 <html>
@@ -130,6 +130,7 @@ to research
 		// ****************************
 
 		var updateFunc = function UpdateVector() {
+			console.log("UpdateVector");
 
 			var vectors = svg.selectAll(".vector")
 				.data(vm.allVectors);
@@ -169,6 +170,17 @@ to research
 				//.attr("stroke-width", 1)
 				//.attr("fill", "none")
 				//.attr("marker-end", "url(#arrow)")
+				;
+
+			var v2varcs = svg.selectAll(".vec2vecangle")
+				.data(vm.allAngles);
+
+			v2varcs.select(".vec2vecarc")
+				//.attr("class", "vec2vecarc")
+				.attr("d", function (d) { return vector2vectorArc(d); })
+				//.attr("stroke", "blue")
+				//.attr("stroke-width", 1)
+				//.attr("fill", "none")
 				;
 
 		}
@@ -241,6 +253,39 @@ to research
 				p2: { x: this.p5x, y: this.p5y }
 			};
 
+
+			this.p100x = ko.observable(50)
+			this.p100y = ko.observable(50)
+			this.p101x = ko.observable(80)
+			this.p101y = ko.observable(60)
+			this.p102x = ko.observable(60)
+			this.p102y = ko.observable(90)
+
+			this.p100x.subscribe(function (newValue) { updateFunc(); });
+			this.p100y.subscribe(function (newValue) { updateFunc(); });
+			this.p101x.subscribe(function (newValue) { updateFunc(); });
+			this.p101y.subscribe(function (newValue) { updateFunc(); });
+			this.p102x.subscribe(function (newValue) { updateFunc(); });
+			this.p102y.subscribe(function (newValue) { updateFunc(); });
+
+
+			vector10 = {
+				tp: "defp1p2",
+				p1: { x: this.p100x, y: this.p100y },
+				p2: { x: this.p101x, y: this.p101y }
+			};
+			vector11 = {
+				tp: "defp1p2",
+				p1: { x: this.p100x, y: this.p100y },
+				p2: { x: this.p102x, y: this.p102y }
+			};
+
+
+			angle1 = {
+				vs: vector10,
+				ve: vector11
+			};
+
 			//v2 = {
 			//	p1: { x: 0, y: 0 }, p2: { x: 40, y: 55 }
 			//};
@@ -249,7 +294,8 @@ to research
 			//};
 
 			//vs = [v1, v2, v3];
-			this.allVectors = [vector1]; //, vector2, vector3, vector4];
+			this.allVectors = [vector1, vector10, vector11]; //, vector2, vector3, vector4];
+			this.allAngles = [angle1];
 
 		}
 
@@ -356,7 +402,7 @@ to research
 		//	.attr("cy", function (d) { return y(d.p1.y()); })
 		//	.attr("r", "8px")
 		//	//.attr("fill", "red")
-			;
+		;
 
 		g.append("line")          // attach a line
 			.attr("class", function (d) { return (d.tp == "defp1p2") ? "vectorline" : "vectorline defp1delta"; })
@@ -376,13 +422,13 @@ to research
 		// https://www.tutorialspoint.com/d3js/d3js_paths_api.htm
 
 		var lineData = [{ "x": 1, "y": 5 }, { "x": 20, "y": 20 },
-			                 { "x": 40, "y": 10 }, { "x": 60, "y": 40 },
-			                 { "x": 80, "y": 5 }, { "x": 100, "y": 60 }];
-		
+		{ "x": 40, "y": 10 }, { "x": 60, "y": 40 },
+		{ "x": 80, "y": 5 }, { "x": 100, "y": 60 }];
+
 		var lineFunction = d3.line()
 			.x(function (d) { return d.x; })
 			.y(function (d) { return d.y; })
-			.curve(d3.curveLinear);  
+			.curve(d3.curveLinear);
 
 		//var arc = d3.arc()
 		//	.innerRadius(50)
@@ -411,7 +457,27 @@ to research
 			var varc = d3.path();
 			////arc1.moveTo(100, 100);
 			////arc1.lineTo(50, 50);
+			// *** arc: function (x, y, r, a0, a1, ccw)
 			varc.arc(x(d.p1.x()), y(d.p1.y()), 25, 0, getAngle(x(d.p2.x()) - x(d.p1.x()), y(d.p2.y()) - y(d.p1.y())), 1);
+
+			return varc
+		}
+
+		function vector2vectorArc(d) {
+			var varc = d3.path();
+
+			//angle1 = {
+			//	vs: vector10,
+			//	ve: vector11
+			//};
+
+			//console.log("value = " + d.vs);
+
+			// *** arc: function (x, y, r, a0, a1, ccw)
+			varc.arc(x(d.vs.p1.x()), y(d.vs.p1.y()), 50,
+				getAngle(x(d.vs.p2.x()) - x(d.vs.p1.x()), y(d.vs.p2.y()) - y(d.vs.p1.y())),
+				getAngle(x(d.ve.p2.x()) - x(d.ve.p1.x()), y(d.ve.p2.y()) - y(d.ve.p1.y())),
+				1);
 
 			return varc
 		}
@@ -466,6 +532,7 @@ to research
 		//	.attr("cy", 100)
 		//	.attr("r", "8px")
 
+
 		//g.append("line")
 		//	.attr("class", "vectorp1x")
 		//	.attr("x1", function (d) { return x(d.p1.x); })
@@ -489,6 +556,22 @@ to research
 		//	.attr("x", function (d) { return x(d.p1.x + (d.p2.x - d.p1.x) / 2); })
 		//	.attr("y", y(-10))
 		//	;
+
+
+
+		vec2vecangledata = svg.selectAll(".vec2vecangle")
+			.data(vm.allAngles).enter()
+
+		vec2vecangleg = vec2vecangledata
+			.append("g")
+			.attr("class", "vec2vecangle");
+
+		vec2vecangleg.append("path")
+			.attr("class", "vec2vecarc")
+			.attr("d", function (d) { return vector2vectorArc(d); })
+			.attr("stroke", "blue")
+			.attr("stroke-width", 1)
+			.attr("fill", "none")
 
 
 		//let dragp1 = d3.drag()
@@ -555,7 +638,7 @@ to research
 		}
 
 		function defp1delta_draggedp2(d) {
-			console.log("defp1delta_draggedp2");
+			//console.log("defp1delta_draggedp2");
 			//console.log(this);
 			//console.log(d);
 
@@ -596,7 +679,7 @@ to research
 		}
 
 		function defp1p2_draggedp2(d) {
-			console.log("defp1delta_draggedp2");
+			//console.log("defp1delta_draggedp2");
 			//console.log(this);
 			//console.log(d);
 
