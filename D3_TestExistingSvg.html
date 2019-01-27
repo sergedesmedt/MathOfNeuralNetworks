@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<!--
+to research
+===========
+
+* creeeren van een assenstelsel
+* tonen van de assen
+* tonen van de hoofdverdeling (zodat er een grid ontstaat)
+* tonen van een vector (pijl)
+* tonen van een hoek (boog met aan uiteinde een pijl)
+* slepen van de vector uiteinden
+* updaten van waarden in de tekst van de pagina met waarden uit de grafiek (vooral dan bij het slepen van vector uiteinden)
+* updaten van waarden in  de grafiek met waarden iuit de tekst die worden aangepast
+
+-->
+<head>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<style>
+
+		svg {
+			font: 10px sans-serif;
+			shape-rendering: crispEdges;
+		}
+
+		rect {
+			fill: #fff;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: #d7d7d7;
+		}
+
+	</style>
+</head>
+<body>
+    <div id="viz">
+        <svg width="500" height="500">
+            <g transform="translate(20,20)"></g><rect width="460" height="460"></rect><g class="x axis" transform="translate(0,460)" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle"><path class="domain" stroke="currentColor" d="M0.5,-460V0.5H460.5V-460"></path><g class="tick" opacity="1" transform="translate(10.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-220</text></g><g class="tick" opacity="1" transform="translate(30.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-200</text></g><g class="tick" opacity="1" transform="translate(50.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-180</text></g><g class="tick" opacity="1" transform="translate(70.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-160</text></g><g class="tick" opacity="1" transform="translate(90.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-140</text></g><g class="tick" opacity="1" transform="translate(110.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-120</text></g><g class="tick" opacity="1" transform="translate(130.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-100</text></g><g class="tick" opacity="1" transform="translate(150.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-80</text></g><g class="tick" opacity="1" transform="translate(170.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-60</text></g><g class="tick" opacity="1" transform="translate(190.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-40</text></g><g class="tick" opacity="1" transform="translate(210.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">-20</text></g><g class="tick" opacity="1" transform="translate(230.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">0</text></g><g class="tick" opacity="1" transform="translate(250.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">20</text></g><g class="tick" opacity="1" transform="translate(270.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">40</text></g><g class="tick" opacity="1" transform="translate(290.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">60</text></g><g class="tick" opacity="1" transform="translate(310.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">80</text></g><g class="tick" opacity="1" transform="translate(330.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">100</text></g><g class="tick" opacity="1" transform="translate(350.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">120</text></g><g class="tick" opacity="1" transform="translate(370.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">140</text></g><g class="tick" opacity="1" transform="translate(390.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">160</text></g><g class="tick" opacity="1" transform="translate(410.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">180</text></g><g class="tick" opacity="1" transform="translate(430.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">200</text></g><g class="tick" opacity="1" transform="translate(450.5,0)"><line stroke="currentColor" y2="-460"></line><text fill="currentColor" y="3" dy="0.71em">220</text></g></g><g class="y axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="end"><path class="domain" stroke="currentColor" d="M460,460.5H0.5V0.5H460"></path><g class="tick" opacity="1" transform="translate(0,450.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-220</text></g><g class="tick" opacity="1" transform="translate(0,430.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-200</text></g><g class="tick" opacity="1" transform="translate(0,410.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-180</text></g><g class="tick" opacity="1" transform="translate(0,390.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-160</text></g><g class="tick" opacity="1" transform="translate(0,370.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-140</text></g><g class="tick" opacity="1" transform="translate(0,350.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-120</text></g><g class="tick" opacity="1" transform="translate(0,330.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-100</text></g><g class="tick" opacity="1" transform="translate(0,310.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-80</text></g><g class="tick" opacity="1" transform="translate(0,290.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-60</text></g><g class="tick" opacity="1" transform="translate(0,270.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-40</text></g><g class="tick" opacity="1" transform="translate(0,250.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">-20</text></g><g class="tick" opacity="1" transform="translate(0,230.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">0</text></g><g class="tick" opacity="1" transform="translate(0,210.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">20</text></g><g class="tick" opacity="1" transform="translate(0,190.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">40</text></g><g class="tick" opacity="1" transform="translate(0,170.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">60</text></g><g class="tick" opacity="1" transform="translate(0,150.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">80</text></g><g class="tick" opacity="1" transform="translate(0,130.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">100</text></g><g class="tick" opacity="1" transform="translate(0,110.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">120</text></g><g class="tick" opacity="1" transform="translate(0,90.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">140</text></g><g class="tick" opacity="1" transform="translate(0,70.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">160</text></g><g class="tick" opacity="1" transform="translate(0,50.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">180</text></g><g class="tick" opacity="1" transform="translate(0,30.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">200</text></g><g class="tick" opacity="1" transform="translate(0,10.5)"><line stroke="currentColor" x2="460"></line><text fill="currentColor" x="-3" dy="0.32em">220</text></g></g>
+            <circle r="8px" fill="red"></circle>
+            <circle r="8px" fill="red"></circle>
+        </svg>
+    </div>
+    <script type="text/javascript">
+
+		var margin = { top: 20, right: 20, bottom: 20, left: 20 },
+			width = 500 - margin.left - margin.right,
+			height = 500 - margin.top - margin.bottom;
+
+		var x = d3.scaleLinear()
+			.domain([-width / 2, width / 2])
+			.range([0, width]);
+
+		var y = d3.scaleLinear()
+			.domain([-height / 2, height / 2])
+			.range([height, 0]);
+
+		var xAxis = d3.axisBottom()
+			.scale(x)
+			.ticks(20)
+			.tickSize(-height);
+
+		var yAxis = d3.axisLeft()
+			.scale(y)
+			.ticks(20)
+			.tickSize(-width);
+
+        var svg = d3.select("svg")
+
+		// var svg = d3.select("body").append("svg")
+		// 	.attr("width", width + margin.left + margin.right)
+		// 	.attr("height", height + margin.top + margin.bottom);
+
+		// svg.append("g")
+		// 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+		// svg.append("rect")
+		// 	.attr("width", width)
+		// 	.attr("height", height);
+
+		p1 = [10, 10];
+		p2 = [70, 70];
+
+		// svg.append("g")
+		// 	.attr("class", "x axis")
+		// 	.attr("transform", "translate(0," + height + ")")
+		// 	.call(xAxis);
+
+		// svg.append("g")
+		// 	.attr("class", "y axis")
+		// 	.call(yAxis);
+
+		svg.selectAll("circle")
+			.data([p1, p2])//.enter()
+			//.append("circle")
+			.attr("cx", function (d) { return x(d[0]); })
+			.attr("cy", function (d) { return y(d[1]); })
+			//.attr("r", "8px")
+			//.attr("fill", "red");
+
+		// let drag = d3.drag()
+		// 	.on('start', dragstarted)
+		// 	.on('drag', dragged)
+		// 	.on('end', dragended);
+
+		// svg.selectAll('circle')
+		// 	.call(drag);
+
+
+		function dragstarted(d) {
+			d3.select(this).raise().classed('active', true);
+		}
+
+		function dragged(d) {
+			d[0] = x.invert(d3.event.x);
+			d[1] = y.invert(d3.event.y);
+			d3.select(this)
+				.attr('cx', x(d[0]))
+				.attr('cy', y(d[1]))
+			//focus.select('path').attr('d', line);
+		}
+
+		function dragended(d) {
+			d3.select(this).classed('active', false);
+		}
+
+    </script>
+</body>
+</html>
