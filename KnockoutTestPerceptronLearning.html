@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
 
 	Example for d3 and knockout databinding:
@@ -31,6 +31,7 @@ to research
 	<title>KnockoutJS / D3 Perceptron Learning Testing ground</title>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
 
 	<style>
 		svg {
@@ -109,7 +110,6 @@ to research
 	<div id="viz"></div>
 
 	<script type="text/javascript">
-
 
 		var spaceXMin = -75;
 		var spaceXMax = 75;
@@ -457,7 +457,7 @@ to research
 			//};
 
 			//vs = [v1, v2, v3];
-			this.allVectors = [vectorp]; //, vector2, vector3, vector4];
+			this.allVectors = []; //[vectorp]; //, vector2, vector3, vector4];
 			this.allRays = []; //[ray2];
 			this.allPerceptrons = [perceptron1];
 			this.allPerceptronResults = ko.observableArray([]);
@@ -491,6 +491,7 @@ to research
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom);
 
+
 		svg.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		svg.append("rect")
@@ -520,6 +521,12 @@ to research
 		}
 
 		svg.on("click", function () {
+
+			//event.preventDefault();
+
+			console.log("svg clicked with shiftkey[" + d3.event.shiftKey + "]");
+			//console.log("svg clicked with mousebutton[" + d3.event.button + "]");
+
 			var coords = d3.mouse(this);
 
 			var xd = x.invert(coords[0]);
@@ -529,6 +536,36 @@ to research
 
 			var perceptron = vm.allPerceptrons[0];
 			vm.allPerceptronResults.push(createPerceptron(perceptron, xd, yd));
+
+
+			var x0 = x(0);
+			var y0 = y(0);
+			console.log("svg clicked x0[" + x0 + "], y0[" + y0 + "]");
+
+			svg.append('line')
+				.attr("class", "vectorline")
+				.attrs({
+					x1: x0,
+					y1: y0,
+					x2: x0,
+					y2: y0
+				})
+				//.attr("x1", 0)
+				//.attr("y1", 0)
+				//.attr("x2", 25)
+				//.attr("y2", 15)
+				.attr("marker-end", "url(#linearrow)")
+				.transition()
+				.duration(1500)
+				.attrs({
+					x2: coords[0],
+					y2: coords[1]
+				})
+				//.transition()
+				//.duration(1500)
+				//.attr("y2", 145)
+
+
 
 
 		});
@@ -560,10 +597,6 @@ to research
 			.attr("d", "M 0 0 10 3 0 6")
 			//.style("fill", "black")
 			;
-
-
-
-
 
 
 		var perceptronGetX = function (yc, p) {
