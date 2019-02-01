@@ -1,0 +1,24 @@
+﻿.vectorline {
+    stroke: #FF0000;
+    fill: #000000;
+}
+
+.vectorp1x {
+    stroke: #808080;
+    fill: #000000;
+}
+
+.vectorp2x {
+    stroke: #808080;
+    fill: #000000;
+}
+
+.vectorendpoint {
+    stroke: #000000;
+    fill: #ff0000;
+}
+
+.vectorstartpoint {
+    stroke: #000000;
+    fill: #ff0000;
+}

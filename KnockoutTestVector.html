@@ -31,9 +31,9 @@ to research
 <html>
 <head>
 	<title>KnockoutJS / D3 Vector Testing ground</title>
-	<script type="text/javascript" async
+	<!--<script type="text/javascript" async
 			src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async>
-	</script>
+	</script>-->
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 
@@ -81,7 +81,7 @@ to research
 
 </head>
 <body>
-	<p>
+	<!--<p>
 		When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
 		$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
 		$$
@@ -109,7 +109,7 @@ to research
 				<mn>0</mn>
 			</mrow>
 		</math>
-	</p>
+	</p>-->
 
 	<p>First String: <input data-bind="value: p1x" /></p>
 	<p>Second String: <input data-bind="value: p1y" /></p>
@@ -323,9 +323,8 @@ to research
 			.tickSize(-width);
 		var svg = d3.select("#viz").append("svg")
 			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom);
-
-		svg.append("g")
+			.attr("height", height + margin.top + margin.bottom)
+			.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		svg.append("rect")
 			.attr("width", width)

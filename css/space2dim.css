@@ -1,0 +1,14 @@
+﻿svg {
+    font: 10px sans-serif;
+    shape-rendering: geometricPrecision;
+}
+
+rect {
+    fill: #fff;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #d7d7d7;
+}

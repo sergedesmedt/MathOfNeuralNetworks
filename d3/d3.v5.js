@@ -4953,7 +4953,10 @@ Path.prototype = path.prototype = {
       this._ += "A" + r + "," + r + ",0,0," + (+(y01 * x20 > x01 * y20)) + "," + (this._x1 = x1 + t21 * x21) + "," + (this._y1 = y1 + t21 * y21);
     }
   },
-  arc: function(x, y, r, a0, a1, ccw) {
+arc: function (x, y, r, a0, a1, ccw) {
+    console.log("arc");
+
+
     x = +x, y = +y, r = +r;
     var dx = r * Math.cos(a0),
         dy = r * Math.sin(a0),
@@ -4977,6 +4980,8 @@ Path.prototype = path.prototype = {
 
     // Is this arc empty? We’re done.
     if (!r) return;
+
+    console.log("arc: da = " + da);
 
     // Does the angle go the wrong way? Flip the direction.
     if (da < 0) da = da % tau$2 + tau$2;

@@ -18,12 +18,16 @@
 to research
 ===========
 
+*/ animate actions on a vector
+	Move startpoint of a vector
+
+
 */ show the precpetron learning procedure (how will we do this ?)
 	we could give points by clicking
 		how will we differentiate between the two classes when clicking to give a point?
-			could we do this through the mousebutton?
-				left mousebutton click > class 1
-				right mousebutton click > class 2
+			OK: could we do this through the mousebutton in combination with a key? > d3.event.shiftKey
+				mousebutton left click > class 1
+				mousebutton left click + shift button > class 2
 
 -->
 <html>
@@ -31,6 +35,7 @@ to research
 	<title>KnockoutJS / D3 Perceptron Learning Testing ground</title>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
 
 	<style>
 		svg {
@@ -70,11 +75,13 @@ to research
 		.vectorendpoint {
 			stroke: #000000;
 			fill: #ff0000;
+			fill-opacity: .5;
 		}
 
 		.vectorstartpoint {
 			stroke: #000000;
 			fill: #ff0000;
+			fill-opacity: .5;
 		}
 
 		.perceptronResultPoint {
@@ -109,7 +116,6 @@ to research
 	<div id="viz"></div>
 
 	<script type="text/javascript">
-
 
 		var spaceXMin = -75;
 		var spaceXMax = 75;
@@ -415,12 +421,15 @@ to research
 			this.ob.subscribe(function (newValue) { /*console.log("pb.subscribe");*/  updateFunc(); });
 			this.oc.subscribe(function (newValue) { /*console.log("pc.subscribe");*/  updateFunc(); });
 
-			this.pv2x = ko.computed(function () { return Number(this.oa()); }, this);
-			this.pv2y = ko.computed(function () { return Number(this.ob()); }, this);
+			this.pv1x = ko.observable(0);
+			this.pv1y = ko.observable(0);
+
+			this.pv2x = ko.computed(function () { return Number(this.pv1x()) + Number(this.oa()); }, this);
+			this.pv2y = ko.computed(function () { return Number(this.pv1y()) + Number(this.ob()); }, this);
 
 			vectorp = {
 				tp: "defp1delta",
-				p1: { x: ko.observable(0), y: ko.observable(0) },
+				p1: { x: this.pv1x, y: this.pv1y },
 				delta: { x: this.oa, y: this.ob },
 				p2: { x: this.pv2x, y: this.pv2y }
 			};
@@ -491,6 +500,7 @@ to research
 			.attr("width", width + margin.left + margin.right)
 			.attr("height", height + margin.top + margin.bottom);
 
+
 		svg.append("g")
 			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		svg.append("rect")
@@ -519,7 +529,50 @@ to research
 			return pdata;
 		}
 
+		var moveVectorByP1ToPositionAnimated = function MoveVectorByP1ToPositionAnimated(line, v, xt, yt) {
+			var vx1 = v.p1.x();
+			var vy1 = v.p1.y();
+
+			var dxt = xt - vx1;
+			var dyt = yt - vy1;
+
+			var xs = x(xt);
+			var ys = y(yt)
+
+			if (v.tp == "defp1delta") {
+				var vx2t = vx1 + v.delta.x() + dxt;
+				var vy2t = vy1 + v.delta.y() + dyt;
+
+				line.transition()
+					.duration(1500)
+					.attrs({
+						x1: xs,
+						y1: ys,
+						x2: x(vx2t),
+						y2: y(vy2t)
+					})
+					.on("end", function () {
+						console.log("line transition ended");
+
+						v.p1.x(xt);
+						v.p1.y(yt);
+
+						updateFunc();
+					});
+
+			}
+			else if (v.tp == "defp1p2") {
+				console.log("unsupported in this POC");
+			}
+		}
+
 		svg.on("click", function () {
+
+			//event.preventDefault();
+
+			console.log("svg clicked with shiftkey[" + d3.event.shiftKey + "]");
+			//console.log("svg clicked with mousebutton[" + d3.event.button + "]");
+
 			var coords = d3.mouse(this);
 
 			var xd = x.invert(coords[0]);
@@ -529,6 +582,77 @@ to research
 
 			var perceptron = vm.allPerceptrons[0];
 			vm.allPerceptronResults.push(createPerceptron(perceptron, xd, yd));
+
+
+			svg.select(".vectorline")
+				.call(function (e) {
+					console.log("call function for vectorline " + e);
+
+					moveVectorByP1ToPositionAnimated(e, vm.allVectors[0], xd, yd);
+				});
+
+
+			//var x1t = coords[0];
+			//var y1t = coords[1];
+			//var x2t = x(xd + 10);
+			//var y2t = y(yd + 20);
+			////console.log("svg clicked x0[" + x0 + "], y0[" + y0 + "]");
+
+			////http://www.d3noob.org/2014/02/styles-in-d3js.html
+
+			//svg.append('line')
+			//	//.attr("class", "vectorline")
+			//	.attrs({
+			//		x1: x(0),
+			//		y1: y(0),
+			//		x2: x(10),
+			//		y2: y(20)
+			//	})
+			//	.style("stroke", "#000000")
+			//	.style("stroke-width", 1)
+			//	//.attr("x1", 0)
+			//	//.attr("y1", 0)
+			//	//.attr("x2", 25)
+			//	//.attr("y2", 15)
+			//	.attr("marker-end", "url(#linearrow)")
+			//	.transition()
+			//	.duration(1500)
+			//	.style("stroke", "#FF0000")
+			//	.style("stroke-width", 2)
+			//	.transition()
+			//	.duration(1500)
+			//	.attrs({
+			//		x1: x1t,
+			//		y1: y1t,
+			//		x2: x2t,
+			//		y2: y2t
+			//	})
+			//	.transition()
+			//	.duration(1500)
+			//	.style("stroke", "#000000")
+			//	.style("stroke-width", 1)
+			//	// notify the transition ended
+			//	.on("end", function () {
+			//		console.log("line transition ended");
+			//	});
+
+
+
+			//svg.select("#linearrow")
+			//	.select("path")
+			//	.transition()
+			//	.duration(1500)
+			//	.style("fill", "#0000FF")
+			//	.on("end", function () { console.log("marker transition ended"); });
+
+
+			//// what we sill need to find out
+			////	* OK how to animate the marker
+			////		- its color
+			////		- its scale
+			////		- its shape
+			////	* OK notification of the transition ending,
+			//		to be able to update the values of the viewmodel to which the animated object is connected
 
 
 		});
@@ -548,7 +672,7 @@ to research
 
 
 		svg.append("svg:defs").append("marker")
-			.attr("class", "vectorline")
+			//.attr("class", "vectorline")
 			.attr("id", "linearrow")
 			.attr("refX", 10)
 			.attr("refY", 3)
@@ -558,12 +682,8 @@ to research
 			.attr("orient", "auto")
 			.append("path")
 			.attr("d", "M 0 0 10 3 0 6")
-			//.style("fill", "black")
+			.style("fill", "#FF0000")
 			;
-
-
-
-
 
 
 		var perceptronGetX = function (yc, p) {
