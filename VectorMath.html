@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Vector math</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+
+	<style>
+		.vectorline.vtranslated {
+			stroke: #ff6a00;
+			stroke-width: 1;
+			fill: #ff6a00;
+		}
+		.vectorarrow.vtranslated {
+			stroke: #ff6a00;
+			stroke-width: 1;
+			fill: #ff6a00;
+		}
+		.vectorline.calcresult {
+			stroke: #00ff21;
+			stroke-width: 1;
+			fill: #00ff21;
+		}
+		.vectorarrow.calcresult {
+			stroke: #00ff21;
+			stroke-width: 1;
+			fill: #00ff21;
+		}
+	</style>
+
+</head>
+<body>
+	<div id="vectoraddition"></div>
+	<div id="vectorsubtraction"></div>
+	<input type="range" min="-5" max="5" step="0.1" data-bind="value: multiplyer, valueUpdate: 'input'" />
+	<div id="vectorscalarmulti"></div>
+
+	<script type="text/javascript">
+
+		function createVectorAdditionSample() {
+			var space2dimvsum = new Space2Dim("vectoraddition", 200, 200, 0, 100, 0, 100);
+
+			function VectorSumViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.p2x = ko.observable(10);
+				this.p2y = ko.observable(50);
+
+				this.psumx = ko.computed(function () { return Number(this.p2x()) + Number(this.p1x()); }, this);
+				this.psumy = ko.computed(function () { return Number(this.p2y()) + Number(this.p1y()); }, this);
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p2 = new Point2Dim(this.p2x, this.p2y);
+
+				var psum = new Point2Dim(this.psumx, this.psumy);
+
+				//var circle1 = new Circle(p3);
+				//var circle2 = new Circle(p2);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector1t = new Vector2Dim(
+					{ p1: p2, p2: psum },
+					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
+				);
+
+				var vector2 = new Vector2Dim(
+					{ p1: p0, p2: p2 },
+					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2t = new Vector2Dim(
+					{ p1: p1, p2: psum },
+					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
+				);
+
+				var vectorsum = new Vector2Dim(
+					{ p1: p0, p2: psum },
+					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+				);
+
+				//this.circlesToShow = [circle1];
+				this.vectorsToShow = [vector1, vector2, vector1t, vector2t, vectorsum];
+			}
+
+			var vsum = new VectorSumViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vsum.vectorsToShow; });
+			//space2dimvsum.registerHandler(Circle.draw, function () { return vsum.circlesToShow; });
+			space2dimvsum.show();
+
+			//			ko.applyBindings(vsum);
+		}
+
+
+		function createVectorDiffSample() {
+			var space2dimvdiff = new Space2Dim("vectorsubtraction", 200, 200, -100, 100, -100, 100);
+
+			function VectorDiffViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.p2x = ko.observable(10);
+				this.p2y = ko.observable(50);
+
+				this.pdiffx = ko.computed(function () { return Number(this.p1x()) - Number(this.p2x()); }, this);
+				this.pdiffy = ko.computed(function () { return Number(this.p1y()) - Number(this.p2y()); }, this);
+
+				this.p0x.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvdiff.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p2 = new Point2Dim(this.p2x, this.p2y);
+
+				var pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2 = new Vector2Dim(
+					{ p1: p0, p2: p2 },
+					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2t = new Vector2Dim(
+					{ p1: p1, p2: pdiff },
+					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
+				);
+
+				var vectordiff = new Vector2Dim(
+					{ p1: p0, p2: pdiff },
+					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+				);
+
+				this.vectorsToShow = [vector1, vector2, vector2t, vectordiff];
+			}
+
+			var vdiff = new VectorDiffViewModel();
+
+			space2dimvdiff.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvdiff.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdiff.vectorsToShow; });
+			space2dimvdiff.show();
+		}
+
+
+		function createVectorScalarMultiSample() {
+			var space2dimvmult = new Space2Dim("vectorscalarmulti", 200, 200, -100, 100, -100, 100);
+
+			function VectorMultViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.multiplyer = ko.observable(2);
+
+				this.pdiffx = ko.computed(function () { return Number(this.p1x()) * Number(this.multiplyer()); }, this);
+				this.pdiffy = ko.computed(function () { return Number(this.p1y()) * Number(this.multiplyer()); }, this);
+
+				this.p0x.subscribe(function (newValue) { space2dimvmult.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvmult.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvmult.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvmult.update(); });
+				this.multiplyer.subscribe(function (newValue) { space2dimvmult.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+
+				var pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vectormult = new Vector2Dim(
+					{ p1: p0, p2: pdiff },
+					{ name: "C", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+				);
+
+				this.vectorsToShow = [vector1, vectormult];
+			}
+
+			var vmult = new VectorMultViewModel();
+
+			space2dimvmult.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvmult.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmult.vectorsToShow; });
+			space2dimvmult.show();
+
+			ko.applyBindings(vmult);
+		}
+
+
+		createVectorAdditionSample();
+		createVectorDiffSample();
+		createVectorScalarMultiSample();
+
+
+	</script>
+</body>
+</html >

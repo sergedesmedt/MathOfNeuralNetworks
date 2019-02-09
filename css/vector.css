@@ -1,5 +1,12 @@
 ﻿.vectorline {
-    stroke: #FF0000;
+    stroke: #000000;
+    stroke-width: 2;
+    fill: #000000;
+}
+
+.vectorarrow {
+    stroke: #000000;
+    stroke-width: 1;
     fill: #000000;
 }
 
@@ -13,12 +20,45 @@
     fill: #000000;
 }
 
+.vectorp1y {
+    stroke: #808080;
+    fill: #000000;
+}
+
+.vectorp2y {
+    stroke: #808080;
+    fill: #000000;
+}
+
 .vectorendpoint {
-    stroke: #000000;
+    stroke: transparent;
+    stroke-width: 2;
     fill: #ff0000;
+    fill-opacity: .5;
 }
 
 .vectorstartpoint {
-    stroke: #000000;
+    stroke: transparent;
+    stroke-width: 2;
     fill: #ff0000;
+    fill-opacity: .5;
+}
+
+.vectorvalued {
+    text-anchor: middle
+}
+
+.vectorvaluedline {
+    stroke: #808080;
+    fill: #000000;
+}
+
+.vectorvaluedlinearrow {
+    stroke: #808080;
+    stroke-width: 1;
+    fill: #808080;
+}
+
+.vectorname {
+    text-anchor: middle
 }

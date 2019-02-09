@@ -9,10 +9,15 @@ function Space2Dim(
     this._domainXMax = domainXMax;
     this._domainYMin = domainYMin;
     this._domainYMax = domainYMax;
+    this._parentId = elemId;
+    this._canvasId = "svgcanvas" + this._parentId;
 
     this._handlers = [];
 
-    var margin = { top: 40, right: 40, bottom: 40, left: 40 };
+    this._valuedspacingx = 8;
+    this._valuedspacingy = 12;
+
+    var margin = { top: 65, right: 65, bottom: 65, left: 65 };
 
     this._xscale = d3.scaleLinear()
         .domain([this._domainXMin, this._domainXMax])
@@ -30,12 +35,12 @@ function Space2Dim(
         .ticks(10)
         .tickSize(-1 * this._htmlWidth);
 
-    var svg = d3.select(elemId)
+    var svg = d3.select("#" + elemId)
         .append("svg")
         .attr("width", this._htmlWidth + margin.left + margin.right)
         .attr("height", this._htmlHeight + margin.top + margin.bottom)
         .append("g")
-        .attr("id", "svgcanvas")
+        .attr("id", this._canvasId)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     svg.append("rect")
@@ -48,16 +53,22 @@ function Space2Dim(
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis);
-
-
 }
 
 Space2Dim.prototype.getId = function() {
-    return "svgcanvas";
+    return this._canvasId;
 }
 
 Space2Dim.prototype.getCanvas = function() {
     return d3.select("#" + this.getId());
+}
+
+Space2Dim.prototype.getValueSpacingX = function (lvl) {
+    return this._yscale(this._domainYMin) + (10 + lvl * this._valuedspacingx);
+}
+
+Space2Dim.prototype.getValueSpacingY = function (lvl) {
+    return this._xscale(this._domainXMin) - (20 + lvl * this._valuedspacingy);
 }
 
 Space2Dim.prototype.convertXToCanvas = function (x) {
@@ -68,13 +79,32 @@ Space2Dim.prototype.convertYToCanvas = function (y) {
     return this._yscale(y);
 }
 
-Space2Dim.prototype.registerHandler = function (drawMethod, itemFactory) {
-    this._handlers.push({ drawMethod: drawMethod, itemFactory: itemFactory });
+Space2Dim.prototype.convertXFromCanvas = function (x) {
+    return this._xscale.invert(x);
+}
+
+Space2Dim.prototype.convertYFromCanvas = function (y) {
+    return this._yscale.invert(y);
+}
+
+Space2Dim.prototype.appenGlobalAttributes = function (globalHandlerMethod) {
+    globalHandlerMethod(this);
+}
+
+Space2Dim.prototype.registerHandler = function (drawMethod, updateMethod, itemFactory) {
+    this._handlers.push({ drawMethod: drawMethod, updateMethod: updateMethod, itemFactory: itemFactory });
 }
 
 Space2Dim.prototype.show = function () {
     var space2dim = this;
     this._handlers.forEach(function (item, index, arr) {
         item.drawMethod(space2dim, item.itemFactory());
+    });
+} 
+
+Space2Dim.prototype.update = function () {
+    var space2dim = this;
+    this._handlers.forEach(function (item, index, arr) {
+        item.updateMethod(space2dim, item.itemFactory());
     });
 } 

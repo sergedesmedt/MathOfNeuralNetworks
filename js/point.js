@@ -13,3 +13,11 @@ Point2Dim.prototype.getX = function() {
 Point2Dim.prototype.getY = function() {
     return this._ydomainObservable();
 }
+
+Point2Dim.prototype.setX = function (x) {
+    return this._xdomainObservable(x);
+}
+
+Point2Dim.prototype.setY = function (y) {
+    return this._ydomainObservable(y);
+}
