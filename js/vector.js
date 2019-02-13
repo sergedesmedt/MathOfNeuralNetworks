@@ -49,6 +49,12 @@ function Vector2Dim(props, config) {
 
 }
 
+Vector2Dim.prototype.getSize = function() {
+    return Math.sqrt(
+        ((this._p2.getX() - this._p1.getX()) * (this._p2.getX() - this._p1.getX()))
+        + ((this._p2.getY() - this._p1.getY()) * (this._p2.getY() - this._p1.getY()))
+        );
+}
 
 Vector2Dim.global = function (space2Dim) {
     var svg = space2Dim.getCanvas();

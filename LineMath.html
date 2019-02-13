@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Learn Line math</title>
+    <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+    <script type="text/javascript" src="./d3/d3.v5.js"></script>
+    <script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+    <script type="text/javascript" src="./js/space2dim.js"></script>
+    <script type="text/javascript" src="./js/point.js"></script>
+    <script type="text/javascript" src="./js/rico.js"></script>
+    <script type="text/javascript" src="./js/circle.js"></script>
+    <script type="text/javascript" src="./js/vector.js"></script>
+    <script type="text/javascript" src="./js/line.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+    <link rel="stylesheet" type="text/css" href="./css/vector.css">
+    <link rel="stylesheet" type="text/css" href="./css/line.css">
+</head>
+<body>
+    <div id="linethroughpoints"></div>
+
+    <script type="text/javascript">
+
+        function createLineThroughPointsSample() {
+            var space2dimvsum = new Space2Dim("linethroughpoints", 200, 200, -75, 75, -75, 75);
+
+            function LineThroughPointsViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(-20);
+                this.p1y = ko.observable(30);
+                
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+                var p0 = new Point2Dim(this.p0x, this.p0y);
+                var p1 = new Point2Dim(this.p1x, this.p1y);
+                
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "p", p1draggable: 0, p2draggable: 1 }
+                );
+                                
+                this.rayd = ko.computed(function () { return vector1.getSize(); }, this);
+
+
+                this.ricoDX = ko.computed(function () { return this.p1x() / vector1.getSize(); }, this);
+                this.ricoDY = ko.computed(function () { return this.p1y() / vector1.getSize(); }, this);
+                var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+
+                var ray = new Line2Dim(
+                    { d: this.rayd, rico: rayRico},
+                    {}
+                );
+
+                this.vectorsToShow = [vector1];
+                this.raysToShow = [ray];
+            }
+
+            var vline = new LineThroughPointsViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vline.vectorsToShow; });
+            space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
+            space2dimvsum.show();
+
+        }
+
+        createLineThroughPointsSample();
+
+    </script>
+
+</body >
+</html >
