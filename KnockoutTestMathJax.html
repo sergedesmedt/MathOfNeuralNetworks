@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<title>Dynamic Preview of Textarea with MathJax Content</title>
@@ -85,6 +85,25 @@
 				}
 			},
 
+			CreatePreviewFromText: function (latexTest) {
+				//Preview.timeout = null;
+				//if (this.mjPending) return;
+				var text = latexTest;
+				if (text === this.oldtext) return;
+				if (this.mjRunning) {
+					this.mjPending = true;
+					MathJax.Hub.Queue(["CreatePreview", this]);
+				} else {
+					this.buffer.innerHTML = this.oldtext = text;
+					this.mjRunning = true;
+					MathJax.Hub.Queue(
+						["Typeset", MathJax.Hub, this.buffer],
+						["PreviewDone", this]
+					);
+				}
+			},
+
+
 			//
 			//  Indicate that MathJax is no longer running,
 			//  and swap the buffers to show the results.
@@ -130,11 +149,21 @@ visibility:hidden; position:absolute; top:0; left: 0"></div>
 	<script>
 		Preview.Init();
 
+		//$$\begin{aligned} 		c &= a + b\\ \n  &= (a_1 + b_1, a_2 + b_2, ..., a_n + b_n)\\ \n  &= (c_1, c_2, ..., c_n)\\ 	\n	\end{aligned}$$
+
+		var mathText =  "$$\\begin{aligned}"
+			+ " c &= a + b\\\\ \n"
+			+ " &= (a_1 + b_1, a_2 + b_2)\\\\ \n"
+			+ " &= (c_1, c_2) \n"
+			+ " \\end{aligned}$$"
+
 		var updateFunc = function UpdateVector() {
 
-			document.getElementById('dynp').innerHTML = '$$x = {-b \pm \sqrt{b^'+vm.val1()+'-4ac} \over 2a}$$';
-			document.getElementById('MathInput').innerHTML = '$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$';
-			Preview.Update();
+			//document.getElementById('dynp').innerHTML = '$$x = {-b \pm \sqrt{b^'+vm.val1()+'-4ac} \over 2a}$$';
+			//document.getElementById('MathInput').innerHTML = '$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$';
+			//Preview.Update();
+			//Preview.CreatePreviewFromText('$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$');
+			Preview.CreatePreviewFromText(mathText);
 		}
 
 		function MyViewModel() {

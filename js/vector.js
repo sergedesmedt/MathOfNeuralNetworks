@@ -1,6 +1,6 @@
 function Vector2Dim(props, config) {
-    console.log("props: " + props);
-    console.log("config: " + config);
+    //console.log("props: " + props);
+    //console.log("config: " + config);
 
     if (!props || !props.hasOwnProperty("p1"))
         throw "you must at least specify a starting point";
@@ -20,41 +20,68 @@ function Vector2Dim(props, config) {
     this._name =  "";
     if (config.hasOwnProperty("name")) {
         this._name = config["name"];
-        console.log("this._name: " + this._name);
+        //console.log("this._name: " + this._name);
+    }
+
+    this._showSize = 0;
+    if (config.hasOwnProperty("showSize")) {
+        this._showSize = config["showSize"];
+    //    //console.log("this._showSize: " + this._showSize);
+    }
+
+    this._showEndArrow = 1;
+    if (config.hasOwnProperty("showEndArrow")) {
+        this._showEndArrow = config["showEndArrow"];
+        //    //console.log("this._showEndArrow: " + this._showEndArrow);
     }
 
     this._dvaluelvl = 0
     if (config.hasOwnProperty("dvaluelvl")) {
         this._dvaluelvl = config["dvaluelvl"];
-        console.log("this._dvaluelvl: " + this._dvaluelvl);
+        //console.log("this._dvaluelvl: " + this._dvaluelvl);
     }
 
     this._p1draggable = 0;
     if (config.hasOwnProperty("p1draggable")) {
         this._p1draggable = config["p1draggable"];
-        console.log("this._p1draggable: " + this._p1draggable);
+        //console.log("this._p1draggable: " + this._p1draggable);
     }
 
     this._p2draggable = 0;
     if (config.hasOwnProperty("p2draggable")) {
         this._p2draggable = config["p2draggable"];
-        console.log("this._p2draggable: " + this._p2draggable);
+        //console.log("this._p2draggable: " + this._p2draggable);
     }
 
     this._cssclass = "";
     if (config.hasOwnProperty("cssclass")) {
         this._cssclass = config["cssclass"];
-        console.log("this._cssclass: " + this._cssclass);
+        //console.log("this._cssclass: " + this._cssclass);
     }
 
 }
 
-Vector2Dim.prototype.getSize = function() {
-    return Math.sqrt(
-        ((this._p2.getX() - this._p1.getX()) * (this._p2.getX() - this._p1.getX()))
-        + ((this._p2.getY() - this._p1.getY()) * (this._p2.getY() - this._p1.getY()))
-        );
+Vector2Dim.prototype.getSize = function () {
+    var vulen = Math.sqrt(
+        ((this._p2.getX() - this._p1.getX()) * (this._p2.getX() - this._p1.getX())) +
+        ((this._p2.getY() - this._p1.getY()) * (this._p2.getY() - this._p1.getY()))
+    )
+    return vulen;
 }
+
+Vector2Dim.prototype.getAngleToX = function () {
+    var cosx = (this._p2.getX() - this._p1.getX()) / this.getSize();
+    var cosy = (this._p2.getY() - this._p1.getY()) / this.getSize();
+
+    var multiplyer = 1;
+    if (cosy < 0)
+        multiplyer = -1;
+
+    //console.log("getAngle: cosx = " + cosx + ", cosy = " + cosy);
+
+    return multiplyer * Math.acos(cosx)
+}
+
 
 Vector2Dim.global = function (space2Dim) {
     var svg = space2Dim.getCanvas();
@@ -101,7 +128,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
         .append("g")
         .attr("class", "vector");
 
-    var svgdefs = vectors.append("svg:defs");
+    var svgdefs = vectors.filter(function (d) { return d._showEndArrow == 1; }).append("svg:defs");
     svgdefs.append("marker")
         .attr("class", function (d) { return ((d._deftype == "defp1p2") ? "vectorarrow" : "vectorarrow defp1delta") + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("id", function (d, i, n) { return space2Dim.getId() + "linearrow" + i; })
@@ -115,12 +142,15 @@ Vector2Dim.draw = function (space2Dim, vectors) {
         .attr("d", "M 0 0 10 3 0 6")
         ;
 
-    vectors.append("line")
+    var vectorlines = vectors.append("line")
         .attr("class", function (d) { return ((d._deftype == "defp1p2") ? "vectorline" : "vectorline defp1delta") + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("x1", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("y1", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
         .attr("x2", function (d) { return space2Dim.convertXToCanvas(d._p2.getX()); })
         .attr("y2", function (d) { return space2Dim.convertYToCanvas(d._p2.getY()); })
+        ;
+
+    vectorlines.filter(function (d) { return d._showEndArrow == 1; })
         .attr("marker-end", function (d, i, n) { return "url(#" + space2Dim.getId() + "linearrow" + i + ")"; })
         ;
 
@@ -142,8 +172,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
         .on("mouseout", onVectorEndpointMouseOut)
         ;
 
-    var dist = 5;
-
+    var distName = 5;
     vectors.filter(function (d) { return d._name != "" }).append("text")
         .attr("class", "vectorname")
         .text(function (d) { return d._name; })
@@ -157,7 +186,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * dist) + ((p1x + p2x) / 2);
+            return (vuy * distName) + ((p1x + p2x) / 2);
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -169,10 +198,37 @@ Vector2Dim.draw = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * dist) + ((p1y + p2y) / 2);
+            return -(vux * distName) + ((p1y + p2y) / 2);
         })
 
+    var distSize = -5;
+    vectors.filter(function (d) { return d._showSize != 0 }).append("text")
+        .attr("class", "vectorsize")
+        .text(function (d) { return d.getSize().toFixed(0); })
+        .attr("x", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            return (vuy * distSize) + ((p1x + p2x) / 2);
+        })
+        .attr("y", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            return -(vux * distSize) + ((p1y + p2y) / 2);
+        })
 
     vectors.filter(function (d) { return d._dvaluelvl != 0 }).append("line")
 		.attr("class", "vectorp1x")
@@ -263,7 +319,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 }
 
 Vector2Dim.update = function (space2Dim, vectors) {
-    console.log("Vector2Dim.update");
+    //console.log("Vector2Dim.update");
 
     var space = space2Dim;
 
@@ -289,8 +345,7 @@ Vector2Dim.update = function (space2Dim, vectors) {
         .attr("y2", function (d) { return space2Dim.convertYToCanvas(d._p2.getY()); })
         ;
 
-    var dist = 5;
-
+    var distName = 5;
     vectors.select(".vectorname")
         .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -302,7 +357,7 @@ Vector2Dim.update = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * dist) + ((p1x + p2x) / 2);
+            return (vuy * distName) + ((p1x + p2x) / 2);
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -314,7 +369,35 @@ Vector2Dim.update = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * dist) + ((p1y + p2y) / 2);
+            return -(vux * distName) + ((p1y + p2y) / 2);
+        })
+
+    var distSize = -5;
+    vectors.select(".vectorsize")
+        .text(function (d) { return d.getSize().toFixed(0); })
+       .attr("x", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            return (vuy * distSize) + ((p1x + p2x) / 2);
+        })
+        .attr("y", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            return -(vux * distSize) + ((p1y + p2y) / 2);
         })
 
     vectors.select(".vectorp1x")
@@ -438,5 +521,5 @@ function onVectorDefp1p2EndpointP2Drag(space2dim, d, elem) {
 }
 
 function onVectorEndpointDragEnd(d) {
-    console.log("onVectorEndpointDragEnd");
+    //console.log("onVectorEndpointDragEnd");
 }

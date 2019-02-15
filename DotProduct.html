@@ -1,0 +1,436 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Dot product</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/vectorangle.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+
+	<style>
+		.vectorline.projectionv1onv2 {
+			stroke: #ff6a00;
+			stroke-width: 1;
+			fill: #ff6a00;
+		}
+
+		.vectorarrow.projectionv1onv2 {
+			stroke: #ff6a00;
+			stroke-width: 1;
+			fill: #ff6a00;
+		}
+
+		.vectorline.projectionv2onv1 {
+			stroke: #0094ff;
+			stroke-width: 1;
+			fill: #0094ff;
+		}
+
+		.vectorarrow.projectionv2onv1 {
+			stroke: #0094ff;
+			stroke-width: 1;
+			fill: #0094ff;
+		}
+
+		.vectorline.projline {
+			stroke: #aaaaaa;
+			stroke-width: 1;
+			fill: #aaaaaa;
+		}
+
+	</style>
+</head>
+<body>
+	<div id="dotproduct"></div>
+	<div id="dotproductcommutativity"></div>
+	<div id="dotproductdistributivity"></div>
+
+	<script type="text/javascript">
+
+		function projectVectorOnVector(vToProj, vOn) {
+			this.p2onv1x = ko.computed(function () {
+				// vOn as a unit vector
+				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+
+				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+
+				// components of vToProj along this unit vector
+				var dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
+
+				return dv2x;
+			});
+			this.p2onv1y = ko.computed(function () {
+				// vOn as a unit vector
+				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+
+				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+
+				// components of vToProj along this unit vector
+				var dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
+
+				return dv2y;
+			});
+
+			var p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			return p1onv2;
+		}
+
+		function createDotProductSample() {
+			var space2dimvsum = new Space2Dim("dotproduct", 400, 400, -100, 100, -100, 100);
+
+			function DotProductViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.p2x = ko.observable(10);
+				this.p2y = ko.observable(50);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p2 = new Point2Dim(this.p2x, this.p2y);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "V1", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2 = new Vector2Dim(
+					{ p1: p0, p2: p2 },
+					{ name: "V2", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+
+				// calculate the projection of p1 on vector 2
+				this.p1onv2x = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv2x = (vector2._p2.getX() - vector2._p1.getX()) / vector2.getSize();
+					var uv2y = (vector2._p2.getY() - vector2._p1.getY()) / vector2.getSize();
+
+					var angle = vector2.getAngleToX() - vector1.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv1x = vector1.getSize() * Math.cos(angle) * uv2x;
+
+					return dv1x;
+				});
+				this.p1onv2y = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv2x = (vector2._p2.getX() - vector2._p1.getX()) / vector2.getSize();
+					var uv2y = (vector2._p2.getY() - vector2._p1.getY()) / vector2.getSize();
+
+					var angle = vector2.getAngleToX() - vector1.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv1y = vector1.getSize() * Math.cos(angle) * uv2y;
+
+					return dv1y;
+				});
+
+				var p1onv2 = new Point2Dim(this.p1onv2x, this.p1onv2y);
+
+				var vector1onv2 = new Vector2Dim(
+					{ p1: p0, p2: p1onv2 },
+					{ name: "v1p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+				)
+				var vector1onv2projl = new Vector2Dim(
+					{ p1: p1, p2: p1onv2 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+
+
+
+				var angle1 = new VectorAngle2Dim(
+					{ vs: vector1, ve: vector2 },
+					{}
+				);
+
+
+				//this.circlesToShow = [circle1];
+				this.vectorsToShow = [vector1, vector2, vector1onv2, vector1onv2projl];
+				this.anglesToShow = [angle1];
+
+			}
+
+			var vdp = new DotProductViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
+			space2dimvsum.registerHandler(VectorAngle2Dim.draw, VectorAngle2Dim.update, function () { return vdp.anglesToShow; });
+			space2dimvsum.show();
+		}
+
+		function createDotProductCommutativitySample() {
+			var space2dimvsum = new Space2Dim("dotproductcommutativity", 400, 400, -100, 100, -100, 100);
+
+			function DotProductCommutativityViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.p2x = ko.observable(10);
+				this.p2y = ko.observable(50);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p2 = new Point2Dim(this.p2x, this.p2y);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "V1", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2 = new Vector2Dim(
+					{ p1: p0, p2: p2 },
+					{ name: "V2", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+
+				// calculate the projection of p1 on vector 2
+				this.p1onv2x = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv2x = (vector2._p2.getX() - vector2._p1.getX()) / vector2.getSize();
+					var uv2y = (vector2._p2.getY() - vector2._p1.getY()) / vector2.getSize();
+
+					var angle = vector2.getAngleToX() - vector1.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv1x = vector1.getSize() * Math.cos(angle) * uv2x;
+
+					return dv1x;
+				});
+				this.p1onv2y = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv2x = (vector2._p2.getX() - vector2._p1.getX()) / vector2.getSize();
+					var uv2y = (vector2._p2.getY() - vector2._p1.getY()) / vector2.getSize();
+
+					var angle = vector2.getAngleToX() - vector1.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv1y = vector1.getSize() * Math.cos(angle) * uv2y;
+
+					return dv1y;
+				});
+
+
+				// calculate the projection of p2 on vector 1
+				this.p2onv1x = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv1x = (vector1._p2.getX() - vector1._p1.getX()) / vector1.getSize();
+					var uv1y = (vector1._p2.getY() - vector1._p1.getY()) / vector1.getSize();
+
+					var angle = vector1.getAngleToX() - vector2.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv2x = vector2.getSize() * Math.cos(angle) * uv1x;
+
+					return dv2x;
+				});
+				this.p2onv1y = ko.computed(function () {
+					// vector2 as a unit vector
+					var uv1x = (vector1._p2.getX() - vector1._p1.getX()) / vector1.getSize();
+					var uv1y = (vector1._p2.getY() - vector1._p1.getY()) / vector1.getSize();
+
+					var angle = vector1.getAngleToX() - vector2.getAngleToX();
+
+					// components of vector1 along this unit vector
+					var dv2y = vector2.getSize() * Math.cos(angle) * uv1y;
+
+					return dv2y;
+				});
+
+				var p1onv2 = new Point2Dim(this.p1onv2x, this.p1onv2y);
+
+				var vector1onv2 = new Vector2Dim(
+					{ p1: p0, p2: p1onv2 },
+					{ name: "v1p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+				)
+				var vector1onv2projl = new Vector2Dim(
+					{ p1: p1, p2: p1onv2 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+				var p2onv1 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+
+				var vector2onv1 = new Vector2Dim(
+					{ p1: p0, p2: p2onv1 },
+					{ name: "v2p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv2onv1" }
+				)
+				var vector2onv1projl = new Vector2Dim(
+					{ p1: p2, p2: p2onv1 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+
+
+
+
+				var angle1 = new VectorAngle2Dim(
+					{ vs: vector1, ve: vector2 },
+					{}
+				);
+
+
+				//this.circlesToShow = [circle1];
+				this.vectorsToShow = [vector1, vector2, vector1onv2, vector1onv2projl, vector2onv1, vector2onv1projl];
+				this.anglesToShow = [angle1];
+
+			}
+
+			var vdp = new DotProductCommutativityViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
+			space2dimvsum.registerHandler(VectorAngle2Dim.draw, VectorAngle2Dim.update, function () { return vdp.anglesToShow; });
+			space2dimvsum.show();
+		}
+
+		function createDotProductDistributivitySample() {
+			var space2dimvsum = new Space2Dim("dotproductdistributivity", 400, 400, -100, 100, -100, 100);
+
+			function DotProductCommutativityViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(80);
+				this.p1y = ko.observable(60);
+
+				this.p2x = ko.observable(10);
+				this.p2y = ko.observable(50);
+
+				this.p3x = ko.observable(20);
+				this.p3y = ko.observable(-60);
+
+				this.psumx = ko.computed(function () { return Number(this.p2x()) + Number(this.p1x()); }, this);
+				this.psumy = ko.computed(function () { return Number(this.p2y()) + Number(this.p1y()); }, this);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p3x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p3y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p2 = new Point2Dim(this.p2x, this.p2y);
+				var p3 = new Point2Dim(this.p3x, this.p3y);
+
+				var psum = new Point2Dim(this.psumx, this.psumy);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "V1", showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector2 = new Vector2Dim(
+					{ p1: p0, p2: p2 },
+					{ name: "V2", showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vector3 = new Vector2Dim(
+					{ p1: p0, p2: p3 },
+					{ name: "V3", showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				var vectorsum = new Vector2Dim(
+					{ p1: p0, p2: psum },
+					{ name: "C", p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+				);
+
+
+				var p1onv3 = new projectVectorOnVector(vector1, vector3);
+				var vector1onv3 = new Vector2Dim(
+					{ p1: p0, p2: p1onv3 },
+					{ name: "v1p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+				)
+				var vector1onv3projl = new Vector2Dim(
+					{ p1: p1, p2: p1onv3 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+				var p2onv3 = new projectVectorOnVector(vector2, vector3);
+				var vector2onv3 = new Vector2Dim(
+					{ p1: p0, p2: p2onv3 },
+					{ name: "v2p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+				)
+				var vector2onv3projl = new Vector2Dim(
+					{ p1: p2, p2: p2onv3 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+				var psumonv3 = new projectVectorOnVector(vectorsum, vector3);
+				var vectorsumonv3 = new Vector2Dim(
+					{ p1: p0, p2: psumonv3 },
+					{ name: "vsump", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+				)
+				var vectorsumonv3projl = new Vector2Dim(
+					{ p1: psum, p2: psumonv3 },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+
+
+				var angle1 = new VectorAngle2Dim(
+					{ vs: vector1, ve: vector2 },
+					{}
+				);
+
+
+				//this.circlesToShow = [circle1];
+				this.vectorsToShow = [vector1, vector2, vector3, vectorsum, vector1onv3, vector1onv3projl, vector2onv3, vector2onv3projl, vectorsumonv3, vectorsumonv3projl];
+				this.anglesToShow = [angle1];
+
+			}
+
+			var vdp = new DotProductCommutativityViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
+			space2dimvsum.registerHandler(VectorAngle2Dim.draw, VectorAngle2Dim.update, function () { return vdp.anglesToShow; });
+			space2dimvsum.show();
+		}
+
+		createDotProductSample();
+		createDotProductCommutativitySample();
+		createDotProductDistributivitySample();
+
+	</script>
+
+</body>
+</html >

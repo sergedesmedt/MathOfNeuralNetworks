@@ -4954,7 +4954,7 @@ Path.prototype = path.prototype = {
     }
   },
 arc: function (x, y, r, a0, a1, ccw) {
-    console.log("arc");
+    //console.log("arc");
 
 
     x = +x, y = +y, r = +r;
@@ -4981,7 +4981,7 @@ arc: function (x, y, r, a0, a1, ccw) {
     // Is this arc empty? We’re done.
     if (!r) return;
 
-    console.log("arc: da = " + da);
+    //console.log("arc: da = " + da);
 
     // Does the angle go the wrong way? Flip the direction.
     if (da < 0) da = da % tau$2 + tau$2;

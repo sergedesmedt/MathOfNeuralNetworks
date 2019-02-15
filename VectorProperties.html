@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Vector properties</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/circle.css">
+	<style>
+		.vectorline.projline {
+			stroke: #aaaaaa;
+			stroke-width: 1;
+			fill: #aaaaaa;
+		}
+	</style>
+</head>
+<body>
+	<div id="vectorpropertiesmagnitude"></div>
+	<div id="vectorpropertiesdirection"></div>
+
+	<script type="text/javascript">
+
+		function projectVectorOnVector(vToProj, vOn) {
+			this.p2onv1x = ko.computed(function () {
+				// vOn as a unit vector
+				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+
+				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+
+				// components of vToProj along this unit vector
+				var dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
+
+				return dv2x;
+			});
+			this.p2onv1y = ko.computed(function () {
+				// vOn as a unit vector
+				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+
+				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+
+				// components of vToProj along this unit vector
+				var dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
+
+				return dv2y;
+			});
+
+			var p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			return p1onv2;
+		}
+
+		function createVectorMagnitudeSample() {
+			var space2dimvsum = new Space2Dim("vectorpropertiesmagnitude", 200, 200, -50, 50, -50, 50);
+
+			function VectorMagnitudeViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(40);
+				this.p1y = ko.observable(30);
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ showSize: 1, dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				this.vectorsToShow = [vector1];
+			}
+
+			var vmag = new VectorMagnitudeViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmag.vectorsToShow; });
+			space2dimvsum.show();
+		}
+
+		function createVectorDirectinoSample() {
+			var space2dimvsum = new Space2Dim("vectorpropertiesdirection", 400, 400, -3, 3, -3, 3);
+
+			function VectorDirectionViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(2.5);
+				this.p1y = ko.observable(1.5);
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+
+				var vector1 = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ showSize: 1, p1draggable: 0, p2draggable: 1 }
+				);
+
+				this.u1x = ko.computed(function () {
+					return vector1._p2.getX() / vector1.getSize();
+				});
+				this.u1y = ko.computed(function () {
+					return vector1._p2.getY() / vector1.getSize();
+				});
+				var pu = new Point2Dim(this.u1x, this.u1y);
+
+				var vectoru = new Vector2Dim(
+					{ p1: p0, p2: pu },
+					{ showSize: 1, p1draggable: 0, p2draggable: 0 }
+				);
+
+				var px = new Point2Dim(ko.observable(1), ko.observable(0));
+				var py = new Point2Dim(ko.observable(0), ko.observable(1));
+				var vectorx = new Vector2Dim(
+					{ p1: p0, p2: px },
+					{ showSize: 1, p1draggable: 0, p2draggable: 0 }
+				);
+				var vectory = new Vector2Dim(
+					{ p1: p0, p2: py },
+					{ showSize: 1, p1draggable: 0, p2draggable: 0 }
+				);
+
+				var puonx = new projectVectorOnVector(vectoru, vectorx);
+				var puony = new projectVectorOnVector(vectoru, vectory);
+
+				var vectoruonxproj = new Vector2Dim(
+					{ p1: pu, p2: puonx },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+				var vectoruonyproj = new Vector2Dim(
+					{ p1: pu, p2: puony },
+					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
+				)
+
+
+				var cr = ko.observable(1);
+
+				var circle1 = new Circle(
+					{ center: p0, radius: cr },
+					{}
+				);
+
+				this.vectorsToShow = [vector1, vectoru, vectoruonxproj, vectoruonyproj];
+				this.circlesToShow = [circle1];
+			}
+
+			var vdir = new VectorDirectionViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdir.vectorsToShow; });
+			space2dimvsum.registerHandler(Circle.draw, Circle.update, function () { return vdir.circlesToShow; });
+			space2dimvsum.show();
+		}
+
+		createVectorMagnitudeSample();
+		createVectorDirectinoSample();
+
+	</script>
+
+</body >
+</html >

@@ -15,63 +15,280 @@
     <link rel="stylesheet" type="text/css" href="./css/space2dim.css">
     <link rel="stylesheet" type="text/css" href="./css/vector.css">
     <link rel="stylesheet" type="text/css" href="./css/line.css">
+
+	<style>
+		.vrayendpt {
+			stroke: #80f38f;
+			stroke-width: 1;
+			fill: #80f38f;
+		}
+		.vrayendv {
+			stroke: #19ca30;
+			stroke-width: 2;
+			fill: #19ca30;
+		}
+	</style>
 </head>
 <body>
-    <div id="linethroughpoints"></div>
+	<input type="range" min="-75" max="75" step="1" data-bind="value: vrayx, valueUpdate: 'input'" />
+	<div id="linethroughorigin"></div>
+	<div id="lineatdistance"></div>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
 
-        function createLineThroughPointsSample() {
-            var space2dimvsum = new Space2Dim("linethroughpoints", 200, 200, -75, 75, -75, 75);
+		function createLineThroughOriginSample() {
+			var space2dimvsum = new Space2Dim("linethroughorigin", 200, 200, -75, 75, -75, 75);
 
-            function LineThroughPointsViewModel() {
+			function LineThroughOriginViewModel() {
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(-20);
-                this.p1y = ko.observable(30);
-                
+				this.p1x = ko.observable(-40);
+				this.p1y = ko.observable(30);
+
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
 
-                var p0 = new Point2Dim(this.p0x, this.p0y);
-                var p1 = new Point2Dim(this.p1x, this.p1y);
-                
-				var vector1 = new Vector2Dim(
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+
+				var prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
-					{ name: "p", p1draggable: 0, p2draggable: 1 }
-                );
-                                
-                this.rayd = ko.computed(function () { return vector1.getSize(); }, this);
+					{ name: "p", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				);
 
+				this.rayd = ko.observable(0);
 
-                this.ricoDX = ko.computed(function () { return this.p1x() / vector1.getSize(); }, this);
-                this.ricoDY = ko.computed(function () { return this.p1y() / vector1.getSize(); }, this);
-                var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+				this.vrayx = ko.observable(50);
+				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.vrayx = ko.computed(function () {
+				//	var a = prico._p2.getX();
+				//	var b = prico._p2.getY();
+				//	var c = this.rayd();
 
-                var ray = new Line2Dim(
-                    { d: this.rayd, rico: rayRico},
-                    {}
-                );
+				//	var y = Math.sign(a);
 
-                this.vectorsToShow = [vector1];
-                this.raysToShow = [ray];
-            }
+				//	// dot-product is ax + by = c
+				//	// from which x = (c - by) / a
+				//	var res = this.vraylength() * (c - (1 * Math.sign(b)));
+				//	if (a != 0) {
+				//		px = (c - b * y) / a;
+				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
+				//	}
 
-            var vline = new LineThroughPointsViewModel();
+				//	//console.log("vrayx: " + res);
+				//	return res;
+				//}, this);
+				this.vrayy = ko.computed(function () {
+					var a = prico._p2.getX() / prico.getSize();
+					var b = prico._p2.getY() / prico.getSize();
+					var c = this.rayd();
+
+					//var y = Math.sign(a);
+
+					//dot-product is ax + by = c
+					//from which y = (c - ax) / b
+					//var res = 0;
+					//if (a != 0) {
+					//	px = (c - b * y) / a;
+					//	res = this.vraylength() * (y / Math.sqrt(px * px + 1));
+					//}
+					var res = 0; //this.vraylength() * (c - (1 * Math.sign(b)));
+					if (a != 0) {
+						py = (c - a * this.vrayx()) / b;
+						res = py; //this.vraylength() * (px / Math.sqrt(px * px + 1));
+					}
+
+					console.log("ThroughOrigin vrayy: " + res);
+					return res;
+				}, this);
+
+				var pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				var vrayend = new Circle(
+					{ center: pvrayend, radius: ko.observable(2) },
+					{ cssclass: "vrayendpt" }
+				);
+
+				var vrayendvector = new Vector2Dim(
+					{ p1: p0, p2: pvrayend },
+					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
+				);
+
+				this.ricoDX = ko.computed(function () { return this.p1x() / prico.getSize(); }, this);
+				this.ricoDY = ko.computed(function () { return this.p1y() / prico.getSize(); }, this);
+				var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+
+				var ray = new Line2Dim(
+					{ d: this.rayd, prico: rayRico },
+					{}
+				);
+
+				this.circlesToShow = [vrayend];
+				this.vectorsToShow = [prico, vrayendvector];
+				this.raysToShow = [ray];
+			}
+
+			var vline = new LineThroughOriginViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
+			space2dimvsum.registerHandler(Circle.draw, Circle.update, function () { return vline.circlesToShow; });
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vline.vectorsToShow; });
-            space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
-            space2dimvsum.show();
+			space2dimvsum.show();
 
-        }
+			//ko.applyBindings(vline);
 
-        createLineThroughPointsSample();
+		}
 
-    </script>
+		function createLineAtDistanceSample() {
+			var space2dimvsum = new Space2Dim("lineatdistance", 200, 200, -75, 75, -75, 75);
 
-</body >
+			function LineLineAtDistanceViewModel() {
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+
+				this.p1x = ko.observable(-40);
+				this.p1y = ko.observable(30);
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				var p0 = new Point2Dim(this.p0x, this.p0y);
+				var p1 = new Point2Dim(this.p1x, this.p1y);
+
+				var prico = new Vector2Dim(
+					{ p1: p0, p2: p1 },
+					{ name: "p", p1draggable: 0, p2draggable: 1 }
+				);
+
+				this.rayd = ko.computed(function () { return prico.getSize(); }, this);
+
+				//this.vraylength = ko.observable(100);
+				//this.vraylength.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.vrayx = ko.computed(function () {
+				//	var a = prico._p2.getX();
+				//	var b = prico._p2.getY();
+				//	var c = this.rayd();
+
+				//	var y = Math.sign(a);
+
+				//	// dot-product is ax + by = c
+				//	// from which x = (c - by) / a
+				//	var res = this.vraylength() * (1 * Math.sign(b));
+				//	if (a != 0) {
+				//		px = (c - b * y) / a;
+				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
+				//	}
+
+				//	//console.log("vrayx: " + res);
+				//	return res;
+				//}, this);
+				//this.vrayy = ko.computed(function () {
+				//	var a = prico._p2.getX();
+				//	var b = prico._p2.getY();
+				//	var c = this.rayd();
+
+				//	var y = Math.sign(a);
+
+				//	var res = 0;
+				//	if (a != 0) {
+				//		px = (c - b * y) / a;
+				//		res = this.vraylength() * (y / Math.sqrt(px * px + 1));
+				//	}
+
+				//	//console.log("vrayy: " + res);
+				//	return res;
+				//}, this);
+				this.vrayx = ko.observable(50);
+				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.vrayx = ko.computed(function () {
+				//	var a = prico._p2.getX();
+				//	var b = prico._p2.getY();
+				//	var c = this.rayd();
+
+				//	var y = Math.sign(a);
+
+				//	// dot-product is ax + by = c
+				//	// from which x = (c - by) / a
+				//	var res = this.vraylength() * (c - (1 * Math.sign(b)));
+				//	if (a != 0) {
+				//		px = (c - b * y) / a;
+				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
+				//	}
+
+				//	//console.log("vrayx: " + res);
+				//	return res;
+				//}, this);
+				this.vrayy = ko.computed(function () {
+					var a = prico._p2.getX() / prico.getSize();
+					var b = prico._p2.getY() / prico.getSize();
+					var c = this.rayd();
+
+					//var y = Math.sign(a);
+
+					//dot-product is ax + by = c
+					//from which y = (c - ax) / b
+					//var res = 0;
+					//if (a != 0) {
+					//	px = (c - b * y) / a;
+					//	res = this.vraylength() * (y / Math.sqrt(px * px + 1));
+					//}
+					var res = 0; //this.vraylength() * (c - (1 * Math.sign(b)));
+					if (a != 0) {
+						py = (c - a * this.vrayx()) / b;
+						res = py; //this.vraylength() * (px / Math.sqrt(px * px + 1));
+					}
+
+					console.log("AtDistance vrayy: " + res);
+					return res;
+				}, this);
+
+				var pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				var vrayend = new Circle(
+					{ center: pvrayend, radius: ko.observable(2) },
+					{ cssclass: "vrayendpt" }
+				);
+
+				var vrayendvector = new Vector2Dim(
+					{ p1: p0, p2: pvrayend },
+					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
+				);
+
+
+				this.ricoDX = ko.computed(function () { return this.p1x() / prico.getSize(); }, this);
+				this.ricoDY = ko.computed(function () { return this.p1y() / prico.getSize(); }, this);
+				var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+
+				var ray = new Line2Dim(
+					{ d: this.rayd, prico: rayRico },
+					{}
+				);
+
+				this.circlesToShow = [vrayend];
+				this.vectorsToShow = [prico, vrayendvector];
+				this.raysToShow = [ray];
+			}
+
+			var vline = new LineLineAtDistanceViewModel();
+
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
+			space2dimvsum.registerHandler(Circle.draw, Circle.update, function () { return vline.circlesToShow; });
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vline.vectorsToShow; });
+			space2dimvsum.show();
+
+			ko.applyBindings(vline);
+
+		}
+
+		createLineThroughOriginSample();
+		createLineAtDistanceSample();
+
+	</script>
+
+</body>
 </html >

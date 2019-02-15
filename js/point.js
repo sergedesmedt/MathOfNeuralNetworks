@@ -2,8 +2,8 @@
     xdomain,
     ydomain
 ) {
-    this._xdomainObservable = xdomain; //ko.observable(xdomain);
-    this._ydomainObservable = ydomain; //ko.observable(ydomain);
+    this._xdomainObservable = xdomain;
+    this._ydomainObservable = ydomain;
 }
 
 Point2Dim.prototype.getX = function() {
