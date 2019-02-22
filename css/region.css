@@ -1,0 +1,10 @@
+﻿polygon {
+    fill: CadetBlue;
+}
+
+.region2dimhandles {
+    stroke: transparent;
+    stroke-width: 1;
+    fill: #ff0000;
+    fill-opacity: .5;
+}

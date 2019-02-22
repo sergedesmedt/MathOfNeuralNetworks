@@ -108,3 +108,17 @@ Space2Dim.prototype.update = function () {
         item.updateMethod(space2dim, item.itemFactory());
     });
 } 
+
+Space2Dim.prototype.CreatePoint = function (x, y) {
+
+    var px = ko.observable(x);
+    var py = ko.observable(y);
+
+    var space2dim = this;
+
+    px.subscribe(function (newValue) { space2dim.update(); });
+    py.subscribe(function (newValue) { space2dim.update(); });
+
+    var p = new Point2Dim(px, py);
+    return p;
+}

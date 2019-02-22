@@ -215,7 +215,9 @@ Vector2Dim.draw = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * distSize) + ((p1x + p2x) / 2);
+            var res = (vuy * distSize) + ((p1x + p2x) / 2);
+            console.log("x: " + res);
+            return res;
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -227,7 +229,9 @@ Vector2Dim.draw = function (space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * distSize) + ((p1y + p2y) / 2);
+            var res = -(vux * distSize) + ((p1y + p2y) / 2);
+            console.log("y: " + res);
+            return res;
         })
 
     vectors.filter(function (d) { return d._dvaluelvl != 0 }).append("line")
@@ -483,7 +487,8 @@ function onVectorEndpointMouseOut(d, i) {
 }
 
 function onVectorEndpointDragStart(d) {
-    onVectorEndpointDragStart}
+    //console.log("onVectorEndpointDragStart");
+}
 
 function onVectorDefp1deltaEndpointP2Drag(space2dim, d, elem) {
     var xd = space2dim.convertXFromCanvas(d3.event.x);
