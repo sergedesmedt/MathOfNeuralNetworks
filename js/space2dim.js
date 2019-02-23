@@ -11,13 +11,15 @@ function Space2Dim(
     this._domainYMax = domainYMax;
     this._parentId = elemId;
     this._canvasId = "svgcanvas" + this._parentId;
+    this._svgId = "svg" + elemId;
 
     this._handlers = [];
 
     this._valuedspacingx = 8;
     this._valuedspacingy = 12;
 
-    var margin = { top: 65, right: 65, bottom: 65, left: 65 };
+    this._margin = 65;
+    var margin = { top: this._margin, right: this._margin, bottom: this._margin, left: this._margin };
 
     this._xscale = d3.scaleLinear()
         .domain([this._domainXMin, this._domainXMax])
@@ -35,8 +37,9 @@ function Space2Dim(
         .ticks(10)
         .tickSize(-1 * this._htmlWidth);
 
-    var svg = d3.select("#" + elemId)
+    var svg = d3.select("#" + this._parentId)
         .append("svg")
+        .attr("id", this._svgId)
         .attr("width", this._htmlWidth + margin.left + margin.right)
         .attr("height", this._htmlHeight + margin.top + margin.bottom)
         .append("g")
@@ -44,7 +47,7 @@ function Space2Dim(
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     svg.append("rect")
-        .attr("width", this._htmlWith)
+        .attr("width", this._htmlWidth)
         .attr("height", this._htmlHeight);
     svg.append("g")
         .attr("class", "x axis")
@@ -59,8 +62,22 @@ Space2Dim.prototype.getId = function() {
     return this._canvasId;
 }
 
+Space2Dim.prototype.getParentId = function () {
+    return this._parentId;
+}
+
+Space2Dim.prototype.getSvg = function()
+{
+    let svg = d3.select("#" + this._svgId);
+    return svg;
+}
+
 Space2Dim.prototype.getCanvas = function() {
     return d3.select("#" + this.getId());
+}
+
+Space2Dim.prototype.getParent = function () {
+    return d3.select("#" + this.getParentId());
 }
 
 Space2Dim.prototype.getValueSpacingX = function (lvl) {
@@ -87,6 +104,27 @@ Space2Dim.prototype.convertYFromCanvas = function (y) {
     return this._yscale.invert(y);
 }
 
+Space2Dim.prototype.getElemPosition = function (elem) {
+    // https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group/26053262
+    // https://stackoverflow.com/questions/36588261/d3-js-after-translate-wrong-mouse-coordinates-being-reported-why
+
+    //var coordinates = d3.mouse(this);
+
+
+    var bbox = elem.node().getBBox(),
+        middleX = bbox.x + (bbox.width / 2),
+        middleY = bbox.y + (bbox.height / 2);
+
+    //console.log("Space2Dim> bbox[" + middleX + "][" + middleY + "]");
+
+
+    var p = this.getSvg().node().createSVGPoint();
+    var ctm = elem.node().getCTM();
+    p.x = middleX;
+    p.y = middleY;
+    return p.matrixTransform(ctm);
+}
+
 Space2Dim.prototype.appenGlobalAttributes = function (globalHandlerMethod) {
     globalHandlerMethod(this);
 }
@@ -108,6 +146,30 @@ Space2Dim.prototype.update = function () {
         item.updateMethod(space2dim, item.itemFactory());
     });
 } 
+
+Space2Dim.prototype.OnClick = function (func) {
+    var callback = func;
+    var svg = d3.select("svg")
+    var me = this;
+    svg.on("click", function () {
+        var coords = d3.mouse(this);
+
+        //console.log("svg clicked at coord[" + coords[0] + "," + coords[1] + "]");
+
+        var xd = me.convertXFromCanvas(coords[0] - me._margin);
+        var yd = me.convertYFromCanvas(coords[1] - me._margin);
+
+        //console.log("svg clicked at coord[" + coords[0] + "," + coords[1] + "], domain[" + xd + "," + yd + "]");
+
+
+        callback(xd, yd, d3.event.shiftKey);
+        //var perceptron = vm.allPerceptrons[0];
+        //vm.allPerceptronResults.push(createPerceptron(perceptron, xd, yd));
+
+
+    });
+
+}
 
 Space2Dim.prototype.CreatePoint = function (x, y) {
 

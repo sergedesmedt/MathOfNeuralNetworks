@@ -204,7 +204,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
     var distSize = -5;
     vectors.filter(function (d) { return d._showSize != 0 }).append("text")
         .attr("class", "vectorsize")
-        .text(function (d) { return d.getSize().toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d.getSize()); })
         .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
             var p1y = space2Dim.convertYToCanvas(d._p1.getY());
@@ -252,7 +252,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 
     vectors.filter(function (d) { return d._dvaluelvl != 0 }).append("text")
 		.attr("class", "vectorvalued x")
-        .text(function (d) { return (d._p2.getX() - d._p1.getX()).toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d._p2.getX() - d._p1.getX()); })
         .attr("x", function (d) { return space2Dim.convertXToCanvas(d._p1.getX() + (d._p2.getX() - d._p1.getX()) / 2); })
         .attr("y", function (d) { return space2Dim.getValueSpacingX(d._dvaluelvl); })
 		;
@@ -285,7 +285,7 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 
     vectors.filter(function (d) { return d._dvaluelvl != 0 }).append("text")
         .attr("class", "vectorvalued y")
-        .text(function (d) { return (d._p2.getY() - d._p1.getY()).toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d._p2.getY() - d._p1.getY()); })
         .attr("x", function (d) { return space2Dim.getValueSpacingY(d._dvaluelvl); })
         .attr("y", function (d) { return space2Dim.convertYToCanvas(d._p1.getY() + (d._p2.getY() - d._p1.getY()) / 2); })
         ;
@@ -378,7 +378,7 @@ Vector2Dim.update = function (space2Dim, vectors) {
 
     var distSize = -5;
     vectors.select(".vectorsize")
-        .text(function (d) { return d.getSize().toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d.getSize()); })
        .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
             var p1y = space2Dim.convertYToCanvas(d._p1.getY());
@@ -419,7 +419,7 @@ Vector2Dim.update = function (space2Dim, vectors) {
         ;
 
     vectors.select(".vectorvalued.x")
-        .text(function (d) { return (d._p2.getX() - d._p1.getX()).toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d._p2.getX() - d._p1.getX()); })
         .attr("x", function (d) { return space2Dim.convertXToCanvas(d._p1.getX() + (d._p2.getX() - d._p1.getX()) / 2); })
         .attr("y", function (d) { return space2Dim.getValueSpacingX(d._dvaluelvl); })
         ;
@@ -447,7 +447,7 @@ Vector2Dim.update = function (space2Dim, vectors) {
         ;
 
     vectors.select(".vectorvalued.y")
-        .text(function (d) { return (d._p2.getY() - d._p1.getY()).toFixed(0); })
+        .text(function (d) { return d3.format(".1f")(d._p2.getY() - d._p1.getY()); })
         .attr("x", function (d) { return space2Dim.getValueSpacingY(d._dvaluelvl); })
         .attr("y", function (d) { return space2Dim.convertYToCanvas(d._p1.getY() + (d._p2.getY() - d._p1.getY()) / 2); })
         ;

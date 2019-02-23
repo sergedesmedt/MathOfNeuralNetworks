@@ -1,79 +1,79 @@
-﻿function Line2Dim(props, config) {
+﻿function Percetron(props, config) {
+    this._a = props["a"];
+    this._b = props["b"];
+    this._c = props["c"];
 
-    this._deftype = "unknown";
-    //if (props.hasOwnProperty("p1")) {
-    //    if (props.hasOwnProperty("p2")) {
-    //        this._deftype = "p1p2";
-
-    //        this._p1 = props["p1"];
-    //        this._p2 = props["p2"];
-    //    }
-    //    else if (props.hasOwnProperty("rico")) {
-    //        this._deftype = "p1rico";
-
-    //        this._p1 = props["p1"];
-    //        this._rico = props["rico"];
-    //    }
-    //    else {
-    //        console.log("contains p1 but not p2 or rico")
-    //    }
-    //} else
-    if (props.hasOwnProperty("d")) {
-        if (props.hasOwnProperty("prico")) {
-            this._deftype = "drico";
-
-            this._d = props["d"];
-            this._prico = props["prico"];
-        }
-        else {
-            //console.log("contains d but not rico")
-        }
-    }
-    else {
-        //console.log("contains neiter p1 or d")
-    }
-
-    if (this._deftype == "unknown") {
-        throw "unknown definition";
-    }
+    this._deftype = "drico";
+    this._d = ko.computed(function () { 
+        let c = -1 * this._c() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
+        console.log("Percetron: c=" + c)
+        return c;
+    }, this);
+    this._prico = new Rico2Dim(
+        ko.computed(function () {
+            var anorm = this._a() / Math.sqrt(this._a() * this._a() + this._b() * this._b()); 
+            console.log("Percetron: anorm=" + anorm);
+            return anorm;
+        }, this),
+        ko.computed(function () {
+            var bnorm = this._b() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
+            console.log("Percetron: bnorm=" + bnorm);
+            return bnorm;
+        }, this)
+    );
 
 }
 
-Line2Dim.draw = function (space2Dim, lines) {
+Percetron.prototype.CalcPerceptronOutcome = function (x, y) {
+    return (this.CalcPerceptronFunction(x, y) > 0) ? 1 : 0;
+}
+
+Percetron.prototype.CalcPerceptronFunction = function (x, y) {
+    let a = this._a();
+    let b = this._b();
+    let c = this._c();
+    var r = (a * x) + (b * y) + (c * 1);
+
+    console.log("CalcPerceptronOutcome a(" + a + ") * x(" + x + ") + b(" + b + ") * y(" + y + ") + c(" + c + ") = r(" + r + ")");
+
+    return r;
+}
+
+Percetron.draw = function (space2Dim, lines) {
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();
-    var allSvgRays = svg.selectAll(".ray")
+    var allSvgRays = svg.selectAll(".perceptron")
         .data(lines).enter();
 
     var gray = allSvgRays
         .append("g")
-        .attr("class", "ray");
+        .attr("class", "perceptron");
 
     gray.append("line")
-        .attr("class", "rayline")
-        .attr("x1", function (d) { return calcRayDRicoX1(space, d);} )
-        .attr("y1", function (d) { return calcRayDRicoY1(space, d);} )
-        .attr("x2", function (d) { return calcRayDRicoX2(space, d);} )
-        .attr("y2", function (d) { return calcRayDRicoY2(space, d);} )
+        .attr("class", "perceptronline")
+        .attr("x1", function (d) { return calcRayDRicoX1(space, d); })
+        .attr("y1", function (d) { return calcRayDRicoY1(space, d); })
+        .attr("x2", function (d) { return calcRayDRicoX2(space, d); })
+        .attr("y2", function (d) { return calcRayDRicoY2(space, d); })
 }
 
-Line2Dim.update = function (space2Dim, lines) {
+Percetron.update = function (space2Dim, lines) {
     //console.log("UpdateLine ==================");
 
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();
 
-	var rays = svg.selectAll(".ray")
+    var rays = svg.selectAll(".perceptron")
         .data(lines);
 
-    rays.select(".rayline")
-        .attr("x1", function (d) { return calcRayDRicoX1(space, d);} )
-        .attr("y1", function (d) { return calcRayDRicoY1(space, d);} )
-        .attr("x2", function (d) { return calcRayDRicoX2(space, d);} )
-        .attr("y2", function (d) { return calcRayDRicoY2(space, d);} )
-    ;
+    rays.select(".perceptronline")
+        .attr("x1", function (d) { return calcRayDRicoX1(space, d); })
+        .attr("y1", function (d) { return calcRayDRicoY1(space, d); })
+        .attr("x2", function (d) { return calcRayDRicoX2(space, d); })
+        .attr("y2", function (d) { return calcRayDRicoY2(space, d); })
+        ;
 
 }
 

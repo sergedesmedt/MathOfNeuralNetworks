@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Perceptron learning</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
+	<script type="text/javascript" src="./js/perceptron.js"></script>
+	<script type="text/javascript" src="./js/perceptronresult.js"></script>
+	<script type="text/javascript" src="./js/perceptronlearningpoint.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/perceptron.css">
+	<link rel="stylesheet" type="text/css" href="./css/perceptronresult.css">
+
+	<style>
+	</style>
+</head>
+<body>
+	<div id="perceptronlearning"></div>
+
+	<script type="text/javascript">
+
+		function createPerceptronLearningSample() {
+			var space2dimpercep = new Space2Dim("perceptronlearning", 200, 200, -75, 75, -75, 75);
+
+			function ViewModel() {
+				var abGenerator = d3.randomUniform(-1, 1);
+				var a = abGenerator();
+				var b = abGenerator();
+				var cGenerator = d3.randomUniform(-50, 50);
+				var c = cGenerator();
+				console.log("a[" + a + "], b[" + b + "], c[" + c + "]");
+
+				this.perc1a = ko.observable(a);
+				this.perc1b = ko.observable(b);
+				this.perc1c = ko.observable(c);
+
+				this.perc1a.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1c.subscribe(function (newValue) { space2dimpercep.update(); });
+
+				var perceptron1 = new Percetron(
+					{ a: this.perc1a, b: this.perc1b, c: this.perc1c },
+					{});
+
+				this.circlesToShow = [];
+				this.vectorsToShow = [];
+				this.raysToShow = [];
+				this.perceptronsToShow = [perceptron1];
+				this.allPerceptronLearnings = ko.observableArray([]);
+				this.allPerceptronLearnings.subscribe(function (newValue) {
+					//console.log("allPerceptronResults.subscribe");
+					space2dimpercep.update();
+				});
+
+				var me = this;
+				space2dimpercep.OnClick(function (x, y, shiftKey) {
+					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+
+					let perceptronLearningPoint = new PerceptronLearningPoint(
+						{ x: x, y: y, perceptron: perceptron1 },
+						{}
+					);
+
+					me.allPerceptronLearnings.push(perceptronLearningPoint);
+				});
+
+			}
+
+			var vm = new ViewModel();
+
+			space2dimpercep.appenGlobalAttributes(Vector2Dim.global);
+			space2dimpercep.appenGlobalAttributes(PerceptronResult.global);
+			space2dimpercep.registerHandler(Percetron.draw, Percetron.update, function () { return vm.perceptronsToShow; });
+			space2dimpercep.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
+			space2dimpercep.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
+			space2dimpercep.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
+			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
+			space2dimpercep.show();
+
+			ko.applyBindings(vm);
+
+			return vm;
+		}
+
+		createPerceptronLearningSample();
+
+	</script>
+
+</body>
+</html >
