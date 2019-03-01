@@ -44,7 +44,7 @@
 				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
 				this.perc1c.subscribe(function (newValue) { space2dimpercep.update(); });
 
-				var perceptron1 = new Percetron(
+				var perceptron1 = new Perceptron(
 					{ a: this.perc1a, b: this.perc1b, c: this.perc1c },
 					{});
 
@@ -123,7 +123,7 @@
 
 			space2dimpercep.appenGlobalAttributes(Vector2Dim.global);
 			space2dimpercep.appenGlobalAttributes(PerceptronResult.global);
-			space2dimpercep.registerHandler(Percetron.draw, Percetron.update, function () { return vm.perceptronsToShow; });
+			space2dimpercep.registerHandler(Perceptron.draw, Perceptron.update, function () { return vm.perceptronsToShow; });
 			space2dimpercep.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
 			space2dimpercep.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
 			space2dimpercep.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });

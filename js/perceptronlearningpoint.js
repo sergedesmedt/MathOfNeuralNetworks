@@ -3,6 +3,7 @@
 
     this._x = props["x"];
     this._y = props["y"];
+    this._desiredclass = props["desiredclass"];
 }
 
 //PerceptronLearningPoint.global = function (space2Dim) {
@@ -35,7 +36,9 @@ PerceptronLearningPoint.draw = function (space2Dim, results) {
         //.attr("class", "perceptronResultPoint")
         .attr("class", function (d) {
             let resultClass = d._perceptron.CalcPerceptronOutcome(d._x, d._y);
-            return (resultClass == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2";
+            let resultcssclass = (resultClass == 1) ? "perceptronclass1" : "perceptronclass2";
+            let desiredresultcssclass = (d._desiredclass == 1) ? "perceptrondesiredclass1" : "perceptrondesiredclass2";
+            return "perceptronResultPoint " + resultcssclass + " " + desiredresultcssclass;
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
@@ -48,7 +51,9 @@ PerceptronLearningPoint.draw = function (space2Dim, results) {
     updateData.select(".perceptronResultPoint")
         .attr("class", function (d) {
             let resultClass = d._perceptron.CalcPerceptronOutcome(d._x, d._y);
-            return (resultClass == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2";
+            let resultcssclass = (resultClass == 1) ? "perceptronclass1" : "perceptronclass2";
+            let desiredresultcssclass = (d._desiredclass == 1) ? "perceptrondesiredclass1" : "perceptrondesiredclass2";
+            return "perceptronResultPoint " + resultcssclass + " " + desiredresultcssclass;
         })
 }
 
@@ -70,7 +75,9 @@ PerceptronLearningPoint.update = function (space2Dim, results) {
         //.attr("class", "perceptronResultPoint")
         .attr("class", function (d) {
             let resultClass = d._perceptron.CalcPerceptronOutcome(d._x, d._y);
-            return (resultClass == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2";
+            let resultcssclass = (resultClass == 1) ? "perceptronclass1" : "perceptronclass2";
+            let desiredresultcssclass = (d._desiredclass == 1) ? "perceptrondesiredclass1" : "perceptrondesiredclass2";
+            return "perceptronResultPoint " + resultcssclass + " " + desiredresultcssclass;
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
@@ -132,6 +139,8 @@ PerceptronLearningPoint.update = function (space2Dim, results) {
     updateData.select(".perceptronResultPoint")
         .attr("class", function (d) {
             let resultClass = d._perceptron.CalcPerceptronOutcome(d._x, d._y);
-            return (resultClass == 1) ? "perceptronResultPoint perceptronclass1" : "perceptronResultPoint perceptronclass2";
+            let resultcssclass = (resultClass == 1) ? "perceptronclass1" : "perceptronclass2";
+            let desiredresultcssclass = (d._desiredclass == 1) ? "perceptrondesiredclass1" : "perceptrondesiredclass2";
+            return "perceptronResultPoint " + resultcssclass + " " + desiredresultcssclass;
         })
 }

@@ -1,4 +1,4 @@
-﻿function Percetron(props, config) {
+﻿function Perceptron(props, config) {
     this._a = props["a"];
     this._b = props["b"];
     this._c = props["c"];
@@ -6,40 +6,69 @@
     this._deftype = "drico";
     this._d = ko.computed(function () { 
         let c = -1 * this._c() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
-        console.log("Percetron: c=" + c)
+        //console.log("Percetron: c=" + c)
         return c;
     }, this);
     this._prico = new Rico2Dim(
         ko.computed(function () {
             var anorm = this._a() / Math.sqrt(this._a() * this._a() + this._b() * this._b()); 
-            console.log("Percetron: anorm=" + anorm);
+            //console.log("Percetron: anorm=" + anorm);
             return anorm;
         }, this),
         ko.computed(function () {
             var bnorm = this._b() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
-            console.log("Percetron: bnorm=" + bnorm);
+            //console.log("Percetron: bnorm=" + bnorm);
             return bnorm;
         }, this)
     );
 
 }
 
-Percetron.prototype.CalcPerceptronOutcome = function (x, y) {
-    return (this.CalcPerceptronFunction(x, y) > 0) ? 1 : 0;
+Perceptron.prototype.SetWeightVector = function (w) {
+    this._a(w.a);
+    this._b(w.b);
+    this._c(w.c);
+
+    console.log("Perceptron weights: a=" + this._a() + ", b=" + this._b() + ", c=" + this._c());
 }
 
-Percetron.prototype.CalcPerceptronFunction = function (x, y) {
+Perceptron.prototype.CalcPerceptronOutcome = function (x, y) {
+    return (this.CalcPerceptronFunction(x, y) >= 0) ? 1 : 0;
+}
+
+Perceptron.prototype.CalcPerceptronFunction = function (x, y) {
     let a = this._a();
     let b = this._b();
     let c = this._c();
     var r = (a * x) + (b * y) + (c * 1);
 
-    console.log("CalcPerceptronOutcome a(" + a + ") * x(" + x + ") + b(" + b + ") * y(" + y + ") + c(" + c + ") = r(" + r + ")");
+    //console.log("CalcPerceptronOutcome a(" + a + ") * x(" + x + ") + b(" + b + ") * y(" + y + ") + c(" + c + ") = r(" + r + ")");
 
     return r;
 }
 
-Percetron.draw = function (space2Dim, lines) {
+Perceptron.prototype.LearnFromData = function (x, y, desiredclass) {
+    let currentclass = this.CalcPerceptronOutcome(x, y);
+
+    //console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+	
+    if (currentclass != desiredclass) {
+        let error = desiredclass - currentclass;
+        return {
+            a: (this._a() + ((error) * x)),
+            b: (this._b() + ((error) * y)),
+            c: (this._c() + ((error) * 1))
+        };
+    }
+
+    return {
+        a: this._a(),
+        b: this._b(),
+        c: this._c()
+    };
+}
+
+Perceptron.draw = function (space2Dim, lines) {
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();
@@ -58,7 +87,7 @@ Percetron.draw = function (space2Dim, lines) {
         .attr("y2", function (d) { return calcRayDRicoY2(space, d); })
 }
 
-Percetron.update = function (space2Dim, lines) {
+Perceptron.update = function (space2Dim, lines) {
     //console.log("UpdateLine ==================");
 
     var space = space2Dim;
