@@ -50,7 +50,7 @@ Perceptron.prototype.CalcPerceptronFunction = function (x, y) {
 Perceptron.prototype.LearnFromData = function (x, y, desiredclass) {
     let currentclass = this.CalcPerceptronOutcome(x, y);
 
-    //console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+    console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
 	
     if (currentclass != desiredclass) {
         let error = desiredclass - currentclass;

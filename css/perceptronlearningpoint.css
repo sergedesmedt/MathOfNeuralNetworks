@@ -1,0 +1,35 @@
+﻿.perceptronResultPoint {
+    fill: #d7d7d7;
+}
+
+.perceptrondesiredclass1 {
+    stroke: #ff6a00;
+    stroke-width: 2px;
+}
+
+.perceptrondesiredclass2 {
+    stroke: #b6ff00;
+    stroke-width: 2px;
+}
+
+.perceptronclass1 {
+    fill: #ff6a00;
+}
+
+.perceptronclass2 {
+    fill: #b6ff00;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 120px;
+    font: 10px sans-serif;
+    /*height: 28px;
+    padding: 2px;
+    */
+    background: lightsteelblue;
+    border: 0px;
+    /*border-radius: 8px;
+    pointer-events: none;*/
+}

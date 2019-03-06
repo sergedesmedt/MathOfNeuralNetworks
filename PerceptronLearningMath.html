@@ -35,7 +35,7 @@
 	<script type="text/javascript">
 
 		function createPerceptronLearningAnimationSample() {
-			var space2dimpercep = new Space2Dim("perceptronlearninganimation", 200, 200, -75, 75, -75, 75);
+			var space2dimpercep = new Space2Dim("perceptronlearninganimation", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
 				this.p0x = ko.observable(0);
@@ -44,13 +44,17 @@
 				var abGenerator = d3.randomUniform(-1, 1);
 				var a = abGenerator();
 				var b = abGenerator();
-				var cGenerator = d3.randomUniform(-50, 50);
-				var c = cGenerator();
-				console.log("a[" + a + "], b[" + b + "], c[" + c + "]");
+				//var cGenerator = d3.randomUniform(-50, 50);
+				var c = 0; //cGenerator();
 
-				this.perc1a = ko.observable(a);
-				this.perc1b = ko.observable(b);
+				var anorm = a / Math.sqrt(a * a + b * b);
+				var bnorm = b / Math.sqrt(a * a + b * b);
+
+				this.perc1a = ko.observable(anorm);
+				this.perc1b = ko.observable(bnorm);
 				this.perc1c = ko.observable(c);
+
+				console.log("a[" + anorm + "], b[" + b + "], c[" + c + "]");
 
 				this.perc1a.subscribe(function (newValue) { space2dimpercep.update(); });
 				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
@@ -62,11 +66,14 @@
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.perc1a, this.perc1b);
+				var p1 = new Point2Dim(
+					ko.computed(function () { return this.perc1a() /* * -1 * this.perc1c()*/; }, this),
+					ko.computed(function () { return this.perc1b() /* * -1 * this.perc1c()*/; }, this)
+				);
 
 				var prico = new Vector2Dim(
-					{ p1: p0, p2: p1 },
-					{ name: "p", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+					{ p1: p0, p2: p1, delta: p1 },
+					{ name: "p", cssclass: "perceprico", /*dvaluelvl: 1,*/ p1draggable: 0, p2draggable: 0 }
 				);
 
 				this.circlesToShow = [];
@@ -79,9 +86,79 @@
 					space2dimpercep.update();
 				});
 
+
+				var moveVectorByP1ToPositionAnimated = function MoveVectorByP1ToPositionAnimated(space2dim, line, v, xt, yt) {
+					console.log("moveVectorByP1ToPositionAnimated x[" + xt + "], y[" + yt + "]");
+
+					var vx1 = v._p1.getX();
+					var vy1 = v._p1.getY();
+
+					var dxt = xt - vx1;
+					var dyt = yt - vy1;
+
+					console.log("delta x[" + dxt + "], y[" + dyt + "]");
+
+					var xs = space2dim.convertXToCanvas(xt);
+					var ys = space2dim.convertYToCanvas(yt);
+
+					if (v._deftype == "defp1delta") {
+						var vx2t = vx1 + v._delta.getX() + dxt;
+						var vy2t = vy1 + v._delta.getY() + dyt;
+
+						var xe = space2dim.convertXToCanvas(vx2t);
+						var ye = space2dim.convertYToCanvas(vy2t);
+
+						console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");
+
+						line.transition()
+							.duration(1500)
+							.attrs({
+								x1: xs,
+								y1: ys,
+								x2: xe,
+								y2: ye
+							})
+							.on("end", function () {
+								console.log("line transition ended");
+
+								v._p1.setX(xt);
+								v._p1.setY(yt);
+
+								//updateFunc();
+							});
+
+					}
+					else if (v._deftype == "defp1p2") {
+						console.log("unsupported");
+					}
+					else {
+						console.log("don't know what to do");
+					}
+				}
+
+
 				var me = this;
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
 					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+
+					var clickedPoint = space2dimpercep.CreatePoint(x, y);
+
+					var plearn = new Vector2Dim(
+						{ p1: p0, p2: clickedPoint },
+						{ name: "p", /*dvaluelvl: 1,*/ p1draggable: 0, p2draggable: 0 }
+					);
+					me.vectorsToShow.push(plearn);
+
+					space2dimpercep.update();
+
+					space2dimpercep.getSvg().select(".vectorline.defp1delta.perceprico")
+						.call(function (e) {
+							console.log("call function for vectorline " + e);
+
+							moveVectorByP1ToPositionAnimated(space2dimpercep, e, me.vectorsToShow[0], x, y);
+						});
+
+
 
 					let desiredclass = 1;
 					if (shiftKey)
@@ -92,8 +169,26 @@
 						{}
 					);
 
-					let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
-					perceptron1.SetWeightVector(newWeights);
+					let currentclass = perceptron1.CalcPerceptronOutcome(x, y);
+
+					console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+
+					var newWeights = {
+						a: perceptron1._a(),
+						b: perceptron1._b(),
+						c: perceptron1._c()
+					};
+
+					if (currentclass != desiredclass) {
+						let error = desiredclass - currentclass;
+						var newWeights = {
+							a: (perceptron1._a() + ((error) * x)),
+							b: (perceptron1._b() + ((error) * y)),
+							c: perceptron1._c()
+						};
+					}
+
+					//perceptron1.SetWeightVector(newWeights);
 
 					me.allPerceptronLearnings.push(perceptronLearningPoint);
 				});
@@ -121,11 +216,11 @@
 			var space2dimpercep = new Space2Dim("perceptronandlearning", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
-				//var abGenerator = d3.randomUniform(-1, 1);
-				var a = -1.1; //abGenerator();
-				var b = -1.1; //abGenerator();
-				//var cGenerator = d3.randomUniform(-50, 50);
-				var c = 2.9; //cGenerator();
+				var abGenerator = d3.randomUniform(-1, 1);
+				var a = abGenerator();
+				var b = abGenerator();
+				var cGenerator = d3.randomUniform(-1, 1);
+				var c = cGenerator();
 				console.log("a[" + a + "], b[" + b + "], c[" + c + "]");
 
 				this.perc1a = ko.observable(a);
@@ -151,65 +246,38 @@
 				});
 
 				var me = this;
-				var step = 0;
+				var step = -1;
+
+				var truthTable = [
+					{ x: 0, y: 0, outcome: 0 },
+					{ x: 1, y: 0, outcome: 0 },
+					{ x: 0, y: 1, outcome: 0 },
+					{ x: 1, y: 1, outcome: 1 }
+				];
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
 					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
-					let desiredclass = 1;
-
 					step++;
+					if (step >= 4)
+						step = 0;
 
-					//if (step == 1) {
-					//	// a = 0.6, b = 0.2, c = -1.9
-					//	console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					//	console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					//	console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					//	x = 1;
-					//	y = 1; // => 0.6, 0.2, -0.9
-					//	desiredclass = 1;
-					//	currentclass = perceptron1.CalcPerceptronOutcome(x, y);
-					//	console.log("Step1 outcome x[" + x + "], y[" + y + "], desired[" + desiredclass + "], current[" + currentclass + "]");
-					//}
+					console.log("will learn datapoint for step=" + step);
+					console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
+					console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
+					console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
+					console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
 
-					if (step == 1) {
-						// a = 0.6, b = 0.2, c = -0.9
-						console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-						console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-						console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-						console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
-						x = 0;
-						y = 0; // => 1.6, 1.2, 0.1
-						desiredclass = 0;
-						//currentclass = perceptron1.CalcPerceptronOutcome(x, y);
-					}
+					console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
 
-					//if (step == 2) {
-					//	x = 1;
-					//	y = 0; // => -0.9, 0.6, 2.2
-					//	desiredclass = 0;
-					//}
-
-					//if (step == 3) {
-					//	x = 0;
-					//	y = 1; // => -1.9, 1.6, 1.2
-					//	desiredclass = 0;
-					//}
-
-					//if (step == 4) {
-					//	x = 0;
-					//	y = 0; // => -1.9, 1.6, 1.2
-					//	desiredclass = 0;
-					//}
-
-					let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
-					
-					//let newWeights = {a: 1.6, b:1.2, c:-1.7};
+					let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
 					perceptron1.SetWeightVector(newWeights);
 
 					console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
 					console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
 					console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
 					console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+
+					me.allPerceptronLearnings.removeAll();
 
 					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
 						{ x: 0, y: 0, desiredclass: 0, perceptron: perceptron1 },
@@ -249,14 +317,14 @@
 
 
 		function createPerceptronORLearningSample() {
-			var space2dimpercep = new Space2Dim("perceptronorlearning", 200, 200, -5, 5, -5, 5);
+			var space2dimpercep = new Space2Dim("perceptronorlearning", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
 				var abGenerator = d3.randomUniform(-1, 1);
-				var a = 0.6; //abGenerator();
-				var b = 0.2; //abGenerator();
-				var cGenerator = d3.randomUniform(-50, 50);
-				var c = -0.9; //cGenerator();
+				var a = abGenerator();
+				var b = abGenerator();
+				var cGenerator = d3.randomUniform(-1, 1);
+				var c = cGenerator();
 				console.log("a[" + a + "], b[" + b + "], c[" + c + "]");
 
 				this.perc1a = ko.observable(a);
@@ -282,51 +350,55 @@
 				});
 
 				var me = this;
-				var step = 0;
+				var step = -1;
+
+				var truthTable = [
+					{ x: 0, y: 0, outcome: 0 },
+					{ x: 1, y: 0, outcome: 1 },
+					{ x: 0, y: 1, outcome: 1 },
+					{ x: 1, y: 1, outcome: 1 }
+				];
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
-					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
-
-					// https://slideplayer.com/slide/5226142/
-
-					let desiredclass = 1;
-					//if (shiftKey)
-					//	desiredclass = 0;
+					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					step++;
+					if (step >= 4)
+						step = 0;
 
-					if (step == 1) {
-						x = 1;
-						y = 1; // => 0.1, 1.6, 1.2
-						desiredclass = 1;
-					}
+					console.log("will learn datapoint for step=" + step);
+					console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
+					console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
+					console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
+					console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
 
-					if (step == 2) {
-						x = 1;
-						y = -1; // => -0.9, 0.6, 2.2
-						desiredclass = 1;
-					}
+					console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
 
-					if (step == 3) {
-						x = -1;
-						y = 1; // => -1.9, 1.6, 1.2
-						desiredclass = 1;
-					}
-
-					if (step == 4) {
-						x = -1;
-						y = -1; // => -1.9, 1.6, 1.2
-						desiredclass = 0;
-					}
-
-					let perceptronLearningPoint = new PerceptronLearningPoint(
-						{ x: x, y: y, desiredclass: desiredclass, perceptron: perceptron1 },
-						{}
-					);
-
-					let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
+					let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
 					perceptron1.SetWeightVector(newWeights);
 
-					me.allPerceptronLearnings.push(perceptronLearningPoint);
+					console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
+					console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
+					console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
+					console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+
+					me.allPerceptronLearnings.removeAll();
+
+					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
+						{ x: 0, y: 0, desiredclass: 0, perceptron: perceptron1 },
+						{}
+					));
+					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
+						{ x: 1, y: 0, desiredclass: 1, perceptron: perceptron1 },
+						{}
+					));
+					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
+						{ x: 0, y: 1, desiredclass: 1, perceptron: perceptron1 },
+						{}
+					));
+					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
+						{ x: 1, y: 1, desiredclass: 1, perceptron: perceptron1 },
+						{}
+					));
 				});
 
 			}
@@ -492,8 +564,8 @@
 			return vm;
 		}
 
-		//createPerceptronLearningAnimationSample();
-		createPerceptronANDLearningSample();
+		createPerceptronLearningAnimationSample();
+		//createPerceptronANDLearningSample();
 		//createPerceptronORLearningSample();
 		//createPerceptronLearningSample();
 		//createPerceptronLearningNormalizedSample()
