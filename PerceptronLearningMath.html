@@ -87,8 +87,19 @@
 				});
 
 
+				// var fadeVectorIntoExistance = function FadeVectorIntoExistance(space2dim, line, v, xt, yt) {
+				// 	console.log("FadeVectorIntoExistance x[" + xt + "], y[" + yt + "]");
+
+				// 	line
+				// 		.style("opacity", 0)
+				// 		.transition()
+				// 		.duration(1500)
+				// 		.style("opacity", 1)
+				// 		;
+				// }
+
 				var moveVectorByP1ToPositionAnimated = function MoveVectorByP1ToPositionAnimated(space2dim, line, v, xt, yt) {
-					console.log("moveVectorByP1ToPositionAnimated x[" + xt + "], y[" + yt + "]");
+					console.log("MoveVectorByP1ToPositionAnimated x[" + xt + "], y[" + yt + "]");
 
 					var vx1 = v._p1.getX();
 					var vy1 = v._p1.getY();
@@ -145,18 +156,66 @@
 
 					var plearn = new Vector2Dim(
 						{ p1: p0, p2: clickedPoint },
-						{ name: "p", /*dvaluelvl: 1,*/ p1draggable: 0, p2draggable: 0 }
+						{ name: "", cssclass: "learnvector", /*dvaluelvl: 1,*/ p1draggable: 0, p2draggable: 0 }
 					);
 					me.vectorsToShow.push(plearn);
 
 					space2dimpercep.update();
 
-					space2dimpercep.getSvg().select(".vectorline.defp1delta.perceprico")
-						.call(function (e) {
-							console.log("call function for vectorline " + e);
+					var svg = space2dimpercep.getSvg();
 
-							moveVectorByP1ToPositionAnimated(space2dimpercep, e, me.vectorsToShow[0], x, y);
-						});
+					svg.selectAll(".vectorline.learnvector")
+						.style("opacity", 0)
+
+					var faceInTransition = svg
+						.transition().duration(1500);
+
+					faceInTransition.selectAll(".vectorline.learnvector")
+						.style("opacity", 1);
+
+
+					var vx1 = prico._p1.getX();
+					var vy1 = prico._p1.getY();
+
+					var dxt = x - vx1;
+					var dyt = y - vy1;
+
+					console.log("delta x[" + dxt + "], y[" + dyt + "]");
+
+					var xs = space2dimpercep.convertXToCanvas(x);
+					var ys = space2dimpercep.convertYToCanvas(y);
+
+					var vx2t = vx1 + prico._delta.getX() + dxt;
+					var vy2t = vy1 + prico._delta.getY() + dyt;
+
+					var xe = space2dimpercep.convertXToCanvas(vx2t);
+					var ye = space2dimpercep.convertYToCanvas(vy2t);
+
+					console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");				
+
+					var moveTransition = faceInTransition
+						.transition().duration(1500);
+
+					moveTransition.select(".vectorline.defp1delta.perceprico")
+						.attrs({
+							x1: xs,
+							y1: ys,
+							x2: xe,
+							y2: ye
+						})
+
+					// space2dimpercep.getSvg().select(".vectorline.learnvector")
+					// 	.call(function (e) {
+					// 		console.log("call function for vectorline " + e);
+
+					// 		fadeVectorIntoExistance(space2dimpercep, e, plearn, x, y);
+					// 	});
+					// space2dimpercep.getSvg().select(".vectorline.defp1delta.perceprico")
+					// 	.call(function (e) {
+					// 		console.log("call function for vectorline " + e);
+
+					// 		moveVectorByP1ToPositionAnimated(space2dimpercep, e, plearn, x, y);
+					// 	});
 
 
 

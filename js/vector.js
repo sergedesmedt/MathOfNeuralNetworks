@@ -118,13 +118,34 @@ Vector2Dim.global = function (space2Dim) {
 
 
 Vector2Dim.draw = function (space2Dim, vectors) {
+
+    var svg = space2Dim.getCanvas();
+    var newVectors = svg.selectAll(".vector")
+        .data(vectors).enter();
+
+    createVectors(space2Dim, newVectors);
+}
+
+Vector2Dim.update = function (space2Dim, vectors) {
+    //console.log("Vector2Dim.update");
+
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();
-    var allSvgVectors = svg.selectAll(".vector")
-        .data(vectors).enter();
 
-    var vectors = allSvgVectors
+    var vectors = svg.selectAll(".vector")
+        .data(vectors);
+
+    var newVectors = vectors.enter();
+
+    createVectors(space2Dim, newVectors);
+    updateVectors(space2Dim, vectors);
+}
+
+function createVectors(space2Dim, newVectors) {
+    var svg = space2Dim.getCanvas();
+
+    var vectors = newVectors
         .append("g")
         .attr("class", "vector");
 
@@ -300,18 +321,14 @@ Vector2Dim.draw = function (space2Dim, vectors) {
         .attr("marker-end", "url(#vectorvaluedarrow)")
         ;
 
-
-
-
-
     let defp1delta_dragp2 = d3.drag()
         .on('start', onVectorEndpointDragStart)
-        .on('drag', function (d) { onVectorDefp1deltaEndpointP2Drag(space, d, this); })
+        .on('drag', function (d) { onVectorDefp1deltaEndpointP2Drag(space2Dim, d, this); })
         .on('end', onVectorEndpointDragEnd);
 
     let defp1p2_dragp2 = d3.drag()
         .on('start', onVectorEndpointDragStart)
-        .on('drag', function (d) { onVectorDefp1p2EndpointP2Drag(space, d, this); })
+        .on('drag', function (d) { onVectorDefp1p2EndpointP2Drag(space2Dim, d, this); })
         .on('end', onVectorEndpointDragEnd);
 
     svg.selectAll('.vectorendpoint.defp1delta')
@@ -322,16 +339,8 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 
 }
 
-Vector2Dim.update = function (space2Dim, vectors) {
-    //console.log("Vector2Dim.update");
-
-    var space = space2Dim;
-
-    var svg = space2Dim.getCanvas();
-
-    var vectors = svg.selectAll(".vector")
-        .data(vectors);
-
+function updateVectors(space2Dim, vectors) {
+ 
     vectors.select(".vectorstartpoint")
         .attr("cx", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("cy", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
@@ -458,7 +467,6 @@ Vector2Dim.update = function (space2Dim, vectors) {
         .attr("x2", function (d) { return space2Dim.getValueSpacingY(d._dvaluelvl); })
         .attr("y2", function (d) { return space2Dim.convertYToCanvas(d._p2.getY()); })
         ;
-
 }
 
 //function onVectorLineMouseOver(d, i) {
