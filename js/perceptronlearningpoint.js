@@ -42,7 +42,7 @@ PerceptronLearningPoint.draw = function (space2Dim, results) {
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
-        .attr("r", "10px")
+        .attr("r", "4px")
 
 
 
@@ -81,7 +81,7 @@ PerceptronLearningPoint.update = function (space2Dim, results) {
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
-        .attr("r", "10px")
+        .attr("r", "4px")
         //.on("mouseover", function (d, i) {
         //    console.log("PerceptronResult> mouseover[" + d._x + "][" + d._y + "]");
         //    //return PerceptronResult.tooltip.style("visibility", "visible");

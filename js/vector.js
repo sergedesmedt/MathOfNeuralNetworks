@@ -137,8 +137,10 @@ Vector2Dim.update = function (space2Dim, vectors) {
         .data(vectors);
 
     var newVectors = vectors.enter();
+    var removedVectors = vectors.exit();
 
     createVectors(space2Dim, newVectors);
+    deleteVectors(space2Dim, removedVectors);
     updateVectors(space2Dim, vectors);
 }
 
@@ -337,6 +339,10 @@ function createVectors(space2Dim, newVectors) {
     svg.selectAll('.vectorendpoint.defp1p2')
         .call(defp1p2_dragp2);
 
+}
+
+function deleteVectors(space2Dim, removedVectors) {
+    removedVectors.remove();
 }
 
 function updateVectors(space2Dim, vectors) {
