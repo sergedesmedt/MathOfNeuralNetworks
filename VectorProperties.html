@@ -2,6 +2,13 @@
 <html>
 <head>
 	<title>Learn Vector properties</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+		});
+	</script>
+	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
@@ -14,17 +21,79 @@
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 	<link rel="stylesheet" type="text/css" href="./css/circle.css">
 	<style>
+		.divcentered {
+			display: table;
+			margin: 0 auto;
+		}
+
+		.vectormagnitude_sample_container {
+			height: 200px;
+		}
+
 		.vectorline.projline {
 			stroke: #aaaaaa;
 			stroke-width: 1;
 			fill: #aaaaaa;
 		}
 	</style>
+	<script>
+
+
+		//(function () {
+		//	var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
+		//	var math = null;                // the element jax for the math output.
+
+			
+		//	  Get the element jax when MathJax has produced it.
+			
+		//	QUEUE.Push(function () {
+		//		console.log("set math");
+		//		math = MathJax.Hub.getAllJax("vectormagnitude_sample")[0];
+		//		console.log("math is " + math);
+		//	});
+
+			
+		//	  The onchange event handler that typesets the
+		//	  math entered by the user
+			
+		//	window.UpdateMath = function (TeX) {
+		//		QUEUE.Push(["Text", math, "\\displaystyle{" + TeX + "}"]);
+		//	}
+		//})();
+
+	</script>
 </head>
 <body>
-	<div id="vectorpropertiesmagnitude"></div>
-	<div id="vectorpropertiesdirection"></div>
 
+	<!-- https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference -->
+	<p>
+		A vector in 2-dimensional space:
+	</p>
+	<p id="vectordef">
+		$$a = (a_1, a_2), \text{ in }\mathbb{R}^2$$
+	</p>
+	<p>
+		It's magnitude is defined by the root of the sum of the squares of it's components
+	</p>
+	<p id="vectormagnitude">
+		$$ \begin{aligned}
+		\lvert\lvert{a}\lvert\lvert &= \sqrt{(a_1)^2 + (a_2)^2}\\
+		\end{aligned} $$
+	</p>
+	<p>
+		A sample
+	</p>
+	<div class="vectormagnitude_sample_container">
+		<div id="vectormagnitude_sample" >
+			${}$
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="vectorpropertiesmagnitude" class="divcentered"></div>
+	</div>
+	<div style="width:100%">
+		<div id="vectorpropertiesdirection" class="divcentered"></div>
+	</div>
 	<script type="text/javascript">
 
 		function projectVectorOnVector(vToProj, vOn) {
@@ -58,6 +127,21 @@
 		}
 
 		function createVectorMagnitudeSample() {
+			var magnitudeSampleJaxMath = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{3^2 + 4^2}\\\\ &= 5 \\end{aligned}";
+			//var magnitudeSampleJaxMath = "x+1";
+
+			var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
+			var magnitudeSampleJax = null;                // the element jax for the math output.
+
+			QUEUE.Push(function () {
+				console.log("set magnitudeSampleJax");
+				magnitudeSampleJax = MathJax.Hub.getAllJax("vectormagnitude_sample")[0];
+				console.log("magnitudeSampleJax is " + magnitudeSampleJax);
+			});
+
+			var isRunning = false;
+			var hasChanges = false;
+
 			var space2dimvsum = new Space2Dim("vectorpropertiesmagnitude", 200, 200, -50, 50, -50, 50);
 
 			function VectorMagnitudeViewModel() {
@@ -67,11 +151,6 @@
 				this.p1x = ko.observable(40);
 				this.p1y = ko.observable(30);
 
-				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-
 				var p0 = new Point2Dim(this.p0x, this.p0y);
 				var p1 = new Point2Dim(this.p1x, this.p1y);
 
@@ -79,6 +158,80 @@
 					{ p1: p0, p2: p1 },
 					{ showSize: 1, dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
+
+				var getMathExpression = function() {
+					var p1XFormatted = d3.format(".1f")(p1.getX());
+					var p1YFormatted = d3.format(".1f")(p1.getY());
+					var vLengthFormatted = d3.format(".1f")(vector1.getSize());
+
+					var mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + p1XFormatted + "^2 + " + p1YFormatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
+					return mathExpression;
+				}
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) {
+					space2dimvsum.update();
+					if (!isRunning) {
+						isRunning = true;
+						var mathExpression1 = getMathExpression();
+						console.log("push changes[" + mathExpression1 + "]");
+						QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
+						QUEUE.Push(function () {
+							console.log("'k heb gedaan denk ik");
+							isRunning = false;
+							if (hasChanges) {
+								var mathExpression2 = getMathExpression();
+								console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
+								isRunning = true;
+								QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
+								QUEUE.Push(function () {
+									console.log("wat er nog te doen was is nu gedaan denk ik");
+									isRunning = false;
+								});
+								hasChanges = false;
+							}
+							else {
+								console.log("d'er is niets meer te doen");
+							}
+						});
+
+					}
+					else {
+						hasChanges = true;
+					}
+				});
+				this.p1y.subscribe(function (newValue) {
+					space2dimvsum.update();
+					if (!isRunning) {
+						isRunning = true;
+						var mathExpression1 = getMathExpression();
+						console.log("push changes[" + mathExpression1 + "]");
+						QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
+						QUEUE.Push(function () {
+							console.log("'k heb gedaan denk ik");
+							isRunning = false;
+							if (hasChanges) {
+								var mathExpression2 = getMathExpression();
+								console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
+								isRunning = true;
+								QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
+								QUEUE.Push(function () {
+									console.log("wat er nog te doen was is nu gedaan denk ik");
+									isRunning = false;
+								});
+								hasChanges = false;
+							}
+							else {
+								console.log("d'er is niets meer te doen");
+							}
+						});
+
+					}
+					else {
+						hasChanges = true;
+					}
+				});
 
 				this.vectorsToShow = [vector1];
 			}
@@ -174,5 +327,5 @@
 
 	</script>
 
-</body >
+</body>
 </html >

@@ -97,67 +97,6 @@
 				});
 
 
-				// var fadeVectorIntoExistance = function FadeVectorIntoExistance(space2dim, line, v, xt, yt) {
-				// 	console.log("FadeVectorIntoExistance x[" + xt + "], y[" + yt + "]");
-
-				// 	line
-				// 		.style("opacity", 0)
-				// 		.transition()
-				// 		.duration(1500)
-				// 		.style("opacity", 1)
-				// 		;
-				// }
-
-				//var moveVectorByP1ToPositionAnimated = function MoveVectorByP1ToPositionAnimated(space2dim, line, v, xt, yt) {
-				//	console.log("MoveVectorByP1ToPositionAnimated x[" + xt + "], y[" + yt + "]");
-
-				//	var vx1 = v._p1.getX();
-				//	var vy1 = v._p1.getY();
-
-				//	var dxt = xt - vx1;
-				//	var dyt = yt - vy1;
-
-				//	console.log("delta x[" + dxt + "], y[" + dyt + "]");
-
-				//	var xs = space2dim.convertXToCanvas(xt);
-				//	var ys = space2dim.convertYToCanvas(yt);
-
-				//	if (v._deftype == "defp1delta") {
-				//		var vx2t = vx1 + v._delta.getX() + dxt;
-				//		var vy2t = vy1 + v._delta.getY() + dyt;
-
-				//		var xe = space2dim.convertXToCanvas(vx2t);
-				//		var ye = space2dim.convertYToCanvas(vy2t);
-
-				//		console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");
-
-				//		line.transition()
-				//			.duration(1500)
-				//			.attrs({
-				//				x1: xs,
-				//				y1: ys,
-				//				x2: xe,
-				//				y2: ye
-				//			})
-				//			.on("end", function () {
-				//				console.log("line transition ended");
-
-				//				v._p1.setX(xt);
-				//				v._p1.setY(yt);
-
-				//				//updateFunc();
-				//			});
-
-				//	}
-				//	else if (v._deftype == "defp1p2") {
-				//		console.log("unsupported");
-				//	}
-				//	else {
-				//		console.log("don't know what to do");
-				//	}
-				//}
-
-
 				var me = this;
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
 					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
@@ -265,7 +204,6 @@
 							vricoToMove._p2.setX(vx2t);
 							vricoToMove._p2.setY(vy2t);
 
-							//updateFunc();
 						});
 
 
@@ -588,8 +526,6 @@
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
 					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
-					// https://slideplayer.com/slide/5226142/
-
 					let desiredclass = 1;
 					if (shiftKey)
 						desiredclass = 0;
@@ -659,7 +595,7 @@
 
 				var me = this;
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
-					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					let desiredclass = 1;
 					if (shiftKey)

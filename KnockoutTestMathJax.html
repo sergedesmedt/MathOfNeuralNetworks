@@ -24,7 +24,7 @@
 
 			timeout: null,     // store setTimout id
 			mjRunning: false,  // true when MathJax is processing
-			mjPending: false,  // true when a typeset has been queued
+			//mjPending: false,  // true when a typeset has been queued
 			oldText: null,     // used to check if an update is needed
 
 			//
@@ -47,43 +47,43 @@
 				preview.style.position = ""; preview.style.visibility = "";
 			},
 
-			//
-			//  This gets called when a key is pressed in the textarea.
-			//  We check if there is already a pending update and clear it if so.
-			//  Then set up an update to occur after a small delay (so if more keys
-			//    are pressed, the update won't occur until after there has been
-			//    a pause in the typing).
-			//  The callback function is set up below, after the Preview object is set up.
-			//
-			Update: function () {
-				if (this.timeout) { clearTimeout(this.timeout) }
-				this.timeout = setTimeout(this.callback, this.delay);
-			},
+			////
+			////  This gets called when a key is pressed in the textarea.
+			////  We check if there is already a pending update and clear it if so.
+			////  Then set up an update to occur after a small delay (so if more keys
+			////    are pressed, the update won't occur until after there has been
+			////    a pause in the typing).
+			////  The callback function is set up below, after the Preview object is set up.
+			////
+			//Update: function () {
+			//	if (this.timeout) { clearTimeout(this.timeout) }
+			//	this.timeout = setTimeout(this.callback, this.delay);
+			//},
 
-			//
-			//  Creates the preview and runs MathJax on it.
-			//  If MathJax is already trying to render the code, return
-			//  If the text hasn't changed, return
-			//  Otherwise, indicate that MathJax is running, and start the
-			//    typesetting.  After it is done, call PreviewDone.
-			//
-			CreatePreview: function () {
-				Preview.timeout = null;
-				if (this.mjPending) return;
-				var text = document.getElementById("MathInput").value;
-				if (text === this.oldtext) return;
-				if (this.mjRunning) {
-					this.mjPending = true;
-					MathJax.Hub.Queue(["CreatePreview", this]);
-				} else {
-					this.buffer.innerHTML = this.oldtext = text;
-					this.mjRunning = true;
-					MathJax.Hub.Queue(
-						["Typeset", MathJax.Hub, this.buffer],
-						["PreviewDone", this]
-					);
-				}
-			},
+			////
+			////  Creates the preview and runs MathJax on it.
+			////  If MathJax is already trying to render the code, return
+			////  If the text hasn't changed, return
+			////  Otherwise, indicate that MathJax is running, and start the
+			////    typesetting.  After it is done, call PreviewDone.
+			////
+			//CreatePreview: function () {
+			//	Preview.timeout = null;
+			//	if (this.mjPending) return;
+			//	var text = "";//document.getElementById("MathInput").value;
+			//	if (text === this.oldtext) return;
+			//	if (this.mjRunning) {
+			//		this.mjPending = true;
+			//		MathJax.Hub.Queue(["CreatePreview", this]);
+			//	} else {
+			//		this.buffer.innerHTML = this.oldtext = text;
+			//		this.mjRunning = true;
+			//		MathJax.Hub.Queue(
+			//			["Typeset", MathJax.Hub, this.buffer],
+			//			["PreviewDone", this]
+			//		);
+			//	}
+			//},
 
 			CreatePreviewFromText: function (latexTest) {
 				//Preview.timeout = null;
@@ -91,8 +91,8 @@
 				var text = latexTest;
 				if (text === this.oldtext) return;
 				if (this.mjRunning) {
-					this.mjPending = true;
-					MathJax.Hub.Queue(["CreatePreview", this]);
+					//this.mjPending = true;
+					//MathJax.Hub.Queue(["CreatePreview", this]);
 				} else {
 					this.buffer.innerHTML = this.oldtext = text;
 					this.mjRunning = true;
@@ -109,7 +109,8 @@
 			//  and swap the buffers to show the results.
 			//
 			PreviewDone: function () {
-				this.mjRunning = this.mjPending = false;
+				this.mjRunning = false;
+				//this.mjPending = false;
 				this.SwapBuffers();
 			}
 
@@ -118,8 +119,35 @@
 		//
 		//  Cache a callback to the CreatePreview action
 		//
-		Preview.callback = MathJax.Callback(["CreatePreview", Preview]);
-		Preview.callback.autoReset = true;  // make sure it can run more than once
+		//Preview.callback = MathJax.Callback(["CreatePreview", Preview]);
+		//Preview.callback.autoReset = true;  // make sure it can run more than once
+
+		//
+		//  Use a closure to hide the local variables from the
+		//  global namespace
+		//
+		(function () {
+			var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
+			var math = null;                // the element jax for the math output.
+
+			//
+			//  Get the element jax when MathJax has produced it.
+			//
+			QUEUE.Push(function () {
+				console.log("set math");
+				math = MathJax.Hub.getAllJax("vectormagnitude_sample")[0];
+				console.log("math is " + math);
+			});
+
+			//
+			//  The onchange event handler that typesets the
+			//  math entered by the user
+			//
+			window.UpdateMath = function (TeX) {
+				QUEUE.Push(["Text", math, "\\displaystyle{" + TeX + "}"]);
+			}
+		})();
+
 
 	</script>
 </head>
@@ -127,23 +155,44 @@
 
 	<input type="range" min="1" max="5" data-bind="value: val1, valueUpdate: 'input'" />
 
-	<p id="dynp">
-		$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
+	<p id="vectordef">
+		$$a = (a_1, a_2), \text{ in }\mathbb{R}^2$$
+	</p>
+	<p>
+		It's magnitude is defined by the root of the sum of the squares of it's components
+	</p>
+	<p id="vectormagnitude">
+		$$ \begin{aligned}
+		\lvert\lvert{a}\lvert\lvert &= \sqrt{(a_1)^2 + (a_2)^2}\\
+		\end{aligned} $$
 	</p>
 
-	<p> Type text (mixed with MathML, TeX or asciimath) in the box below for a live preview.</p>
-<textarea id="MathInput" cols="60" rows="10" onkeyup="Preview.Update()" style="margin-top:5px">
-</textarea>
-	<p>
-		Configured delimiters:
-		<ul>
-			<li>TeX, inline mode: <code>\(...\)</code> or <code>$...$</code></li>
-			<li>TeX, display mode: <code>\[...\]</code> or <code> $$...$$</code></li>
-			<li>Asciimath: <code>`...`</code>.</li>
-		</ul>
-	</p>
+	<!--<p id="dynp">
+			$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
+		</p>
+
+		<p> Type text (mixed with MathML, TeX or asciimath) in the box below for a live preview.</p>
+	<textarea id="MathInput" cols="60" rows="10" onkeyup="Preview.Update()" style="margin-top:5px">
+	</textarea>
+		<p>
+			Configured delimiters:
+			<ul>
+				<li>TeX, inline mode: <code>\(...\)</code> or <code>$...$</code></li>
+				<li>TeX, display mode: <code>\[...\]</code> or <code> $$...$$</code></li>
+				<li>Asciimath: <code>`...`</code>.</li>
+			</ul>
+		</p>-->
+	<div id="ongekendeid">
+		The answer you provided is: ${}$.
+	</div>
+	<input id="MathInput" size="50" onchange="UpdateMath(this.value)" />
+	<p>Some other way of working shown here</p>
+	<div id="vectormagnitude_sample">
+		The other answer you provided is: ${}$.
+	</div>
 	<p>Preview is shown here:</p>
 	<div id="MathPreview" style="border:1px solid; padding: 3px; width:50%; margin-top:5px"></div>
+	<p>The buffer is here:</p>
 	<div id="MathBuffer" style="border:1px solid; padding: 3px; width:50%; margin-top:5px;
 visibility:hidden; position:absolute; top:0; left: 0"></div>
 	<script>
@@ -151,7 +200,7 @@ visibility:hidden; position:absolute; top:0; left: 0"></div>
 
 		//$$\begin{aligned} 		c &= a + b\\ \n  &= (a_1 + b_1, a_2 + b_2, ..., a_n + b_n)\\ \n  &= (c_1, c_2, ..., c_n)\\ 	\n	\end{aligned}$$
 
-		var mathText =  "$$\\begin{aligned}"
+		var mathText = "$$\\begin{aligned}"
 			+ " c &= a + b\\\\ \n"
 			+ " &= (a_1 + b_1, a_2 + b_2)\\\\ \n"
 			+ " &= (c_1, c_2) \n"
@@ -162,8 +211,8 @@ visibility:hidden; position:absolute; top:0; left: 0"></div>
 			//document.getElementById('dynp').innerHTML = '$$x = {-b \pm \sqrt{b^'+vm.val1()+'-4ac} \over 2a}$$';
 			//document.getElementById('MathInput').innerHTML = '$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$';
 			//Preview.Update();
-			//Preview.CreatePreviewFromText('$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$');
-			Preview.CreatePreviewFromText(mathText);
+			Preview.CreatePreviewFromText('$$x = {-b \\pm \\sqrt{b^' + vm.val1() + '-4ac} \\over 2a}$$');
+			//Preview.CreatePreviewFromText(mathText);
 		}
 
 		function MyViewModel() {
