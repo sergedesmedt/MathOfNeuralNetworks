@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
 	<script type="text/javascript" src="./js/circle.js"></script>
@@ -127,20 +128,22 @@
 		}
 
 		function createVectorMagnitudeSample() {
-			var magnitudeSampleJaxMath = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{3^2 + 4^2}\\\\ &= 5 \\end{aligned}";
-			//var magnitudeSampleJaxMath = "x+1";
+			// var magnitudeSampleJaxMath = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{3^2 + 4^2}\\\\ &= 5 \\end{aligned}";
+			// //var magnitudeSampleJaxMath = "x+1";
 
-			var QUEUE = MathJax.Hub.queue;  // shorthand for the queue
-			var magnitudeSampleJax = null;                // the element jax for the math output.
+			// var QUEUE = MathJax.Hub.queue;
+			// var magnitudeSampleJax = null;
 
-			QUEUE.Push(function () {
-				console.log("set magnitudeSampleJax");
-				magnitudeSampleJax = MathJax.Hub.getAllJax("vectormagnitude_sample")[0];
-				console.log("magnitudeSampleJax is " + magnitudeSampleJax);
-			});
+			// QUEUE.Push(function () {
+			// 	console.log("set magnitudeSampleJax");
+			// 	magnitudeSampleJax = MathJax.Hub.getAllJax("vectormagnitude_sample")[0];
+			// 	console.log("magnitudeSampleJax is " + magnitudeSampleJax);
+			// });
 
-			var isRunning = false;
-			var hasChanges = false;
+			// var isRunning = false;
+			// var hasChanges = false;
+
+			var summationMathExpression = new MathExpressions();
 
 			var space2dimvsum = new Space2Dim("vectorpropertiesmagnitude", 200, 200, -50, 50, -50, 50);
 
@@ -168,69 +171,79 @@
 					return mathExpression;
 				}
 
+				summationMathExpression.RegisterExpression("vectormagnitude_sample", getMathExpression);
+
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p1x.subscribe(function (newValue) {
-					space2dimvsum.update();
-					if (!isRunning) {
-						isRunning = true;
-						var mathExpression1 = getMathExpression();
-						console.log("push changes[" + mathExpression1 + "]");
-						QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
-						QUEUE.Push(function () {
-							console.log("'k heb gedaan denk ik");
-							isRunning = false;
-							if (hasChanges) {
-								var mathExpression2 = getMathExpression();
-								console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
-								isRunning = true;
-								QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
-								QUEUE.Push(function () {
-									console.log("wat er nog te doen was is nu gedaan denk ik");
-									isRunning = false;
-								});
-								hasChanges = false;
-							}
-							else {
-								console.log("d'er is niets meer te doen");
-							}
-						});
+					var currentMathExpression = getMathExpression();
+					console.log("update of p1x: " + currentMathExpression);
 
-					}
-					else {
-						hasChanges = true;
-					}
+					space2dimvsum.update();
+					summationMathExpression.QueueUpdate();
+					// if (!isRunning) {
+					// 	isRunning = true;
+					// 	var mathExpression1 = getMathExpression();
+					// 	console.log("push changes[" + mathExpression1 + "]");
+					// 	QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
+					// 	QUEUE.Push(function () {
+					// 		console.log("'k heb gedaan denk ik");
+					// 		isRunning = false;
+					// 		if (hasChanges) {
+					// 			var mathExpression2 = getMathExpression();
+					// 			console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
+					// 			isRunning = true;
+					// 			QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
+					// 			QUEUE.Push(function () {
+					// 				console.log("wat er nog te doen was is nu gedaan denk ik");
+					// 				isRunning = false;
+					// 			});
+					// 			hasChanges = false;
+					// 		}
+					// 		else {
+					// 			console.log("d'er is niets meer te doen");
+					// 		}
+					// 	});
+
+					// }
+					// else {
+					// 	hasChanges = true;
+					// }
 				});
 				this.p1y.subscribe(function (newValue) {
-					space2dimvsum.update();
-					if (!isRunning) {
-						isRunning = true;
-						var mathExpression1 = getMathExpression();
-						console.log("push changes[" + mathExpression1 + "]");
-						QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
-						QUEUE.Push(function () {
-							console.log("'k heb gedaan denk ik");
-							isRunning = false;
-							if (hasChanges) {
-								var mathExpression2 = getMathExpression();
-								console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
-								isRunning = true;
-								QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
-								QUEUE.Push(function () {
-									console.log("wat er nog te doen was is nu gedaan denk ik");
-									isRunning = false;
-								});
-								hasChanges = false;
-							}
-							else {
-								console.log("d'er is niets meer te doen");
-							}
-						});
+					var currentMathExpression = getMathExpression();
+					console.log("update of p1x: " + currentMathExpression);
 
-					}
-					else {
-						hasChanges = true;
-					}
+					space2dimvsum.update();
+					summationMathExpression.QueueUpdate();
+					// if (!isRunning) {
+					// 	isRunning = true;
+					// 	var mathExpression1 = getMathExpression();
+					// 	console.log("push changes[" + mathExpression1 + "]");
+					// 	QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression1 + "}"]);
+					// 	QUEUE.Push(function () {
+					// 		console.log("'k heb gedaan denk ik");
+					// 		isRunning = false;
+					// 		if (hasChanges) {
+					// 			var mathExpression2 = getMathExpression();
+					// 			console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
+					// 			isRunning = true;
+					// 			QUEUE.Push(["Text", magnitudeSampleJax, "\\displaystyle{" + mathExpression2 + "}"]);
+					// 			QUEUE.Push(function () {
+					// 				console.log("wat er nog te doen was is nu gedaan denk ik");
+					// 				isRunning = false;
+					// 			});
+					// 			hasChanges = false;
+					// 		}
+					// 		else {
+					// 			console.log("d'er is niets meer te doen");
+					// 		}
+					// 	});
+
+					// }
+					// else {
+					// 	hasChanges = true;
+					// }
 				});
 
 				this.vectorsToShow = [vector1];
