@@ -14,6 +14,11 @@ MathExpressions.prototype.RegisterExpression = function(containerId, expressionP
         console.log("set me._jaxExpression");
         me._jaxExpression = MathJax.Hub.getAllJax(containerId)[0];
         console.log("me._jaxExpression is " + me._jaxExpression);
+
+        // apply it immediately
+        var mathExpression2 = me._expressionProvider();
+        me._mathJaxQueue.Push(["Text", me._jaxExpression, "\\displaystyle{" + mathExpression2 + "}"]);
+
     });
 }
 

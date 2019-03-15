@@ -226,7 +226,7 @@ function createVectors(space2Dim, newVectors) {
 
     var distSize = -5;
     vectors.filter(function (d) { return d._showSize != 0 }).append("text")
-        .attr("class", "vectorsize")
+        .attr("class", function (d) { return "vectorsize" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .text(function (d) { return d3.format(".1f")(d.getSize()); })
         .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -239,7 +239,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var res = (vuy * distSize) + ((p1x + p2x) / 2);
-            console.log("x: " + res);
+            //console.log("x: " + res);
             return res;
         })
         .attr("y", function (d) {
@@ -253,7 +253,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var res = -(vux * distSize) + ((p1y + p2y) / 2);
-            console.log("y: " + res);
+            //console.log("y: " + res);
             return res;
         })
 
@@ -394,7 +394,7 @@ function updateVectors(space2Dim, vectors) {
     var distSize = -5;
     vectors.select(".vectorsize")
         .text(function (d) { return d3.format(".1f")(d.getSize()); })
-       .attr("x", function (d) {
+        .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
             var p1y = space2Dim.convertYToCanvas(d._p1.getY());
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());

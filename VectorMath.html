@@ -2,9 +2,17 @@
 <html>
 <head>
 	<title>Learn Vector math</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+		});
+	</script>
+	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
 	<script type="text/javascript" src="./js/circle.js"></script>
@@ -14,21 +22,39 @@
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 
 	<style>
+		.divcentered {
+			display: table;
+			margin: 0 auto;
+		}
+
+		.vectorsum_sample_container {
+			height: 100px;
+		}
+		.vectordiff_sample_container {
+			height: 100px;
+		}
+		.vectormult_sample_container {
+			height: 100px;
+		}
+
 		.vectorline.vtranslated {
 			stroke: #ff6a00;
-			stroke-width: 1;
+			stroke-width: 2;
 			fill: #ff6a00;
 		}
+
 		.vectorarrow.vtranslated {
 			stroke: #ff6a00;
 			stroke-width: 1;
 			fill: #ff6a00;
 		}
+
 		.vectorline.calcresult {
 			stroke: #00ff21;
-			stroke-width: 1;
+			stroke-width: 2;
 			fill: #00ff21;
 		}
+
 		.vectorarrow.calcresult {
 			stroke: #00ff21;
 			stroke-width: 1;
@@ -38,15 +64,94 @@
 
 </head>
 <body>
-	<div id="vectoraddition"></div>
-	<div id="vectorsubtraction"></div>
-	<input type="range" min="-5" max="5" step="0.1" data-bind="value: multiplyer, valueUpdate: 'input'" />
-	<div id="vectorscalarmulti"></div>
+	<div>
+		<h1>Sum of Vectors</h1>
+		<p>Two vector in 2-dimensional space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+		<p>The sum of two vectors is the vector resulting from the addition of the components of the original vectors:</p>
+		<p>
+			$$\begin{aligned}
+			c &= a + b\\
+			&= (a_1 + b_1, a_2 + b_2)
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="vectorsum_sample_container">
+			<div id="vectorsum_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="vectoraddition" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>Difference of Vectors</h1>
+		<p>Two vectors in 2-dimensional space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+		<p>The difference of two vectors is the vector resulting from the differences of the components of the original vectors:</p>
+		<p>
+			$$\begin{aligned}
+			c &= a - b\\
+			&= (a_1 - b_1, a_2 - b_2)
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="vectordiff_sample_container">
+			<div id="vectordiff_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="vectorsubtraction" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>Scalar multiplication</h1>
+		<p>A vector $a$ in 2-dimensional space and a scalar $\\lambda$ (a number):</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\lambda
+			\end{aligned}$$
+		</p>
+		<p>A vector multiplied by a scalar is the vector resulting of the multiplication of each component of the original vector by the scalar:</p>
+		<p>
+			$$\begin{aligned}
+			c &= \lambda a\\
+			&= (\lambda a_1, \lambda a_2)
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="vectormult_sample_container">
+			<div id="vectormult_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<p>Change the value of scalar $\\lambda$ by dragging the slider:</p>
+		<div class="divcentered">
+			<input type="range" min="-5" max="5" step="0.1" data-bind="value: multiplyer, valueUpdate: 'input'" />
+		</div>
+		<div id="vectorscalarmulti" class="divcentered"></div>
+	</div>
 
 	<script type="text/javascript">
 
 		function createVectorAdditionSample() {
-			var space2dimvsum = new Space2Dim("vectoraddition", 200, 200, 0, 100, 0, 100);
+			var summationMathExpression = new MathExpressions();
+			var space2dimvsum = new Space2Dim("vectoraddition", 300, 300, 0, 100, 0, 100);
 
 			function VectorSumViewModel() {
 				this.p0x = ko.observable(0);
@@ -63,10 +168,10 @@
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
@@ -103,7 +208,23 @@
 					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
-				//this.circlesToShow = [circle1];
+				var getMathExpression = function () {
+					var p1XFormatted = d3.format(".1f")(p1.getX());
+					var p1YFormatted = d3.format(".1f")(p1.getY());
+					var p2XFormatted = d3.format(".1f")(p2.getX());
+					var p2YFormatted = d3.format(".1f")(p2.getY());
+					var pSumXFormatted = d3.format(".1f")(psum.getX());
+					var pSumYFormatted = d3.format(".1f")(psum.getY());
+
+					var mathExpression = "\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
+						+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
+						+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
+						+ " \\end{aligned}";
+					return mathExpression;
+				}
+
+				summationMathExpression.RegisterExpression("vectorsum_sample", getMathExpression);
+
 				this.vectorsToShow = [vector1, vector2, vector1t, vector2t, vectorsum];
 			}
 
@@ -119,7 +240,8 @@
 
 
 		function createVectorDiffSample() {
-			var space2dimvdiff = new Space2Dim("vectorsubtraction", 200, 200, -100, 100, -100, 100);
+			var diffMathExpression = new MathExpressions();
+			var space2dimvdiff = new Space2Dim("vectorsubtraction", 300, 300, -100, 100, -100, 100);
 
 			function VectorDiffViewModel() {
 				this.p0x = ko.observable(0);
@@ -136,10 +258,10 @@
 
 				this.p0x.subscribe(function (newValue) { space2dimvdiff.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvdiff.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvdiff.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvdiff.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvdiff.update(); });
-				this.p2y.subscribe(function (newValue) { space2dimvdiff.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
+				this.p2x.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
+				this.p2y.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
@@ -160,13 +282,30 @@
 
 				var vector2t = new Vector2Dim(
 					{ p1: p1, p2: pdiff },
-					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
+					{ name: "-B", p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
 				var vectordiff = new Vector2Dim(
 					{ p1: p0, p2: pdiff },
 					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
+
+				var getMathExpression = function () {
+					var p1XFormatted = d3.format(".1f")(p1.getX());
+					var p1YFormatted = d3.format(".1f")(p1.getY());
+					var p2XFormatted = d3.format(".1f")(p2.getX());
+					var p2YFormatted = d3.format(".1f")(p2.getY());
+					var pDiffXFormatted = d3.format(".1f")(pdiff.getX());
+					var pDiffYFormatted = d3.format(".1f")(pdiff.getY());
+
+					var mathExpression = "\\begin{aligned} c &= (a_1 - b_1, a_2 - b_2) \\\\"
+						+ " &= (" + p1XFormatted + " - " + p2XFormatted + ", " + p1YFormatted + " - " + p2YFormatted + ") \\\\"
+						+ " &= (" + pDiffXFormatted + ", " + pDiffYFormatted + ")"
+						+ " \\end{aligned}";
+					return mathExpression;
+				}
+
+				diffMathExpression.RegisterExpression("vectordiff_sample", getMathExpression);
 
 				this.vectorsToShow = [vector1, vector2, vector2t, vectordiff];
 			}
@@ -180,7 +319,8 @@
 
 
 		function createVectorScalarMultiSample() {
-			var space2dimvmult = new Space2Dim("vectorscalarmulti", 200, 200, -100, 100, -100, 100);
+			var multMathExpression = new MathExpressions();
+			var space2dimvmult = new Space2Dim("vectorscalarmulti", 300, 300, -100, 100, -100, 100);
 
 			function VectorMultViewModel() {
 				this.p0x = ko.observable(0);
@@ -191,20 +331,21 @@
 
 				this.multiplyer = ko.observable(2);
 
-				this.pdiffx = ko.computed(function () { return Number(this.p1x()) * Number(this.multiplyer()); }, this);
-				this.pdiffy = ko.computed(function () { return Number(this.p1y()) * Number(this.multiplyer()); }, this);
+				this.pmultx = ko.computed(function () { return Number(this.p1x()) * Number(this.multiplyer()); }, this);
+				this.pmulty = ko.computed(function () { return Number(this.p1y()) * Number(this.multiplyer()); }, this);
 
 				this.p0x.subscribe(function (newValue) { space2dimvmult.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvmult.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvmult.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvmult.update(); });
-				this.multiplyer.subscribe(function (newValue) { space2dimvmult.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvmult.update();; multMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvmult.update();; multMathExpression.QueueUpdate(); });
+				this.multiplyer.subscribe(function (newValue) { space2dimvmult.update();; multMathExpression.QueueUpdate(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
 				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var lambda = this.multiplyer;
 
-				var pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
+				var pmult = new Point2Dim(this.pmultx, this.pmulty);
 
 				var vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
@@ -212,9 +353,27 @@
 				);
 
 				var vectormult = new Vector2Dim(
-					{ p1: p0, p2: pdiff },
+					{ p1: p0, p2: pmult },
 					{ name: "C", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
+
+				var getMathExpression = function () {
+					var p1XFormatted = d3.format(".1f")(p1.getX());
+					var p1YFormatted = d3.format(".1f")(p1.getY());
+					var pmultXFormatted = d3.format(".1f")(pmult.getX());
+					var pmultYFormatted = d3.format(".1f")(pmult.getY());
+					var lambdaFormatted = d3.format(".1f")(lambda());
+
+					var mathExpression = "\\begin{aligned}"
+						+ " \\lambda &= " + lambdaFormatted + " \\\\"
+						+ " c &= (\\lambda a_1, \\lambda a_2) \\\\"
+						+ " &= (" + lambdaFormatted + " * " + p1XFormatted + ", " + lambdaFormatted + " * " + p1YFormatted + ") \\\\"
+						+ " &= (" + pmultXFormatted + ", " + pmultYFormatted + ")"
+						+ " \\end{aligned}";
+					return mathExpression;
+				}
+
+				multMathExpression.RegisterExpression("vectormult_sample", getMathExpression);
 
 				this.vectorsToShow = [vector1, vectormult];
 			}
@@ -227,7 +386,6 @@
 
 			ko.applyBindings(vmult);
 		}
-
 
 		createVectorAdditionSample();
 		createVectorDiffSample();
