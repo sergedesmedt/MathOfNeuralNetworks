@@ -17,12 +17,14 @@ function Vector2Dim(props, config) {
     if (this._deftype == "undefined")
         throw "you must either specify an endpoint or a delta between the starting point and the endpoint";
 
+    this._nameDist = 10;
     this._name =  "";
     if (config.hasOwnProperty("name")) {
         this._name = config["name"];
         //console.log("this._name: " + this._name);
     }
 
+    this._sizeDist = -10;
     this._showSize = 0;
     if (config.hasOwnProperty("showSize")) {
         this._showSize = config["showSize"];
@@ -61,10 +63,18 @@ function Vector2Dim(props, config) {
 
 }
 
+Vector2Dim.prototype.getDX = function () {
+    return this._p2.getX() - this._p1.getX();
+}
+
+Vector2Dim.prototype.getDY = function () {
+    return this._p2.getY() - this._p1.getY();
+}
+
 Vector2Dim.prototype.getSize = function () {
     var vulen = Math.sqrt(
-        ((this._p2.getX() - this._p1.getX()) * (this._p2.getX() - this._p1.getX())) +
-        ((this._p2.getY() - this._p1.getY()) * (this._p2.getY() - this._p1.getY()))
+        (this.getDX() * this.getDX()) +
+        (this.getDY() * this.getDY())
     )
     return vulen;
 }
@@ -82,6 +92,9 @@ Vector2Dim.prototype.getAngleToX = function () {
     return multiplyer * Math.acos(cosx)
 }
 
+Vector2Dim.dotProduct = function (v1, v2) {
+    return (v1.getDX() * v2.getDX()) + (v1.getDY() * v2.getDY());
+}
 
 Vector2Dim.global = function (space2Dim) {
     var svg = space2Dim.getCanvas();
@@ -195,7 +208,11 @@ function createVectors(space2Dim, newVectors) {
         .on("mouseout", onVectorEndpointMouseOut)
         ;
 
-    var distName = 5;
+
+    var allNameRect = vectors.filter(function (d) { return d._name != "" }).append("rect")
+        .attr("class", "vectornamerect")
+
+    //var distName = 5;
     vectors.filter(function (d) { return d._name != "" }).append("text")
         .attr("class", "vectorname")
         .text(function (d) { return d._name; })
@@ -209,7 +226,9 @@ function createVectors(space2Dim, newVectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * distName) + ((p1x + p2x) / 2);
+            var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
+            console.log("namex: " + namex);
+            return namex;
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -221,10 +240,54 @@ function createVectors(space2Dim, newVectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * distName) + ((p1y + p2y) / 2);
+            var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
+            console.log("namey: " + namey);
+            return namey;
         })
 
-    var distSize = -5;
+    vectors.selectAll(".vectorname")
+        .each(function (d, i, elem) {
+            //console.log("vectorname each > d:" + d + "i: " + i + ", elem: " + elem);
+            console.log("vectorname each > bb:" + this.getBBox());
+            d.__bb = this.getBBox();
+        })
+
+    var paddingLeftRight = 18; 
+    var paddingTopBottom = 5;
+
+    vectors.selectAll(".vectornamerect")
+        .attr("x", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
+            console.log("namex: " + namex);
+            return namex - d.__bb.width / 2 - paddingLeftRight / 2;
+        })
+        .attr("y", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
+            console.log("namey: " + namey);
+            return namey - d.__bb.height + paddingTopBottom / 2;
+        })
+        .attr("width", function (d) { return d.__bb.width + paddingLeftRight; })
+        .attr("height", function (d) { return d.__bb.height + paddingTopBottom; });
+
+    //var distSize = -5;
     vectors.filter(function (d) { return d._showSize != 0 }).append("text")
         .attr("class", function (d) { return "vectorsize" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .text(function (d) { return d3.format(".1f")(d.getSize()); })
@@ -238,9 +301,9 @@ function createVectors(space2Dim, newVectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            var res = (vuy * distSize) + ((p1x + p2x) / 2);
-            //console.log("x: " + res);
-            return res;
+            var lengthx = (vuy * d._sizeDist) + ((p1x + p2x) / 2);
+            console.log("lengthx: " + lengthx);
+            return lengthx;
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -252,9 +315,9 @@ function createVectors(space2Dim, newVectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            var res = -(vux * distSize) + ((p1y + p2y) / 2);
-            //console.log("y: " + res);
-            return res;
+            var lengthy = -(vux * d._sizeDist) + ((p1y + p2y) / 2);
+            console.log("lengthy: " + lengthy);
+            return lengthy;
         })
 
     vectors.filter(function (d) { return d._dvaluelvl != 0 }).append("line")
@@ -376,7 +439,9 @@ function updateVectors(space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * distName) + ((p1x + p2x) / 2);
+            var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
+            console.log("namex: " + namex);
+            return namex;
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -388,8 +453,45 @@ function updateVectors(space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * distName) + ((p1y + p2y) / 2);
+            var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
+            console.log("namey: " + namey);
+            return namey;
         })
+
+    var paddingLeftRight = 18;
+    var paddingTopBottom = 5;
+
+    vectors.selectAll(".vectornamerect")
+        .attr("x", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
+            console.log("namex: " + namex);
+            return namex - d.__bb.width / 2 - paddingLeftRight / 2;
+        })
+        .attr("y", function (d) {
+            var p1x = space2Dim.convertXToCanvas(d._p1.getX());
+            var p1y = space2Dim.convertYToCanvas(d._p1.getY());
+            var p2x = space2Dim.convertXToCanvas(d._p2.getX());
+            var p2y = space2Dim.convertYToCanvas(d._p2.getY());
+
+            var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
+            var vux = (p2x - p1x) / vulen;
+            var vuy = (p2y - p1y) / vulen;
+
+            var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
+            console.log("namey: " + namey);
+            return namey - d.__bb.height + paddingTopBottom / 2;
+        })
+        .attr("width", function (d) { return d.__bb.width + paddingLeftRight; })
+        .attr("height", function (d) { return d.__bb.height + paddingTopBottom; });
 
     var distSize = -5;
     vectors.select(".vectorsize")
@@ -404,7 +506,9 @@ function updateVectors(space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return (vuy * distSize) + ((p1x + p2x) / 2);
+            var lengthx = (vuy * d._sizeDist) + ((p1x + p2x) / 2);
+            console.log("lengthx: " + lengthx);
+            return lengthx;
         })
         .attr("y", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
@@ -416,7 +520,9 @@ function updateVectors(space2Dim, vectors) {
             var vux = (p2x - p1x) / vulen;
             var vuy = (p2y - p1y) / vulen;
 
-            return -(vux * distSize) + ((p1y + p2y) / 2);
+            var lengthy = -(vux * d._sizeDist) + ((p1y + p2y) / 2);
+            console.log("lengthy: " + lengthy);
+            return lengthy;
         })
 
     vectors.select(".vectorp1x")

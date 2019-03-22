@@ -31,6 +31,11 @@
 
 }
 
+VectorAngle2Dim.prototype.getAngle = function()
+{
+    return getAngleBetweenVectors(this._vs, this._ve);
+}
+
 VectorAngle2Dim.draw = function (space2Dim, angles) {
     var space = space2Dim;
 
@@ -55,54 +60,19 @@ VectorAngle2Dim.draw = function (space2Dim, angles) {
         .text(function (d) {
             var angleBetween = getAngleBetweenVectors(d._vs, d._ve);
             console.log("VectorAngle2Dim.update: angleBetween = " + angleBetween);
-            return angleBetween;
+            return d3.format(".2f")(angleBetween);
         })
         .attr("x", function (d) {
             var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
             var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
-            var angleMid = (angleVs + angleVe) / 2;
 
-            return space.convertXToCanvas(d._r) + (5.0 * Math.cos(angleMid));
-        })
-        .attr("y", function (d) {
-            var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
-            var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
-            var angleMid = (angleVs + angleVe) / 2;
-
-            return space.convertYToCanvas(d._r) + (5.0 * Math.cos(angleMid));
-        })
-}
-
-VectorAngle2Dim.update = function (space2Dim, angles) {
-    //console.log("VectorAngle2Dim.update");
-
-    var space = space2Dim;
-
-    var svg = space2Dim.getCanvas();
-
-    var v2varcs = svg.selectAll(".vec2vecangle")
-        .data(angles);
-
-    v2varcs.select(".vec2vecarc")
-        .attr("d", function (d) {
-            return vector2vectorArc(space, d);
-        })
-        ;
-
-    v2varcs.select(".vectorangle")
-        .text(function (d) {
-            var angleBetween = getAngleBetweenVectors(d._vs, d._ve);
-            //console.log("VectorAngle2Dim.update: angleBetween = " + angleBetween);
-            return angleBetween;
-        })
-        .attr("x", function (d) {
-            var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
-            var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
+            while (angleVs > angleVe)
+                angleVs = angleVs - 2 * Math.PI;
 
             var angleVsDegr = angleVs * 180 / Math.PI;
             var angleVeDegr = angleVe * 180 / Math.PI;
-            console.log("VectorAngle2Dim.update: angleVsDegr = " + angleVsDegr + ", angleVeDegr: " + angleVeDegr);
 
+            console.log("VectorAngle2Dim.update: angleVsDegr = " + angleVsDegr + ", angleVeDegr: " + angleVeDegr);
 
             var angleMid = angleVs + (angleVe - angleVs) / 2;
 
@@ -127,6 +97,89 @@ VectorAngle2Dim.update = function (space2Dim, angles) {
         .attr("y", function (d) {
             var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
             var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
+
+            while (angleVs > angleVe)
+                angleVs = angleVs - 2 * Math.PI;
+
+            var angleMid = angleVs + (angleVe - angleVs) / 2;
+
+            var angleMidDegr = angleMid * 180 / Math.PI;
+            while (angleMidDegr < 0) {
+                angleMidDegr = angleMidDegr + 360;
+            }
+            angleMidDegr = angleMidDegr % 360;
+
+            var origY = d._vs._p1.getY();
+            var domainZero = space.convertXFromCanvas(0);
+            var domainEnd = space.convertXFromCanvas((d._r + 5.0));
+            var domainR = domainEnd - domainZero;
+
+            var result = space.convertYToCanvas(origY + (domainR * Math.sin(angleMid)));
+            return result;
+        })
+}
+
+VectorAngle2Dim.update = function (space2Dim, angles) {
+    //console.log("VectorAngle2Dim.update");
+
+    var space = space2Dim;
+
+    var svg = space2Dim.getCanvas();
+
+    var v2varcs = svg.selectAll(".vec2vecangle")
+        .data(angles);
+
+    v2varcs.select(".vec2vecarc")
+        .attr("d", function (d) {
+            return vector2vectorArc(space, d);
+        })
+        ;
+
+    v2varcs.select(".vectorangle")
+        .text(function (d) {
+            var angleBetween = getAngleBetweenVectors(d._vs, d._ve);
+            //console.log("VectorAngle2Dim.update: angleBetween = " + angleBetween);
+            return d3.format(".2f")(angleBetween);
+        })
+        .attr("x", function (d) {
+            var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
+            var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
+
+            while (angleVs > angleVe)
+                angleVs = angleVs - 2 * Math.PI;
+
+            var angleVsDegr = angleVs * 180 / Math.PI;
+            var angleVeDegr = angleVe * 180 / Math.PI;
+
+            console.log("VectorAngle2Dim.update: angleVsDegr = " + angleVsDegr + ", angleVeDegr: " + angleVeDegr);
+
+            var angleMid = angleVs + (angleVe - angleVs) / 2;
+
+            var angleMidDegr = angleMid * 180 / Math.PI;
+            while (angleMidDegr < 0) {
+                angleMidDegr = angleMidDegr + 360;
+            }
+            angleMidDegr = angleMidDegr % 360;
+
+            console.log("VectorAngle2Dim.update: angleMidDegr = " + angleMidDegr + ", cos: " + Math.cos(angleMid));
+
+            var origx = d._vs._p1.getX();
+            var domainZero = space.convertXFromCanvas(0);
+            var domainEnd = space.convertXFromCanvas((d._r + 5.0));
+            var domainR = domainEnd - domainZero;
+            //console.log("VectorAngle2Dim.update: origx = " + origx + ", domainR: " + domainR);
+
+            var result = space.convertXToCanvas(origx + (domainR * Math.cos(angleMid)));
+            //console.log("VectorAngle2Dim.update: result = " + result + ", domainR: " + domainR);
+            return result;
+        })
+        .attr("y", function (d) {
+            var angleVs = getAngle(d._vs._p2.getX() - d._vs._p1.getX(), d._vs._p2.getY() - d._vs._p1.getY());
+            var angleVe = getAngle(d._ve._p2.getX() - d._ve._p1.getX(), d._ve._p2.getY() - d._ve._p1.getY());
+
+            while (angleVs > angleVe)
+                angleVs = angleVs - 2 * Math.PI;
+
             var angleMid = angleVs + (angleVe - angleVs) / 2;
 
             var angleMidDegr = angleMid * 180 / Math.PI;

@@ -2,14 +2,23 @@
 <html>
 <head>
 	<title>Learn Dot product</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+		});
+	</script>
+	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
 	<script type="text/javascript" src="./js/vector.js"></script>
 	<script type="text/javascript" src="./js/vectorangle.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 	<link rel="stylesheet" type="text/css" href="./css/vectorangle.css">
@@ -47,9 +56,91 @@
 	</style>
 </head>
 <body>
-	<div id="dotproduct"></div>
-	<div id="dotproductcommutativity"></div>
-	<div id="dotproductdistributivity"></div>
+	<div>
+		<h1>Dotproduct of two vectors</h1>
+		<p>Two vectors in 2-dimensinal space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+		<p>The dot-product is the scalar (a real number) resulting of taking the sum of the products of the corresponding components of the two vectors:</p>
+		<p>
+			$$ \begin{aligned}
+			c &= a \cdot b\\
+			&= a_1 b_1 + a_2 b_2\\
+			&= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="dotproduct_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="dotproduct" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>The Dotproduct of two vectors is commutative</h1>
+		<p>Two vectors in 2-dimensinal space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+		<p>The dot-product is commutative:</p>
+		<p>
+			$$ \begin{aligned}
+			c &= a \cdot b\\
+			&= a_1 b_1 + a_2 b_2\\
+			&= b_1 a_1 + b_2 a_2\\
+			&= b \cdot a\\
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="dotproductcommutativity_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="dotproductcommutativity" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>The Dotproduct is distributive</h1>
+		<p>Three vectors in 2-dimensinal space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2\\
+			c &= (c_1, c_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+		<p>The dot-product is distributive:</p>
+		<p>
+			$$ \begin{aligned}
+			d &= a \cdot (b+c)\\
+			&= a_1 (b_1 + c_1) + a_2 (b_2 + c_2)\\
+			&= a_1 b_1 + a_1 c_1 + a_2 b_2 + a_2 c_2\\
+			&= a_1 b_1 + a_2 b_2 + a_1 c_1 + a_2 c_2\\
+			&= a \cdot b + a \cdot c\\
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="dotproductdistributive_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div id="dotproductdistributivity" class="divcentered"></div>
+	</div>
 
 	<script type="text/javascript">
 
@@ -84,6 +175,7 @@
 		}
 
 		function createDotProductSample() {
+			var magnitudeMathExpression = new MathExpressions();
 			var space2dimvsum = new Space2Dim("dotproduct", 400, 400, -100, 100, -100, 100);
 
 			function DotProductViewModel() {
@@ -97,26 +189,18 @@
 				this.p2y = ko.observable(50);
 
 
-				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
-
-
 				var p0 = new Point2Dim(this.p0x, this.p0y);
 				var p1 = new Point2Dim(this.p1x, this.p1y);
 				var p2 = new Point2Dim(this.p2x, this.p2y);
 
 				var vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
-					{ name: "V1", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+					{ name: "b", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				var vector2 = new Vector2Dim(
 					{ p1: p0, p2: p2 },
-					{ name: "V2", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
+					{ name: "a", dvaluelvl: 0, showSize: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 
@@ -150,13 +234,12 @@
 
 				var vector1onv2 = new Vector2Dim(
 					{ p1: p0, p2: p1onv2 },
-					{ name: "v1p", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
+					{ name: "bp", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
 				)
 				var vector1onv2projl = new Vector2Dim(
 					{ p1: p1, p2: p1onv2 },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
-
 
 
 
@@ -166,7 +249,39 @@
 				);
 
 
-				//this.circlesToShow = [circle1];
+				var getMathExpression = function () {
+					var a1Formatted = d3.format(".2f")(p2.getX());
+					var a2Formatted = d3.format(".2f")(p2.getY());
+					var b1Formatted = d3.format(".2f")(p1.getX());
+					var b2Formatted = d3.format(".2f")(p1.getY());
+
+					var aLengthFormatted = d3.format(".2f")(vector2.getSize());
+					var bLengthFormatted = d3.format(".2f")(vector1.getSize());
+
+					var angleFormatted = d3.format(".2f")(angle1.getAngle());
+
+					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(vector1, vector2));
+
+					var mathExpression = "\\begin{aligned}"
+						+ "c &= a \\cdot b\\\\"
+						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\"
+						+ "&= " + aLengthFormatted + " * " + bLengthFormatted + " * cos(" + angleFormatted + ") \\\\"
+						+ "&= " + dotProductFormatted
+						+ "\\end{aligned}";
+
+					return mathExpression;
+				}
+
+				magnitudeMathExpression.RegisterExpression("dotproduct_sample", getMathExpression);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+
 				this.vectorsToShow = [vector1, vector2, vector1onv2, vector1onv2projl];
 				this.anglesToShow = [angle1];
 
@@ -181,6 +296,7 @@
 		}
 
 		function createDotProductCommutativitySample() {
+			var magnitudeMathExpression = new MathExpressions();
 			var space2dimvsum = new Space2Dim("dotproductcommutativity", 400, 400, -100, 100, -100, 100);
 
 			function DotProductCommutativityViewModel() {
@@ -192,14 +308,6 @@
 
 				this.p2x = ko.observable(10);
 				this.p2y = ko.observable(50);
-
-
-				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
@@ -302,6 +410,41 @@
 				);
 
 
+				var getMathExpression = function () {
+					var a1Formatted = d3.format(".2f")(p2.getX());
+					var a2Formatted = d3.format(".2f")(p2.getY());
+					var b1Formatted = d3.format(".2f")(p1.getX());
+					var b2Formatted = d3.format(".2f")(p1.getY());
+
+					var aLengthFormatted = d3.format(".2f")(vector2.getSize());
+					var bLengthFormatted = d3.format(".2f")(vector1.getSize());
+
+					var angleFormatted = d3.format(".2f")(angle1.getAngle());
+
+					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(vector1, vector2));
+
+					var mathExpression = "\\begin{aligned}"
+						+ "c &= a \\cdot b\\\\"
+						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\"
+						+ "&= " + b1Formatted + " * " + a1Formatted + " + " + b2Formatted + " * " + a2Formatted + "\\\\"
+						+ "&= b \\cdot a\\\\"
+						+ "&= " + dotProductFormatted
+						+ "\\end{aligned}";
+
+					return mathExpression;
+				}
+
+				magnitudeMathExpression.RegisterExpression("dotproductcommutativity_sample", getMathExpression);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+
+
 				//this.circlesToShow = [circle1];
 				this.vectorsToShow = [vector1, vector2, vector1onv2, vector1onv2projl, vector2onv1, vector2onv1projl];
 				this.anglesToShow = [angle1];
@@ -317,6 +460,7 @@
 		}
 
 		function createDotProductDistributivitySample() {
+			var magnitudeMathExpression = new MathExpressions();
 			var space2dimvsum = new Space2Dim("dotproductdistributivity", 400, 400, -100, 100, -100, 100);
 
 			function DotProductCommutativityViewModel() {
@@ -334,16 +478,6 @@
 
 				this.psumx = ko.computed(function () { return Number(this.p2x()) + Number(this.p1x()); }, this);
 				this.psumy = ko.computed(function () { return Number(this.p2y()) + Number(this.p1y()); }, this);
-
-
-				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p3x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p3y.subscribe(function (newValue) { space2dimvsum.update(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
@@ -410,6 +544,39 @@
 					{ vs: vector1, ve: vector2 },
 					{ showAngle: 1 }
 				);
+
+
+				var getMathExpression = function () {
+					var a1Formatted = d3.format(".2f")(p2.getX());
+					var a2Formatted = d3.format(".2f")(p2.getY());
+					var b1Formatted = d3.format(".2f")(p1.getX());
+					var b2Formatted = d3.format(".2f")(p1.getY());
+					var c1Formatted = d3.format(".2f")(p3.getX());
+					var c2Formatted = d3.format(".2f")(p3.getY());
+
+					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(vector1, vectorsum));
+
+					var mathExpression = "\\begin{aligned}"
+						+ "d &= a \\cdot (b+c)\\\\"
+						+ "&= " + a1Formatted + " * (" + b1Formatted + " + " + c1Formatted + ") + " + a2Formatted + " * (" + b2Formatted + " + " + c2Formatted +") \\\\"
+						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a1Formatted + " * " + c1Formatted + " + " + a2Formatted + " * " + b2Formatted + " + " + a2Formatted + " * " + c2Formatted + "\\\\"
+						+ "&= " + dotProductFormatted
+						+ "\\end{aligned}";
+
+					return mathExpression;
+				}
+
+				magnitudeMathExpression.RegisterExpression("dotproductdistributive_sample", getMathExpression);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p3x.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
+				this.p3y.subscribe(function (newValue) { space2dimvsum.update(); magnitudeMathExpression.QueueUpdate(); });
 
 
 				//this.circlesToShow = [circle1];

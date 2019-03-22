@@ -18,25 +18,11 @@
 	<script type="text/javascript" src="./js/circle.js"></script>
 	<script type="text/javascript" src="./js/vector.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 
 	<style>
-		.divcentered {
-			display: table;
-			margin: 0 auto;
-		}
-
-		.vectorsum_sample_container {
-			height: 100px;
-		}
-		.vectordiff_sample_container {
-			height: 100px;
-		}
-		.vectormult_sample_container {
-			height: 100px;
-		}
-
 		.vectorline.vtranslated {
 			stroke: #ff6a00;
 			stroke-width: 2;
@@ -81,7 +67,7 @@
 			\end{aligned}$$
 		</p>
 		<p>A sample:</p>
-		<div class="vectorsum_sample_container">
+		<div class="sample_container_height100">
 			<div id="vectorsum_sample">
 				$${}$$
 			</div>
@@ -107,7 +93,7 @@
 			\end{aligned}$$
 		</p>
 		<p>A sample:</p>
-		<div class="vectordiff_sample_container">
+		<div class="sample_container_height100">
 			<div id="vectordiff_sample">
 				$${}$$
 			</div>
@@ -133,7 +119,7 @@
 			\end{aligned}$$
 		</p>
 		<p>A sample:</p>
-		<div class="vectormult_sample_container">
+		<div class="sample_container_height100">
 			<div id="vectormult_sample">
 				$${}$$
 			</div>
@@ -157,64 +143,64 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(40);
-				this.p1y = ko.observable(30);
+				this.a1 = ko.observable(40);
+				this.a2 = ko.observable(30);
 
-				this.p2x = ko.observable(10);
-				this.p2y = ko.observable(50);
+				this.b1 = ko.observable(10);
+				this.b2 = ko.observable(50);
 
-				this.psumx = ko.computed(function () { return Number(this.p2x()) + Number(this.p1x()); }, this);
-				this.psumy = ko.computed(function () { return Number(this.p2y()) + Number(this.p1y()); }, this);
+				this.c1 = ko.computed(function () { return Number(this.a1()) + Number(this.b1()); }, this);
+				this.c2 = ko.computed(function () { return Number(this.a2()) + Number(this.b2()); }, this);
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
-				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.a1.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.a2.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.b1.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
+				this.b2.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
-				var p2 = new Point2Dim(this.p2x, this.p2y);
+				var a = new Point2Dim(this.a1, this.a2);
+				var b = new Point2Dim(this.b1, this.b2);
 
-				var psum = new Point2Dim(this.psumx, this.psumy);
+				var c = new Point2Dim(this.c1, this.c2);
 
 				//var circle1 = new Circle(p3);
 				//var circle2 = new Circle(p2);
 
 				var vector1 = new Vector2Dim(
-					{ p1: p0, p2: p1 },
-					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+					{ p1: p0, p2: a },
+					{ name: "a", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				var vector1t = new Vector2Dim(
-					{ p1: p2, p2: psum },
+					{ p1: a, p2: c },
 					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
 				var vector2 = new Vector2Dim(
-					{ p1: p0, p2: p2 },
-					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
+					{ p1: p0, p2: b },
+					{ name: "b", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
 				var vector2t = new Vector2Dim(
-					{ p1: p1, p2: psum },
+					{ p1: b, p2: c },
 					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
 				var vectorsum = new Vector2Dim(
-					{ p1: p0, p2: psum },
-					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+					{ p1: p0, p2: c },
+					{ name: "c", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
 				var getMathExpression = function () {
-					var p1XFormatted = d3.format(".1f")(p1.getX());
-					var p1YFormatted = d3.format(".1f")(p1.getY());
-					var p2XFormatted = d3.format(".1f")(p2.getX());
-					var p2YFormatted = d3.format(".1f")(p2.getY());
-					var pSumXFormatted = d3.format(".1f")(psum.getX());
-					var pSumYFormatted = d3.format(".1f")(psum.getY());
+					var p1XFormatted = d3.format(".1f")(a.getX());
+					var p1YFormatted = d3.format(".1f")(a.getY());
+					var p2XFormatted = d3.format(".1f")(b.getX());
+					var p2YFormatted = d3.format(".1f")(b.getY());
+					var pSumXFormatted = d3.format(".1f")(c.getX());
+					var pSumYFormatted = d3.format(".1f")(c.getY());
 
 					var mathExpression = "\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
 						+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"

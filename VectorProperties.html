@@ -1,11 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+	<!--http://adereth.github.io/blog/2013/11/29/colorful-equations/-->
 	<title>Learn Vector properties</title>
 	<script type="text/x-mathjax-config">
 		MathJax.Hub.Config({
 		showProcessingMessages: false,
-		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
 		});
 	</script>
 	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
@@ -19,15 +21,11 @@
 	<script type="text/javascript" src="./js/vector.js"></script>
 	<script type="text/javascript" src="./js/vectorangle.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 	<link rel="stylesheet" type="text/css" href="./css/circle.css">
 	<style>
-		.divcentered {
-			display: table;
-			margin: 0 auto;
-		}
-
 		.vectormagnitude_sample_container {
 			height: 100px;
 		}
@@ -42,22 +40,40 @@
 			fill: #aaaaaa;
 		}
 
-		.vectorline.proj {
+		.vectorline.projx {
 			stroke: #ff6a00;
 			stroke-width: 2;
 			fill: #ff6a00;
 		}
 
-		.vectorarrow.proj {
+		.vectorarrow.projx {
 			stroke: #ff6a00;
 			stroke-width: 2;
 			fill: #ff6a00;
 		}
 
-		.vectorsize.proj {
+		.vectorsize.projx {
 			stroke: #ff6a00;
 			stroke-width: 1;
 			fill: #ff6a00;
+		}
+
+		.vectorline.projy {
+			stroke: #00ff21;
+			stroke-width: 2;
+			fill: #00ff21;
+		}
+
+		.vectorarrow.projy {
+			stroke: #00ff21;
+			stroke-width: 2;
+			fill: #00ff21;
+		}
+
+		.vectorsize.projy {
+			stroke: #00ff21;
+			stroke-width: 1;
+			fill: #00ff21;
 		}
 	</style>
 </head>
@@ -66,7 +82,7 @@
 	<div>
 		<h1>Magnitude of a Vector</h1>
 		<p>A vector in 2-dimensional space:</p>
-		<p">
+		<p>
 			$$a = (a_1, a_2), \text{ in }\mathbb{R}^2$$
 		</p>
 		<p>It's magnitude is defined by the root of the sum of the squares of it's components:</p>
@@ -76,13 +92,14 @@
 			\end{aligned} $$
 		</p>
 		<p>A sample:</p>
-		<div class="vectormagnitude_sample_container">
+		<div class="sample_container_height100">
 			<div id="vectormagnitude_sample">
 				$${}$$
 			</div>
 		</div>
 	</div>
 	<div style="width:100%">
+		<div class="divmanual">(You can drag the red dot to see how the length changes by changing the vector endpoint)</div>
 		<div id="vectorpropertiesmagnitude" class="divcentered"></div>
 	</div>
 	<div>
@@ -96,13 +113,14 @@
 			$$v = (\frac{a_1}{\lvert\lvert{a}\lvert\lvert}, \frac{a_2}{\lvert\lvert{a}\lvert\lvert})$$
 		</p>
 		<p>A sample:</p>
-		<div class="vectordirection_sample_container">
+		<div class="sample_container_height100">
 			<div id="vectordirection_sample">
 				$${}$$
 			</div>
 		</div>
 	</div>
 	<div style="width:100%">
+		<div class="divmanual">(You can drag the red dot to see how the direction vector changes by changing the vector endpoint)</div>
 		<div id="vectorpropertiesdirection" class="divcentered"></div>
 	</div>
 	<script type="text/javascript">
@@ -145,23 +163,23 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(40);
-				this.p1y = ko.observable(30);
+				this.a1 = ko.observable(40);
+				this.a2 = ko.observable(30);
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var pa = new Point2Dim(this.a1, this.a2);
 
-				var vector1 = new Vector2Dim(
-					{ p1: p0, p2: p1 },
-					{ showSize: 1, dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+				var va = new Vector2Dim(
+					{ p1: p0, p2: pa },
+					{ name: "a", showSize: 1, dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				var getMathExpression = function() {
-					var p1XFormatted = d3.format(".1f")(p1.getX());
-					var p1YFormatted = d3.format(".1f")(p1.getY());
-					var vLengthFormatted = d3.format(".1f")(vector1.getSize());
+					var a1Formatted = d3.format(".1f")(pa.getX());
+					var a2Formatted = d3.format(".1f")(pa.getY());
+					var vLengthFormatted = d3.format(".1f")(va.getSize());
 
-					var mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + p1XFormatted + "^2 + " + p1YFormatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
+					var mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + a1Formatted + "^2 + " + a2Formatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
 					return mathExpression;
 				}
 
@@ -169,16 +187,16 @@
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) {
+				this.a1.subscribe(function (newValue) {
 					space2dimvsum.update();
 					magnitudeMathExpression.QueueUpdate();
 				});
-				this.p1y.subscribe(function (newValue) {
+				this.a2.subscribe(function (newValue) {
 					space2dimvsum.update();
 					magnitudeMathExpression.QueueUpdate();
 				});
 
-				this.vectorsToShow = [vector1];
+				this.vectorsToShow = [va];
 			}
 
 			var vmag = new VectorMagnitudeViewModel();
@@ -196,35 +214,38 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(1.5);
-				this.p1y = ko.observable(1.5);
+				this.a1 = ko.observable(1.0);
+				this.a2 = ko.observable(1.5);
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
+				this.a1.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
+				this.a2.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var pa = new Point2Dim(this.a1, this.a2);
 
-				var vector1 = new Vector2Dim(
-					{ p1: p0, p2: p1 },
+				var va = new Vector2Dim(
+					{ p1: p0, p2: pa },
 					{ showSize: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				this.u1x = ko.computed(function () {
-					return vector1._p2.getX() / vector1.getSize();
+				this.v1 = ko.computed(function () {
+					return va._p2.getX() / va.getSize();
 				});
-				this.u1y = ko.computed(function () {
-					return vector1._p2.getY() / vector1.getSize();
+				this.v2 = ko.computed(function () {
+					return va._p2.getY() / va.getSize();
 				});
-				var pu = new Point2Dim(this.u1x, this.u1y);
+				var pv = new Point2Dim(this.v1, this.v2);
 
-				var vectoru = new Vector2Dim(
-					{ p1: p0, p2: pu },
+				var vv = new Vector2Dim(
+					{ p1: p0, p2: pv },
 					{ showSize: 1, p1draggable: 0, p2draggable: 0 }
 				);
 
+
+				// following are helper objects for drawing projections, arcs, etc...
+				//	they do not add anything to the math involved
 				var px = new Point2Dim(ko.observable(1), ko.observable(0));
 				var py = new Point2Dim(ko.observable(0), ko.observable(1));
 				var vectorx = new Vector2Dim(
@@ -236,38 +257,38 @@
 					{ showSize: 0, p1draggable: 0, p2draggable: 0 }
 				);
 
-				var puonx = new projectVectorOnVector(vectoru, vectorx);
-				var puony = new projectVectorOnVector(vectoru, vectory);
+				var puonx = new projectVectorOnVector(vv, vectorx);
+				var puony = new projectVectorOnVector(vv, vectory);
 
 				var vectoruonxlineproj = new Vector2Dim(
-					{ p1: pu, p2: puonx },
+					{ p1: pv, p2: puonx },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 				var vectoruonylineproj = new Vector2Dim(
-					{ p1: pu, p2: puony },
+					{ p1: pv, p2: puony },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
 
 				var vectoruonxproj = new Vector2Dim(
 					{ p1: p0, p2: puonx },
-					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "proj" }
+					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projx" }
 				)
 				var vectoruonyproj = new Vector2Dim(
 					{ p1: p0, p2: puony },
-					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "proj" }
+					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projy" }
 				)
 
 
 				var getMathExpression = function () {
-					var p1XFormatted = d3.format(".2f")(p1.getX());
-					var p1YFormatted = d3.format(".2f")(p1.getY());
-					var vLengthFormatted = d3.format(".2f")(vector1.getSize());
+					var a1Formatted = d3.format(".2f")(pa.getX());
+					var a2Formatted = d3.format(".2f")(pa.getY());
+					var vLengthFormatted = d3.format(".2f")(va.getSize());
 
 					var vectoruonxprojFormatted = d3.format(".2f")(vectoruonxproj.getSize());
 					var vectoruonyprojFormatted = d3.format(".2f")(vectoruonyproj.getSize());
 
-					var mathExpression = "\\begin{aligned} v &= (\\frac{" + p1XFormatted + "}{" + vLengthFormatted + "}, \\frac{" + p1YFormatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
+					var mathExpression = "\\begin{aligned} v &= (\\frac{" + a1Formatted + "}{" + vLengthFormatted + "}, \\frac{" + a2Formatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
 					return mathExpression;
 				}
 
@@ -275,11 +296,11 @@
 
 
 				var angle1 = new VectorAngle2Dim(
-					{ vs: vector1, ve: vectoruonxproj },
+					{ vs: va, ve: vectoruonxproj },
 					{ r: 50, ccw: 0}
 				);
 				var angle2 = new VectorAngle2Dim(
-					{ vs: vector1, ve: vectoruonyproj },
+					{ vs: va, ve: vectoruonyproj },
 					{ r: 30, ccw: 1 }
 				);
 
@@ -290,7 +311,7 @@
 					{}
 				);
 
-				this.vectorsToShow = [vector1, vectoru, vectoruonxlineproj, vectoruonylineproj, vectoruonxproj, vectoruonyproj];
+				this.vectorsToShow = [va, vv, vectoruonxlineproj, vectoruonylineproj, vectoruonxproj, vectoruonyproj];
 				this.anglesToShow = [angle1, angle2];
 				this.circlesToShow = [circle1];
 			}

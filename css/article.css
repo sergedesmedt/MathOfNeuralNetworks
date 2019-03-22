@@ -1,0 +1,13 @@
+﻿.divcentered {
+    display: table;
+    margin: 0 auto;
+}
+
+.divmanual {
+    font-size: 75%;
+}
+
+.sample_container_height100 {
+    height: 100px;
+}
+

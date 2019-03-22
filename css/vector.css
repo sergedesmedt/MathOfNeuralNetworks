@@ -60,5 +60,11 @@
 }
 
 .vectorname {
-    text-anchor: middle
+    text-anchor: middle;
+}
+
+.vectornamerect {
+    stroke: #000000;
+    stroke-width: 1;
+    fill: rgba(191, 188, 188, 0.43);
 }

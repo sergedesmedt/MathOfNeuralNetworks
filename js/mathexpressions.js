@@ -11,9 +11,9 @@ MathExpressions.prototype.RegisterExpression = function(containerId, expressionP
 
     var me = this;
     me._mathJaxQueue.Push(function () {
-        console.log("set me._jaxExpression");
+        //console.log("set me._jaxExpression");
         me._jaxExpression = MathJax.Hub.getAllJax(containerId)[0];
-        console.log("me._jaxExpression is " + me._jaxExpression);
+        //console.log("me._jaxExpression is " + me._jaxExpression);
 
         // apply it immediately
         var mathExpression2 = me._expressionProvider();
@@ -23,18 +23,18 @@ MathExpressions.prototype.RegisterExpression = function(containerId, expressionP
 }
 
 MathExpressions.prototype.QueueUpdate = function() {
-    console.log("wil je dit nog doen aub?");
+    //console.log("wil je dit nog doen aub?");
     var me = this;
 
     var checkForChanges = function() {
         if (me._hasChanges) {
             me._hasChanges = false;
             var mathExpression2 = me._expressionProvider();
-            console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
+            //console.log("d'er is nog iets te doen[" + mathExpression2 + "]");
             me._isRunning = true;
             me._mathJaxQueue.Push(["Text", me._jaxExpression, "\\displaystyle{" + mathExpression2 + "}"]);
             me._mathJaxQueue.Push(function () {
-                console.log("wat er nog te doen was is nu gedaan denk ik");
+                //console.log("wat er nog te doen was is nu gedaan denk ik");
                 me._isRunning = false;
                 checkForChanges();
             });                
@@ -44,10 +44,10 @@ MathExpressions.prototype.QueueUpdate = function() {
     if (!this._isRunning) {
         this._isRunning = true;
         var mathExpression1 = this._expressionProvider();
-        console.log("ma ja gij: push changes[" + mathExpression1 + "]");
+        //console.log("ma ja gij: push changes[" + mathExpression1 + "]");
         me._mathJaxQueue.Push(["Text", this._jaxExpression, "\\displaystyle{" + mathExpression1 + "}"]);
         me._mathJaxQueue.Push(function () {
-            console.log("'k heb gedaan denk ik");
+            //console.log("'k heb gedaan denk ik");
             me._isRunning = false;
             checkForChanges();
             // if (me._hasChanges) {
@@ -62,13 +62,13 @@ MathExpressions.prototype.QueueUpdate = function() {
             //     });                
             // }
             //else {
-                console.log("d'er is niets meer te doen");
+                //console.log("d'er is niets meer te doen");
             //}
         });
 
     }
     else {
-        console.log("'k ben nog bezig...'");
+        //console.log("'k ben nog bezig...'");
         this._hasChanges = true;
     }
 }

@@ -1,20 +1,29 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Learn Line math</title>
-    <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
-    <script type="text/javascript" src="./d3/d3.v5.js"></script>
-    <script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
-    <script type="text/javascript" src="./js/space2dim.js"></script>
-    <script type="text/javascript" src="./js/point.js"></script>
-    <script type="text/javascript" src="./js/rico.js"></script>
-    <script type="text/javascript" src="./js/circle.js"></script>
-    <script type="text/javascript" src="./js/vector.js"></script>
-    <script type="text/javascript" src="./js/line.js"></script>
+	<title>Learn Line math</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] }
+		});
+	</script>
+	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="./css/space2dim.css">
-    <link rel="stylesheet" type="text/css" href="./css/vector.css">
-    <link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
 
 	<style>
 		.vrayendpt {
@@ -22,6 +31,7 @@
 			stroke-width: 1;
 			fill: #80f38f;
 		}
+
 		.vrayendv {
 			stroke: #19ca30;
 			stroke-width: 2;
@@ -30,9 +40,47 @@
 	</style>
 </head>
 <body>
-	<input type="range" min="-75" max="75" step="1" data-bind="value: vrayx, valueUpdate: 'input'" />
-	<div id="linethroughorigin"></div>
-	<div id="lineatdistance"></div>
+	<div>
+		<h1>A line through the origin</h1>
+		<p>The equation of a line through the origin:</p>
+		<p>
+			$$ax + by = 0$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="linethroughorigin_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<p>Change the value of $x$ by dragging the slider:</p>
+		<div class="divcentered">
+			<input type="range" min="-75" max="75" step="1" data-bind="value: LineThroughOrigin.vrayx, valueUpdate: 'input'" />
+		</div>
+		<div id="linethroughorigin" class="divcentered"></div>
+	</div>
+
+	<div>
+		<h1>A line at a distance from the origin</h1>
+		<p>The equation of a line through the origin:</p>
+		<p>
+			$$ax + by = 0$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="linethroughorigin_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<p>Change the value of $x$ by dragging the slider:</p>
+		<div class="divcentered">
+			<input type="range" min="-75" max="75" step="1" data-bind="value: LineAtDistance.vrayx, valueUpdate: 'input'" />
+		</div>
+		<div id="lineatdistance" class="divcentered"></div>
+	</div>
 
 	<script type="text/javascript">
 
@@ -60,48 +108,19 @@
 				);
 
 				this.rayd = ko.observable(0);
-
 				this.vrayx = ko.observable(50);
 				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
-				//this.vrayx = ko.computed(function () {
-				//	var a = prico._p2.getX();
-				//	var b = prico._p2.getY();
-				//	var c = this.rayd();
-
-				//	var y = Math.sign(a);
-
-				//	// dot-product is ax + by = c
-				//	// from which x = (c - by) / a
-				//	var res = this.vraylength() * (c - (1 * Math.sign(b)));
-				//	if (a != 0) {
-				//		px = (c - b * y) / a;
-				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
-				//	}
-
-				//	//console.log("vrayx: " + res);
-				//	return res;
-				//}, this);
 				this.vrayy = ko.computed(function () {
 					var a = prico._p2.getX() / prico.getSize();
 					var b = prico._p2.getY() / prico.getSize();
 					var c = this.rayd();
-
-					//var y = Math.sign(a);
-
-					//dot-product is ax + by = c
-					//from which y = (c - ax) / b
-					//var res = 0;
-					//if (a != 0) {
-					//	px = (c - b * y) / a;
-					//	res = this.vraylength() * (y / Math.sqrt(px * px + 1));
-					//}
-					var res = 0; //this.vraylength() * (c - (1 * Math.sign(b)));
+					var res = 0;
 					if (a != 0) {
 						py = (c - a * this.vrayx()) / b;
-						res = py; //this.vraylength() * (px / Math.sqrt(px * px + 1));
+						res = py;
 					}
 
-					console.log("ThroughOrigin vrayy: " + res);
+					//console.log("ThroughOrigin vrayy: " + res);
 					return res;
 				}, this);
 
@@ -138,7 +157,7 @@
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vline.vectorsToShow; });
 			space2dimvsum.show();
 
-			//ko.applyBindings(vline);
+			return vline;
 
 		}
 
@@ -167,83 +186,19 @@
 
 				this.rayd = ko.computed(function () { return prico.getSize(); }, this);
 
-				//this.vraylength = ko.observable(100);
-				//this.vraylength.subscribe(function (newValue) { space2dimvsum.update(); });
-				//this.vrayx = ko.computed(function () {
-				//	var a = prico._p2.getX();
-				//	var b = prico._p2.getY();
-				//	var c = this.rayd();
-
-				//	var y = Math.sign(a);
-
-				//	// dot-product is ax + by = c
-				//	// from which x = (c - by) / a
-				//	var res = this.vraylength() * (1 * Math.sign(b));
-				//	if (a != 0) {
-				//		px = (c - b * y) / a;
-				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
-				//	}
-
-				//	//console.log("vrayx: " + res);
-				//	return res;
-				//}, this);
-				//this.vrayy = ko.computed(function () {
-				//	var a = prico._p2.getX();
-				//	var b = prico._p2.getY();
-				//	var c = this.rayd();
-
-				//	var y = Math.sign(a);
-
-				//	var res = 0;
-				//	if (a != 0) {
-				//		px = (c - b * y) / a;
-				//		res = this.vraylength() * (y / Math.sqrt(px * px + 1));
-				//	}
-
-				//	//console.log("vrayy: " + res);
-				//	return res;
-				//}, this);
 				this.vrayx = ko.observable(50);
 				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
-				//this.vrayx = ko.computed(function () {
-				//	var a = prico._p2.getX();
-				//	var b = prico._p2.getY();
-				//	var c = this.rayd();
-
-				//	var y = Math.sign(a);
-
-				//	// dot-product is ax + by = c
-				//	// from which x = (c - by) / a
-				//	var res = this.vraylength() * (c - (1 * Math.sign(b)));
-				//	if (a != 0) {
-				//		px = (c - b * y) / a;
-				//		res = this.vraylength() * (px / Math.sqrt(px * px + 1));
-				//	}
-
-				//	//console.log("vrayx: " + res);
-				//	return res;
-				//}, this);
 				this.vrayy = ko.computed(function () {
 					var a = prico._p2.getX() / prico.getSize();
 					var b = prico._p2.getY() / prico.getSize();
 					var c = this.rayd();
-
-					//var y = Math.sign(a);
-
-					//dot-product is ax + by = c
-					//from which y = (c - ax) / b
-					//var res = 0;
-					//if (a != 0) {
-					//	px = (c - b * y) / a;
-					//	res = this.vraylength() * (y / Math.sqrt(px * px + 1));
-					//}
-					var res = 0; //this.vraylength() * (c - (1 * Math.sign(b)));
+					var res = 0;
 					if (a != 0) {
 						py = (c - a * this.vrayx()) / b;
-						res = py; //this.vraylength() * (px / Math.sqrt(px * px + 1));
+						res = py;
 					}
 
-					console.log("AtDistance vrayy: " + res);
+					//console.log("AtDistance vrayy: " + res);
 					return res;
 				}, this);
 
@@ -281,12 +236,17 @@
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vline.vectorsToShow; });
 			space2dimvsum.show();
 
-			ko.applyBindings(vline);
-
+			return vline;
 		}
 
-		createLineThroughOriginSample();
-		createLineAtDistanceSample();
+		function ViewModel() {
+			this.LineThroughOrigin = createLineThroughOriginSample();
+			this.LineAtDistance = createLineAtDistanceSample();
+		}
+
+		var vm = new ViewModel();
+
+		ko.applyBindings(vm);
 
 	</script>
 
