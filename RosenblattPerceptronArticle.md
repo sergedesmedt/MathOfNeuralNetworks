@@ -14,7 +14,7 @@ So, let us get started.
 
 ### Setting some bounds
 
-A perceptron basically takes some input values, called "features", multiplies them by some factors, called "weights", takes the sum of these multiplications and depending on the value of this sum outputs another value:
+A perceptron basically takes some input values, called "features" and represented by the values $x_1, x_2, ... x_n$ in the following formula , multiplies them by some factors called "weights", represented by $w_1, w_2, ... w_n$, takes the sum of these multiplications and depending on the value of this sum outputs another value &o&:
 
 $$o = f(x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n)$$
 
@@ -22,7 +22,7 @@ There are  a few types of perceptrons, differing in the way the sum results in t
 
 In this article we will build on the Rosenblatt Perceptron. It was one of the first perceptrons, if not the first. During this article I will simply be using the name "Perceptron" when referring to the Rosenblatt Perceptron
 
-We will investigate the math envolved and discuss its limitations, thereby setting the ground for the next articles. 
+We will investigate the math envolved and discuss its limitations, thereby setting the ground for the future articles. 
 
 ## The basic math formula for the Rosenblatt Perceptron
 
@@ -102,140 +102,126 @@ To make things more visual (which can help but isn't always a good thing), I wil
 ![A vector in 2-dim space](url_naar_afbeelding)
 
 The above point in the coordinate space $\mathbb{R}^2$ can be represented by a vector going from the origin to that point:
-$$x = (x_1, x_2), \text{ in }\mathbb{R}^2$$
+$$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$$
 
 We can further extend this to 3-dimensional coordinate space and generalize it to n-dimensional space:
-$$x = (x_1, x_2, ..., x_n), \text{ in }\mathbb{R}^n$$
+$$\mathbf{a} = (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n$$
 
 In text (from Wikipedia):
 > A (Euclidean) Vector is a geometric object that has a magnitude and a direction
 
 #### The Magnitude of a Vector 
-The magnitude of a vector, also called its norm, is defined by the root of the sum of the squares of it's components and is written as $\lvert\lvert{x}\lvert\lvert$
+The magnitude of a vector, also called its norm, is defined by the root of the sum of the squares of it's components and is written as $\lvert\lvert{a}\lvert\lvert$
 In 2-dimensions, the definition comes from Pythagoras' Theorem:
-$$\lvert\lvert{x}\lvert\lvert = \sqrt{(x_1)^2 + (x_2)^2}$$
+$$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{(a_1)^2 + (x_2)^2}$$
 Extended to n-dimensional space, we talk about the Euclidean norm:
-$$\lvert\lvert{x}\lvert\lvert = \sqrt{x_1^2 + x_2^2 + ... + x_i^2 + ... + x_n^2} = \sqrt{\sum_{i=1}^{n} x_i^2}$$
+$$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{a_1^2 + a_2^2 + ... + a_i^2 + ... + a_n^2} = \sqrt{\sum_{i=1}^{n} a_i^2}$$
+
+Try it yourself:
+==interactieve versie van deze regel==
 
 #### The Direction of a Vector
 The direction of a 2-dimensional vector is defined by its angle to the positive horizontal axis:
-$$\theta =\tan^{-1}(\frac{x_2}{x_1})$$
+$$\theta =\tan^{-1}(\frac{a_2}{a_1})$$
 This works well in 2 dimensions but it doesn't scale to multiple dimensions: for example in 3 dimensions, in what plane do we measure the angle? Which is why the direction cosines where invented: this is a new vector taking the cosine of the original vector to each axis of the space.
 $$(\cos(\alpha_1), \cos(\alpha_2), ..., \cos(\alpha_i), ..., \cos(\alpha_n))$$
 
 We know from geometry that the cosine of an angle is defined by:
 $$\cos(\alpha) = \frac{\text{adjacent}}{\text{hypothenuse}}$$
 
-==Afbeelding van de deze regel==
+Try it yourself:
+==interactieve versie van deze regel==
 
 So, the definition of the direction cosine becomes
-$$(\frac{x_1}{\lvert\lvert{x}\lvert\lvert}, \frac{x_2}{\lvert\lvert{x}\lvert\lvert}, ..., \frac{x_i}{\lvert\lvert{x}\lvert\lvert}, ..., \frac{x_n}{\lvert\lvert{x}\lvert\lvert})$$
+$$(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, \frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_n}{\lvert\lvert{\mathbf{a}}\lvert\lvert})$$
 
 This direction cosine is a vector $v$ with length 1 in the same direction as the original vector. This can be simply determined from the definition of the magnitude of a vector:
 
 $$
 \begin{aligned}
-\lvert\lvert{v}\lvert\lvert&=\sqrt{(\frac{x_1}{\lvert\lvert{x}\lvert\lvert})^2 +  (\frac{x_2}{\lvert\lvert{x}\lvert\lvert})^2 + ... + (\frac{x_i}{\lvert\lvert{x}\lvert\lvert})^2 + ... + (\frac{x_n}{\lvert\lvert{x}\lvert\lvert})^2}\\
-&=\sqrt{\frac{(x_1)^2+(x_2)^2+...+(x_i)^2+...+(x_n)^2}{\lvert\lvert{x}\lvert\lvert^2}}\\
-&=\frac{\sqrt{(x_1)^2+(x_2)^2+...+(x_i)^2+...+(x_n)^2}}{\lvert\lvert{x}\lvert\lvert}\\
-&=\frac{\lvert\lvert{x}\lvert\lvert}{\lvert\lvert{x}\lvert\lvert}\\
+\lvert\lvert{\mathbf{v}}\lvert\lvert&=\sqrt{(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 +  (\frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 + ... + (\frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 + ... + (\frac{a_n}{\lvert\lvert{\mathbf{\mathbf{a}}}\lvert\lvert})^2}\\
+&=\sqrt{\frac{(a_1)^2+(a_2)^2+...+(a_i)^2+...+(a_n)^2}{\lvert\lvert{\mathbf{a}}\lvert\lvert^2}}\\
+&=\frac{\sqrt{(a_1)^2+(a_2)^2+...+(a_i)^2+...+(a_n)^2}}{\lvert\lvert{\mathbf{a}}\lvert\lvert}\\
+&=\frac{\lvert\lvert{\mathbf{a}}\lvert\lvert}{\lvert\lvert{\mathbf{a}}\lvert\lvert}\\
 &=1\\
 \end{aligned}
 $$
 
 This vector with length 1 is also called the *unit vector*.
 
-Following illustrates this concept in code:
-
-==zie perceptron.ipynb / The direction cosine==
+Try it yourself:
+==interactieve versie van deze regel==
 
 ### Operations with Vectors 
 #### Sum and difference of two Vectors
 Say we have two vectors:
 
 $$\begin{aligned}
-a &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
-b &= (b_1, b_2, ..., b_n), \text{ in }\mathbb{R}^n
+\mathbf{a} &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
+\mathbf{b} &= (b_1, b_2, ..., b_n), \text{ in }\mathbb{R}^n
 \end{aligned}$$
 
 The sum of two vectors is the vector resulting from the addition of the components of the orignal vectors. 
 
 $$\begin{aligned}
-c &= a + b\\
+\mathbf{c} &= \mathbf{a} + \mathbf{b}\\
   &= (a_1 + b_1, a_2 + b_2, ..., a_n + b_n)
-  &= (c_1, c_2, ..., c_n)
 \end{aligned}$$
 
-Geometrically, this becomes:
-==hier moet nog een afbeelding komen hoe zich dat  geometrisch vertaald==
+Try it yourself:
+==interactieve versie van deze regel==
 
 The difference of two vectors is the vector resulting from the differences of the components of the original vectors:
 
 $$\begin{aligned}
-c &= a - b\\
+\mathbf{c} &= \mathbf{a} - \mathbf{b}\\
   &= (a_1 - b_1, a_2 - b_2, ..., a_n - b_n)
 \end{aligned}$$
 
-Geometrically, this becomes:
-==hier moet nog een afbeelding komen hoe zich dat  geometrisch vertaald==
-
-Following illustrates this in python code:
-==zie perceptron.ipynb / Sum and Difference of Vectors==
+Try it yourself:
+==interactieve versie van deze regel==
 
 
 #### Scalar multiplication 
-Say we have a vector $a$ and a scalar $\lambda$ (a number):
+Say we have a vector $\mathbf{a}$ and a scalar $\lambda$ (a number):
 
 $$\begin{aligned}
-a &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
+\mathbf{a} &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
 \lambda 
 \end{aligned}$$
 
 A vector multiplied by a scalar is the vector resulting of the multiplication of each component of the original vector by the scalar:
 $$\begin{aligned}
-c &= \lambda a\\
+\mathbf{c} &= \lambda \mathbf{a}\\
   &= (\lambda a_1, \lambda a_2, ..., \lambda a_n)
 \end{aligned}$$
 
-Geometrically, this becomes:
-==hier moet nog een afbeelding komen hoe zich dat  geometrisch vertaald==
-
-Following illustrates this in python code:
-==zie perceptron.ipynb / Scalar multiplication==
+Try it yourself:
+==interactieve versie van deze regel==
 
 #### Dot product 
 
 The dot-product is the scalar (a real number) resulting of taking the sum of the products of the corresponding components of two vectors:
 
 $$\begin{aligned}
-c &= a \cdot b\\
+\mathbf{c} &= \mathbf{a} \cdot \mathbf{b}\\
 &= a_1 b_1 + a_2 b_2 + ... + a_n b_n\\
 &= \sum_{i=1}^{n} a_ib_i
 \end{aligned}$$
 
-The dot product is **commutative**:
-$$a \cdot b = b \cdot a$$
-
-The dot product is **distributive**:
-$$a \cdot (b+c) = a \cdot b + a \cdot c$$
-
-The **scalar multiplication** property:
-$$(cA) \cdot B = A \cdot (cB) = c(A \cdot B)$$
-
 Geometrically, this is equal to the multiplication of the magnitude of the vectors with the cosine of the angle between the vectors:
 $$\begin{aligned}
-c &= a \cdot b\\
-&= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
+\mathbf{c} &= \mathbf{a} \cdot \mathbf{b}\\
+&= {\lvert\lvert{\mathbf{a}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{b}}\lvert\lvert}\text{ }cos(\alpha)\\
 \end{aligned}$$
-==hier moet nog een afbeelding komen hoe zich dat  geometrisch vertaald==
 
 There are several proofs for this, which I will not repeat here. The article on [SVM's](https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/) has one, and [this article on the dot-product](http://tutorial.math.lamar.edu/Classes/CalcII/DotProduct.aspx) also contains a very understadable proof.
 
 From this last definition we can make two important assertions.
 
-First, if, for two vectors with a magnitude not zero, the dot product is zero, then those vectors are perpendicular. Because the magnitude of the vectors is not zero, the dot product can only be zero if the $cos(\alpha)$ is zero. And thus if the angle $\alpha$ between the vectors is either 90 or -90 degrees. And thus only if the two vectors are perpendicular.
+First, if, for two vectors with a magnitude not zero, the dot product is zero, then those vectors are perpendicular. Because the magnitude of the vectors is not zero, the dot product can only be zero if the $cos(\alpha)$ is zero. And thus if the angle $\alpha$ between the vectors is either 90 or -90 degrees. And thus only if the two vectors are perpendicular. (Try it out in the interactive example below!)
 
-Second, if one of the two vectors has a magnitude of 1, then the dot product equals [the projection of the second vector on this unit vector](http://www.math.ryerson.ca/~danziger/professor/MTH141/Handouts/projections.pdf). This can also easily be seen:
+Second, if one of the two vectors has a magnitude of 1, then the dot product equals [the projection of the second vector on this unit vector](http://www.math.ryerson.ca/~danziger/professor/MTH141/Handouts/projections.pdf). (Try it out in the interactive example below!). This can also easily be seen:
 
 $$\begin{aligned}
 \text{if }{\lvert\lvert{a}\lvert\lvert} = 1\text{ then }\\
@@ -243,6 +229,27 @@ c &= a \cdot b\\
 &= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
 &= {\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
 \end{aligned}$$
+
+Try it yourself:
+==interactieve versie van deze regel==
+
+The dot product is **commutative**:
+$$\mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot \mathbf{a}$$
+
+Try it yourself:
+==interactieve versie van deze regel==
+
+The dot product is **distributive**:
+$$\mathbf{a} \cdot (\mathbf{b}+\mathbf{c}) = \mathbf{a} \cdot \mathbf{b} + \mathbf{a} \cdot \mathbf{c}$$
+
+Try it yourself:
+==interactieve versie van deze regel==
+
+The **scalar multiplication** property:
+$$(\lambda\mathbf{a}) \cdot \mathbf{b} = \mathbf{a} \cdot (\lambda\mathbf{b}) = \lambda(\mathbf{a} \cdot \mathbf{b})$$
+
+Try it yourself:
+==interactieve versie van deze regel==
 
 Okay, now you know what a Vector is. Let us continue our journey.
 
@@ -284,8 +291,7 @@ $$ax + by + c = 0$$
 Let us even simplify this more and consider just:
 $$ax + by = 0$$
 
-Now, if we fix the values for $a$ and $b$ and solve the equation for various $x$ and $y$ and plot these values we see that the resulting points are all on a line:
-==zie perceptron.ipynb / A line through the origin==
+Now, if we fix the values for $a$ and $b$ and solve the equation for various $x$ and $y$ and plot these values we see that the resulting points are all on a line.
 
 If we consider the components $a$ and $b$ as a vector $M$, and $x$ en $y$ as a vector $P$, then the above is the dot product:
 $$\begin{aligned}
@@ -302,9 +308,10 @@ So, how come our dot product in two dimensions appears to be a line through the 
 
 Remember that when we discussed the dot product, we came to the conclusion that if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $M$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $M$, which equals to all points on the line perpendicular to the vector $M$ and going through the origin.
 
-So, M determines the direction of the line: it is perpendicular to the direction of the line.
+So, vector M determines the direction of the line: the vector is perpendicular to the direction of the line.
 
-==hier jupyter notebook met plot van the vector M en een lijn==
+Try it yourself:
+==interactieve versie van deze regel==
 
 #### A line at some distance from the origin
 
@@ -346,6 +353,9 @@ u \cdot P &= \frac{d}{\lvert\lvert{M}\lvert\lvert}\\
 
 And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $P$ onto the unit vector in the direction of $M$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $M$ equals $d/{\lvert\lvert{M}\lvert\lvert}$
 This equals all vectors to points on the line perpendicular to $M$ and at a distance $d/{\lvert\lvert{M}\lvert\lvert}$ from the origin.
+
+Try it yourself:
+==interactieve versie van deze regel==
 
 ### Extending to 3-dimensional space: equation of a plane
 
@@ -437,20 +447,14 @@ It just so happens the inequality equations define two so called half-spaces: on
 
 ### Linear separability and half-spaces
 
-==hier nog eens goed kijken naar de exacte definitie van een half space, nl. ook ivm open en closed en het feit of de hyperplane erin zit of niet. kan gevolgen hebben verder naar het woordgebruik toe bij de perceptron formule==
-
-==(Hier volgende gedachten eventjes ordenen en verder onderzoeken wat ze kunnen betekenen voor de perceptron: affine space, halve spaces die convex zijn, relatie tussen dit convex zijn en lineary seperable en feit dat wat we proberen te scheiden met onze perceptron ook linear seperable moet zijn, hyper plane, affine space => affine function => linear function en dan de functie die hierboven staat, zoals ik het begrijp is het de bias die ervoor zorgt dat het een affine function is en niet een puur linear function)==
-
-
-So, we have the equation of a hyperplane:
+Let us again take the equation of a hyperplane:
 $$\begin{aligned}
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
 \sum_{i=1}^{n} w_ix_i &= b\\
 X \cdot W &= b
 \end{aligned}$$
 
-This hyperplane seperates $\mathbb{R}^n$ in two convex sets, hence the name half-space.
-==hier in jupyter notebook die dit visualiseert==
+This hyperplane seperates the space $\mathbb{R}^n$ in two convex sets of points, hence the name half-space.
 
 One half-space is represented by the equation
 $$X \cdot W > b$$
@@ -468,9 +472,11 @@ X \cdot W &> b\\
 Normalizing:
 $${\lvert\lvert{X}\lvert\lvert}\text{ }cos(\alpha) > \frac{b}{\lvert\lvert{W}\lvert\lvert}$$
 
-So, the geometric interpretation is the set of all points with a projection on the unit vector in the direction of the weight vector *larger* then some constant value.
+So, the geometric interpretation is the set of all points with a projection on the unit vector in the direction of the weight vector $W$ *larger* then some constant value $\frac{b}{\lvert\lvert{W}\lvert\lvert}$.
 
-A similar reasoning can be made for the equation $X \cdot W < b$ : it results in the set of points with a projection on the unit vector in the direction of the weight vector *smaller* then some constant value.
+A similar reasoning can be made for the equation $X \cdot W < b$ : it results in the set of points with a projection on the unit vector in the direction of the weight vector $W$ *smaller* then some constant value $\frac{b}{\lvert\lvert{W}\lvert\lvert}$.
+
+We can imagine these two sets as being the set of all points on either one side or the other side of the hyper-plane.
 
 These half spaces are also convex. 
 
@@ -480,36 +486,40 @@ The definition of convex goes as follows (from Wikipedia):
 Mathematically this can be more rigourously be described as:
 > A set $C$ in $S$ is said to be convex if, for all $a$ and $b$ in $C$ and all $\lambda$ in the interval $(0, 1)$, the point $(1 −  {\lambda})a  +  {\lambda}b$ also belongs to $C$.
 
-The equation $(1 −  {\lambda})a  +  {\lambda}b$ is actually the equation of a line segment.
+The equation $(1 −  {\lambda})a  +  {\lambda}b$ is actually the equation of a line segment between points $a$ and $b$. We can see this from following:
+
 Let us define two vectors in the multi-dimensional space:
 $$\begin{aligned}
-a &= (a_1, a_2, ..., a_i, ..., a_n), \text{ in }\mathbb{R}^n\\
-b &= (b_1, b_2, ..., b_i, ..., b_n), \text{ in }\mathbb{R}^n\\
+A &= (a_1, a_2, ..., a_i, ..., a_n), \text{ in }\mathbb{R}^n\\
+B &= (b_1, b_2, ..., b_i, ..., b_n), \text{ in }\mathbb{R}^n\\
 \end{aligned}$$
 Then a line segment going from A to B can be defined as:
-$$r = oa + \lambda ab$$
-with $oa$ being the vector going from the origin $o$ to $a$ and $ab$ the vector going from $a$ to $b$. 
+$$r = \vec{oa} + \lambda \vec{ab}$$
+with $\vec{oa}$ being the vector going from the origin $o$ to $a$ and $\vec{ab}$ the vector going from $a$ to $b$. 
 ==hier nog een prentje die dat illustreert==
+
+Try it yourself:
+==interactieve versie van deze regel==
+
 We know from the section on vector math above that the vector going from  $a$ to $b$ is equal to $b-a$ and thus we can write:
 $$\begin{aligned}
 r &= \vec{oa} + \lambda \vec{ab}\\
-&= a + {\lambda}(b-a) \\
-&= a + {\lambda}b-{\lambda}a \\
-&= (1-{\lambda})a + {\lambda}b \\
+&= A + {\lambda}(B-A) \\
+&= A + {\lambda}B-{\lambda}A \\
+&= (1-{\lambda})A + {\lambda}B \\
 \end{aligned}$$
-==hier in jupyter notebook die dit visualiseert==
 
-Now we can proof the half spaces are convex:
+Now we can proof the half spaces separated by the hyper-plane are convex:
 
-Let us consider the upper half plane for any two vectors $X$, $Y$ in that half space we have:
+Let us consider the upper half plane. For any two vectors $X$, $Y$ in that half space we have:
 $$\begin{aligned}
 X \cdot W > b\\
 Y \cdot W > b
 \end{aligned}$$
 
-If the half space is convex, then also:
+If the half space is convex, then each point resulting from the equation
 $$(1-{\lambda})X + {\lambda}Y$$
-must belong to the half space, which just states that every point on the line segment between $X$ and $Y$ must belong to the half space. Thus substituation in the equation of the half space gives:
+must belong to the half space, which is equal to saying that every point on the line segment between $X$ and $Y$ must belong to the half space. Substituation in the equation of the half space gives:
 $$((1-{\lambda})X + {\lambda}Y) \cdot W > b$$
 Then, by the distributive and scalar multiplication properties of the dot product we can re-arrange to:
 $$\begin{aligned}
@@ -517,8 +527,10 @@ $$\begin{aligned}
 (1-{\lambda})X \cdot W + {\lambda}Y \cdot W - b &> 0\\
 (1-{\lambda})X \cdot W + {\lambda}Y \cdot W &> b\\
 \end{aligned}$$
-Since we now that $0 < {\lambda} < 1$ and $X \cdot W > b$ and also $Y \cdot W > b$ then the above inequality must also hold thru. And thus we have proven that the half space is indeed convex.
-==misschien hier in die laatste regel iets te vlug gegaan, nog eens goed over nadenken hoe we dit beter kunnen aantonen==
+Since we now that $0 < {\lambda} < 1$ and $X \cdot W > b$ and also $Y \cdot W > b$ then the above inequality must also hold true. And thus we have proven that the half space is indeed convex.
+
+Try it yourself:
+==interactieve versie van deze regel==
 
 https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf
 https://en.wikipedia.org/wiki/Line_segment
@@ -556,14 +568,13 @@ $$\begin{aligned}
 W \cdot X &> b\\
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &> b\\
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n - b &> 0\\
-w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + 1(-b) &> 0\\
+w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (-b)1 &> 0\\
 \end{aligned}$$
 
 Now, we can define $b' = -b$
-$$w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + 1(b') > 0$$
+$$w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (b')1 > 0$$
 
-==hier nog eens goed kijken welke factor we ana wat toekennen: is het $w_0 = 1$ en  $x_0 = b'$ of is het $x_0 = 1$ en  $w_0 = b'$, dus het tegenovergestelde? (ik vermoed eigenlijk het laatste want het is die weight vector die je leert en in het eerste geval is die offse $b$ een deel van de feature vector. Maar opgespast, dan is onderstaande wel verkeerd !!!!==
-Finally, we can take the factor 1 inside the weights vector by defining $w_0 = 1$ and $b'$ inside the feature vector by defining $x_0 = b'$. This lets us write:
+Finally, we can take the factor 1 inside the feature vector by defining $x_0 = 1$ and $b'$ inside the weight vector by defining $w_0 = b'$. This lets us write:
 $$w_0x_0 + w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n > 0$$
 
 And by taking $w_0$ and $x_0$ inside the vector:
@@ -585,6 +596,11 @@ $$
 
 So we have a function which classifies our features into two classes by multiplying them with a weight and if the result is positive assigns them a label "1" and "0" otherwise. 
 
+Further in the article I will leave the accent of the vectors and just write $W$ and $X$ which have the $w_0$ and $x_0$ included.
+
+Try it yourself:
+==interactieve versie van deze regel==
+
 This *assigning them a label "1" and "0" otherwise* is the definition of the Heaviside Step Function.
 
 ## The Heaviside Step Function
@@ -600,13 +616,13 @@ $$
 
 If you search the internet for the definition of the Heaviside step function, you may find alternative definitions which differ from the above on how the result of the function is defined  when $x=0$
 
-Theaviside step function is discontinuous. A function $f(x)$ is continuous if a small change of $x$ results in a small change in the outcome of the function. This is clearly not the case for the He heaviyside step function: if at 0 and moving to the negative side then the function outcome changes suddenly from 1 to 0.
+The Heaviside step function is discontinuous. A function $f(x)$ is continuous if a small change of $x$ results in a small change in the outcome of the function. This is clearly not the case for the Heaviyside step function: if at 0 and moving to the negative side then the function outcome changes suddenly from 1 to 0.
 
-I will not elaborate much more on this function not being continuous because it is not important for the discussion at hand. In a next article, when we discuss the ADALINE perceptron I will gget back to this.
+I will not elaborate much more on this function not being continuous because it is not important for the discussion at hand. In a next article, when we discuss the ADALINE perceptron I will get back to this.
 
 ## Learning the weights
 
-We've covered a lot about how the perceptron classifies the features in two linearily seperable classes using the weight vector. But the big question is: if we have some samples of features for which we now the resulting class, how can we find the weights so that we can also classify unknown values of the feature vector? Or, how can we find the hyperplane sepeating the features?
+We've covered a lot about how the perceptron classifies the features in two linearily seperable classes using the weight vector. But the big question is: if we have some samples of features for which we know the resulting class, how can we find the weights so that we can also classify unknown values of the feature vector? Or, how can we find the hyperplane sepeating the features?
 
 This is where the perceptron learning rule comes in.
 
@@ -615,40 +631,34 @@ This is where the perceptron learning rule comes in.
 http://hagan.okstate.edu/4_Perceptron.pdf
 https://en.wikipedia.org/wiki/Perceptron
 
-First, we define the error $e$ as being the difference between the desired output $t$ and the effective output $a$ for an input vector $X$ and a weight vector $W$:
-$$e = t-a$$
+First, we define the error $e$ as being the difference between the desired output $d$ and the effective output $o$ for an input vector $X$ and a weight vector $W$:
+$$e = d-o$$
 Then we can write the learning rule as:
 $$W_{i+1} = W_{i} + eX$$
 
-In this $W_i+1$ is the new weight vector and $W_{i}$ is the current weight vector and $e$ is the current error. We initialize the weight vector with some random values, thus $W_0$ has some random values. You will find similar definitions of the learning rule which also use a learning rate factor. As we will show later when we proof the convergence of the learning rule this factor is not really necessary. That is why we leave it out here.
-==IS WAARSCHIIJNLIJK IN ORDE: bovenstaande formule nog eens goed bekijken, vooral dan naar het gebruik van de indices. kijken naar https://sebastianraschka.com/Articles/2015_singlelayer_neurons.html#the-perceptron-learning-rule want daar staat een uitgewerkt detail==
+In this $W_{i+1}$ is the new weight vector, $W_{i}$ is the current weight vector and $e$ is the current error. We initialize the weight vector with some random values, thus $W_0$ has some random values. You will find similar definitions of the learning rule which also use a learning rate factor. As we will show later when we proof the convergence of the learning rule this factor is not really necessary. That is why we leave it out here.
 
 Why does this work? First, let us analyse the error function:
-$$e = t-a$$
-In this, $t$ and $a$ are resp. the desired output and the effective output of the perceptron. We know from the definition of the preceptron that its output can take two values: either $1$ or $0$. Thus the error function can take following values:
+$$e = d-o$$
+As stated before, in this $d$ and $o$ are resp. the desired output and the effective output of the perceptron. We know from the definition of the preceptron that its output can take two values: either $1$ or $0$. Thus the error function can take following values:
 
 
-|prediction|desired (t)| effective (a)|e|
+|prediction|desired (d)| effective (o)|e|
 |:-|:-:|:-:|:-:|
 |correct|1|1|0
 |correct|0|0|0
 |wrong|0|1|-1
 |wrong|1|0|1
 
-==deze tabel nog eens controleren indien dat wel klopt: is het teken van de correctie wel juist > moeten we bij een desired van 0 en een effectief van 1 wel degeljk aftrekken of is het optellen? ZOU OK MOETEN ZIJN==
-
 From the above we can see that
 1. We only change the weight vector $W$ if the prediction made by the perceptron is wrong, because if it is correct the error amounts to zero.
-2. If we incorrectly predict a feature to be above the hyperplane then the error is -1 and we  the feature vector.
-3. If we incorrectly predict a feature to be below the hyperplane then the error is 1 and we addsubtract the feature vector
+2. If we incorrectly predict a feature to be above the hyperplane then the error is -1 and we subtract the feature vector from the weight vector.
+3. If we incorrectly predict a feature to be below the hyperplane then the error is 1 and we add the feature vector to the weight vector.
 
-Let's see what this gives geometrically. The following discussion gives an intuitive feel of what the learning algorithm does, but is by no means a mathematically ==rigourous== discussion. So, we start with ignoring the threshold factor of the vectors: that is, we ignore $w_0$ and $x_0$.
+Let's see what this gives geometrically. The following discussion gives an intuitive feel of what the learning algorithm does, but is by no means a mathematically rigourous discussion. So, we start with ignoring the threshold factor of the vectors: that is, we ignore $w_0$ and $x_0$.
 
-==hier nog verdere omschrijving dat we dan enkel de richtingscoëfficient van de hyperplane overhouden, zie ook eerder om te zien dat de weight vector wel degelijk de richting van de hyperplane voorsteld==
 
 So, we are left with the factors determining the direction of the seperating hyperplane. Let us now plot some examples and see what happens.
-
-==hier komt gans die uitleg van het eerst controtleren van de richting van de hyperplane naar de gewenste beoordeling van het verkeerde resultaat==
 
 #### Case 1: Desired result is 0 but 1 was predicted
 
@@ -751,12 +761,12 @@ So, here are some definitions:
 What we have now is a *feed forward single layer neural network*:
 
 *Neural Network*
-A neural network is a group of nodes which are connected to each other. Thus, the output of certain nodes serves as input for other nodes: we have a *network* of nodes. The nodes in this network are modelled on the working of *neurons* in our brain, thus we speak of a *neural network*.
+A neural network is a group of nodes which are connected to each other. Thus, the output of certain nodes serves as input for other nodes: we have a *network* of nodes. The nodes in this network are modelled on the working of *neurons* in our brain, thus we speak of a *neural network*. In this article our neural network had one node: the perceptron.
 
 *Single Layer*
 In a neural network, we can define multiple layers simply by using the output of preceptrons as the input for other perceptrons. If we make a diagram of this we can view the perceptrons as being organised in layers in which the output of a layer serves as the input for the next layer. 
 ==afbeelding van een neuraal netwerk==
-In the case of our single perceptron we also have a *single layer*.
+In this article we also have a *single layer*.
 
 *Feed Forward*
 This stacking of layers on top of each other and the output of previous layers serving as the input for next layers results in *feed forward* networks. There is no feedback of upper layers to lower layers. There are no loops. For our single perceptron we also have no loops and thus we have a *feed forward* network.
