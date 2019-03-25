@@ -29,7 +29,7 @@ Perceptron.prototype.SetWeightVector = function (w) {
     this._b(w.b);
     this._c(w.c);
 
-    console.log("Perceptron weights: a=" + this._a() + ", b=" + this._b() + ", c=" + this._c());
+    //console.log("Perceptron weights: a=" + this._a() + ", b=" + this._b() + ", c=" + this._c());
 }
 
 Perceptron.prototype.CalcPerceptronOutcome = function (x, y) {
@@ -50,7 +50,7 @@ Perceptron.prototype.CalcPerceptronFunction = function (x, y) {
 Perceptron.prototype.LearnFromData = function (x, y, desiredclass) {
     let currentclass = this.CalcPerceptronOutcome(x, y);
 
-    console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+    //console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
 	
     if (currentclass != desiredclass) {
         let error = desiredclass - currentclass;

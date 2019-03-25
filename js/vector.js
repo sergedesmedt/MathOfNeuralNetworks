@@ -227,7 +227,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
-            console.log("namex: " + namex);
+            //console.log("namex: " + namex);
             return namex;
         })
         .attr("y", function (d) {
@@ -241,14 +241,14 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
-            console.log("namey: " + namey);
+            //console.log("namey: " + namey);
             return namey;
         })
 
     vectors.selectAll(".vectorname")
         .each(function (d, i, elem) {
             //console.log("vectorname each > d:" + d + "i: " + i + ", elem: " + elem);
-            console.log("vectorname each > bb:" + this.getBBox());
+            //console.log("vectorname each > bb:" + this.getBBox());
             d.__bb = this.getBBox();
         })
 
@@ -267,7 +267,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
-            console.log("namex: " + namex);
+            //console.log("namex: " + namex);
             return namex - d.__bb.width / 2 - paddingLeftRight / 2;
         })
         .attr("y", function (d) {
@@ -281,7 +281,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
-            console.log("namey: " + namey);
+            //console.log("namey: " + namey);
             return namey - d.__bb.height + paddingTopBottom / 2;
         })
         .attr("width", function (d) { return d.__bb.width + paddingLeftRight; })
@@ -302,7 +302,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var lengthx = (vuy * d._sizeDist) + ((p1x + p2x) / 2);
-            console.log("lengthx: " + lengthx);
+            //console.log("lengthx: " + lengthx);
             return lengthx;
         })
         .attr("y", function (d) {
@@ -316,7 +316,7 @@ function createVectors(space2Dim, newVectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var lengthy = -(vux * d._sizeDist) + ((p1y + p2y) / 2);
-            console.log("lengthy: " + lengthy);
+            //console.log("lengthy: " + lengthy);
             return lengthy;
         })
 
@@ -440,7 +440,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
-            console.log("namex: " + namex);
+            //console.log("namex: " + namex);
             return namex;
         })
         .attr("y", function (d) {
@@ -454,7 +454,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
-            console.log("namey: " + namey);
+            //console.log("namey: " + namey);
             return namey;
         })
 
@@ -473,7 +473,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namex = (vuy * d._nameDist) + ((p1x + p2x) / 2);
-            console.log("namex: " + namex);
+            //console.log("namex: " + namex);
             return namex - d.__bb.width / 2 - paddingLeftRight / 2;
         })
         .attr("y", function (d) {
@@ -487,7 +487,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var namey = -(vux * d._nameDist) + ((p1y + p2y) / 2);
-            console.log("namey: " + namey);
+            //console.log("namey: " + namey);
             return namey - d.__bb.height + paddingTopBottom / 2;
         })
         .attr("width", function (d) { return d.__bb.width + paddingLeftRight; })
@@ -507,7 +507,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var lengthx = (vuy * d._sizeDist) + ((p1x + p2x) / 2);
-            console.log("lengthx: " + lengthx);
+            //console.log("lengthx: " + lengthx);
             return lengthx;
         })
         .attr("y", function (d) {
@@ -521,7 +521,7 @@ function updateVectors(space2Dim, vectors) {
             var vuy = (p2y - p1y) / vulen;
 
             var lengthy = -(vux * d._sizeDist) + ((p1y + p2y) / 2);
-            console.log("lengthy: " + lengthy);
+            //console.log("lengthy: " + lengthy);
             return lengthy;
         })
 

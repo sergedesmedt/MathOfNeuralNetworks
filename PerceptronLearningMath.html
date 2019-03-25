@@ -101,8 +101,6 @@
 				space2dimpercep.OnClick(function (x, y, shiftKey) {
 					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
-
-
 					let desiredclass = 1;
 					if (shiftKey)
 						desiredclass = 0;
@@ -120,29 +118,23 @@
 						error = desiredclass - currentclass;
 					}
 
-					console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+					console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ") > error("+error+")");
 
 					if (error == 0) {
 						return;
 					}
 
 
+					this.pspx = ko.observable(0);
+					this.pspy = ko.observable(0);
+					var vlearnStartPoint = new Point2Dim(this.pspx, this.pspy);
 					var clickedPoint = space2dimpercep.CreatePoint(x, y);
 
 					var vlearn = new Vector2Dim(
-						{ p1: p0, p2: clickedPoint },
+						{ p1: vlearnStartPoint, p2: clickedPoint },
 						{ name: "", cssclass: "learnvector", p1draggable: 0, p2draggable: 0 }
 					);
 					me.vectorsToShow.push(vlearn);
-
-					var pricoStartPoint = space2dimpercep.CreatePoint(prico._p1.getX(), prico._p1.getY());
-					var pricoEndPoint = space2dimpercep.CreatePoint(prico._p2.getX(), prico._p2.getY());
-
-					var vricoToMove = new Vector2Dim(
-						{ p1: pricoStartPoint, p2: pricoEndPoint, delta: pricoEndPoint },
-						{ name: "", cssclass: "ricotomovevector", p1draggable: 0, p2draggable: 0 }
-					);
-					me.vectorsToShow.push(vricoToMove);
 
 					space2dimpercep.update();
 
@@ -153,68 +145,91 @@
 					svg.selectAll(".vectorline.defp1delta.ricotomovevector")
 						.style("opacity", 0)
 
-					var fadeInLearnVectorTransition = svg
+					console.log("make calculations for moving the learning vector");
+
+					var learnmp1x = prico._p2.getX() + vlearn._p1.getX();
+					var learnmp1y = prico._p2.getY() + vlearn._p1.getY();
+
+					var learnmp2x = prico._p2.getX() + vlearn._p2.getX();
+					var learnmp2y = prico._p2.getY() + vlearn._p2.getY();
+
+					var xms = space2dimpercep.convertXToCanvas(learnmp1x);
+					var yms = space2dimpercep.convertYToCanvas(learnmp1y);
+
+					var xme = space2dimpercep.convertXToCanvas(learnmp2x);
+					var yme = space2dimpercep.convertYToCanvas(learnmp2y);
+
+					var learnmix = error * vlearn._p2.getX();
+					var learnmiy = error * vlearn._p2.getY();
+
+					var xmie = space2dimpercep.convertXToCanvas(learnmix);
+					var ymie = space2dimpercep.convertYToCanvas(learnmiy);
+
+					if(error < 0)
+					{
+						// learnmp1x = prico._p2.getX() + vlearn._p1.getX();
+						// learnmp1y = prico._p2.getY() + vlearn._p1.getY();
+
+						learnmp2x = prico._p2.getX() + learnmix; //vlearn._p2.getX();
+						learnmp2y = prico._p2.getY() + learnmiy; //vlearn._p2.getY();
+
+						// xms = space2dimpercep.convertXToCanvas(learnmp1x);console.log("mirror xms("+xms+")");
+						// yms = space2dimpercep.convertYToCanvas(learnmp1y);console.log("mirror yms("+yms+")");
+
+						xme = space2dimpercep.convertXToCanvas(learnmp2x);console.log("mirror xme("+xme+")");
+						yme = space2dimpercep.convertYToCanvas(learnmp2y);console.log("mirror yme("+yme+")");							
+					}
+
+					var animationTransition = svg
 						.transition().duration(1500);
 
-					fadeInLearnVectorTransition.selectAll(".vectorline.learnvector")
+					animationTransition.selectAll(".vectorline.learnvector")
 						.style("opacity", 1);
 						
+					if(error < 0) {
+						// if the error is negative we must subtract, so mirror the learned vector
+						animationTransition = animationTransition
+							.transition().duration(5000);
 
-					var fadeInPerceptronRicoTransition = fadeInLearnVectorTransition
-						.transition().duration(1500);
-						
-					fadeInPerceptronRicoTransition.selectAll(".vectorline.defp1delta.ricotomovevector")
-						.style("opacity", 1);
+						animationTransition.select(".vectorline.learnvector")
+							.attrs({
+								x2: xmie,
+								y2: ymie
+							})
+						.on("end", function () {
+							console.log("mirrorTransition ended");
 
+							vlearn._p2.setX(learnmix);
+							vlearn._p2.setY(learnmiy);
 
-					var vx1 = vricoToMove._p1.getX();
-					var vy1 = vricoToMove._p1.getY();
+						});							
+					}
 
-					var dxt = x - vx1;
-					var dyt = y - vy1;
+					//console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");				
 
-					console.log("delta x[" + dxt + "], y[" + dyt + "]");
-
-					var xs = space2dimpercep.convertXToCanvas(x);
-					var ys = space2dimpercep.convertYToCanvas(y);
-
-					var vx2t = vx1 + vricoToMove._delta.getX() + dxt;
-					var vy2t = vy1 + vricoToMove._delta.getY() + dyt;
-
-					var xe = space2dimpercep.convertXToCanvas(vx2t);
-					var ye = space2dimpercep.convertYToCanvas(vy2t);
-
-					console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");				
-
-					var moveTransition = fadeInPerceptronRicoTransition
+					var animationTransition = animationTransition
 						.transition().duration(1500);
 
-					moveTransition.select(".vectorline.defp1delta.ricotomovevector")
+					animationTransition.select(".vectorline.learnvector")
 						.attrs({
-							x1: xs,
-							y1: ys,
-							x2: xe,
-							y2: ye
+							x1: function(d){ console.log("move xms("+xms+")"); return xms; },
+							y1: function(d){ console.log("move xms("+yms+")"); return yms; },
+							x2: function(d){ console.log("move xms("+xme+")"); return xme; },
+							y2: function(d){ console.log("move xms("+yme+")"); return yme; }
 						})
 						.on("end", function () {
 							console.log("moveTransition ended");
 
-							vricoToMove._p1.setX(x);
-							vricoToMove._p1.setY(y);
-							vricoToMove._p2.setX(vx2t);
-							vricoToMove._p2.setY(vy2t);
+							vlearn._p1.setX(learnmp1x);
+							vlearn._p1.setY(learnmp1y);
+							vlearn._p2.setX(learnmp2x);
+							vlearn._p2.setY(learnmp2y);
 
 						});
 
-
-					learnTransition = moveTransition
+					// animate the weightvector to the new value
+					animationTransition = animationTransition
 						.transition().duration(1500);
-
-					var newWeights = {
-						a: perceptron1._a(),
-						b: perceptron1._b(),
-						c: perceptron1._c()
-					};
 
 					var initialWeights = {
 						a: perceptron1._a(),
@@ -222,7 +237,7 @@
 						c: perceptron1._c()
 					};
 
-					learnTransition.tween("learnTween", function () {
+					animationTransition.tween("learnTween", function () {
 						var interpolate = d3.interpolate(0, 1);
 						return function (t) {
 							//console.log("justSomeTween: " + t)
@@ -236,28 +251,14 @@
 						};
 					});
 
-
-					var fadeOutLearnVectorTransition = learnTransition
-						.transition().duration(1500);
-
-					fadeOutLearnVectorTransition.selectAll(".vectorline.learnvector")
-						.style("opacity", 0);
-						
-					fadeOutLearnVectorTransition
+					animationTransition
 						.on("end", function () {
 							console.log("last transition ended");
 
 							me.vectorsToShow.pop(vlearn);
-							me.vectorsToShow.pop(vricoToMove);
 
 							space2dimpercep.update();
-						});						
-
-					var fadeOutPerceptronRicoTransition = fadeOutLearnVectorTransition
-						.transition().duration(1500);
-						
-					fadeOutPerceptronRicoTransition.selectAll(".vectorline.defp1delta.ricotomovevector")
-						.style("opacity", 0);
+						});	
 
 				});
 
