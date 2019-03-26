@@ -665,23 +665,23 @@ So, we are left with the factors determining the direction of the seperating hyp
 The error $e$ is -1, so we need to subtract the new feature vector from the current weight vector to get the new weight vector:
 $$W_{i+1} = W_{i} - X$$
 
-Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. ==dit nog eens controleren dat het wel klopt==
+Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
 
-If we plot this for a 2-dimensional featurespace we get:
-==python notebook die de conclusies illustreert==
+Try it yourself:
+==interactieve versie van deze regel==
 
 #### Case 2: Desired result is 1 but 0 was predicted
 
 The error $e$ is 1, so we need to add the new feature vector to the current weight vector to get the new weight vector:
 $$W_{i+1} = W_{i} + X$$
 
-The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point.==dit nog eens controleren dat het wel klopt==
+The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
 
-If we plot this for a 2-dimensional featurespace we get:
-==python notebook die de conclusies illustreert==
+Try it yourself:
+==interactieve versie van deze regel==
 
 
-==https://towardsdatascience.com/perceptron-learning-algorithm-d5db0deab975
+==
 wat is de invloed van het niet in rekening brengen van $w_0$ en $x_0$ ?
 https://datascience.stackexchange.com/questions/16843/perceptron-learning-rate==
 
@@ -711,7 +711,7 @@ The above gives an intuïtive feel of what makes the learning rule work, but is 
 
 Read that sentence again please. First, we talk about a finite number of steps but we don't now what that number is up front ==is dit correct?==. Second, this is only thru if the samples given are lineariliy seperable. Thus, if they are *not* linearily seperable we can keep on learning and have no idea when to stop !!!
 
-Let us show the proof:
+This is the proof:
 
 ### Proof of the convergence
 ==hier komt het bewijs van de convergentie van de learning rule==
@@ -744,9 +744,7 @@ $$
 
 ### Behaviour of the Rosenblat Perceptron
 
-Because the formula of the perceptron is basically a hyperplane, we can only classify lineary seperable features.
-
-==wat kunnen we hier nog meer zeggen? misschien deze tekst wamenvoegen met de tekst hierboven==
+Because the formula of the perceptron is basically a hyperplane, we can only classify things into two classes which are lineary seperable. A first class with things above the hyper-plane and a second class with things below the hyper-plane.
 
 ### Formalising some things: a few definitions
 
@@ -809,57 +807,62 @@ If the above is gong a little to fast, don't panic. In the next article about th
 
 ## References 
 
-[SVM - Understanding the math - Part 2](https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/)
-https://en.wikipedia.org/wiki/Euclidean_vector
-https://en.wikipedia.org/wiki/Magnitude_(mathematics)
-https://en.wikipedia.org/wiki/Direction_cosine
+### Vector Math
+
+The inspiration for writing this article and a good introduction to vector math: [SVM - Understanding the math - Part 2](https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/)
+
+Some wikipedia articles on the basics of vectors and vector math:
+[Euclidean vector](https://en.wikipedia.org/wiki/Euclidean_vector)
+[Magnitude](https://en.wikipedia.org/wiki/Magnitude_(mathematics))
+[Direction cosine](https://en.wikipedia.org/wiki/Direction_cosine)
+
+An understandable proof of why the dot-product is also equal to he product of the length of the vectors with the cosine of the angle between the vectors:
 [Proof of dot-product](http://tutorial.math.lamar.edu/Classes/CalcII/DotProduct.aspx)
-https://betterexplained.com/articles/vector-calculus-understanding-the-dot-product/
-http://www.math.ryerson.ca/~danziger/professor/MTH141/Handouts/projections.pdf
-https://en.wikipedia.org/wiki/Hyperplane
-https://en.wikipedia.org/wiki/Linear_separability
-http://www.math.ryerson.ca/~danziger/professor/MTH141/Handouts/projections.pdf
-https://math.stackexchange.com/questions/1629491/why-is-the-product-of-a-normal-vector-and-a-vector-on-the-plane-equal-to-the-equ
-https://math.stackexchange.com/questions/2175925/hyperplane-equation-intuition-geometric-interpretation==
+
+### Hyperplanes and Linear Seperability
+
+[Hyperplane](https://en.wikipedia.org/wiki/Hyperplane)
+[Linear separability](https://en.wikipedia.org/wiki/Linear_separability)
+
+Two math stackexchange Q&A's on the equation of a hyperplane:
+[Hyperplane equation intuition / geometric interpretation](https://math.stackexchange.com/questions/2175925/hyperplane-equation-intuition-geometric-interpretation)
+[Why is the product of a normal vector and a vector on the plane equal to the equation of the plane?](https://math.stackexchange.com/questions/1629491/why-is-the-product-of-a-normal-vector-and-a-vector-on-the-plane-equal-to-the-equ)
+
+### Convexity
+
 https://en.wikipedia.org/wiki/Convex_set
+
+### Perceptron
+
+Wikipedia on the perceptron: [Perceptron](https://en.m.wikipedia.org/wiki/Perceptron)
+
+### Perceptron Learning
+
+Following article gives another intuitive explanation on why the learning algorithm works: [Perceptron Learning Algorithm: A Graphical Explanation Of Why It Works](https://towardsdatascience.com/perceptron-learning-algorithm-d5db0deab975)
+
+
+
+
+
+
+
 
 
 
  ==alles hier onder is geen definitieve tekst==
 
- 
-
-
-### Activation functions
-
-
-### Cost functions
-==is een cost function hetzelfde als een loss function?==
-
 **Loss function**
 https://www.quora.com/What-is-the-loss-function-of-the-standard-perceptron-algorithm
 "Hinge loss"
-
-
-
 
 https://proofwiki.org/wiki/Continuity_of_Heaviside_Step_Function
 https://math.stackexchange.com/questions/497798/proving-discontinuity-by-epsilon-delta
 https://www.intmath.com/functions-and-graphs/7-continuous-discontinuous-functions.php
 https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function-not-be-differentiable
 
-
-The summation of the multiplications of these observations by their corresponding weights is called “a linear combination”. “Linear” because there are no “higher order” therms in the formula. Higher order meaning no quadrats or things like that.
-
-  
-
-
-
-
-  
 [https://en.wikipedia.org/wiki/Linear_classifier](https://en.wikipedia.org/wiki/Linear_classifier)
 
-[https://en.m.wikipedia.org/wiki/Perceptron](https://en.m.wikipedia.org/wiki/Perceptron)
+
 
 [https://appliedgo.net/perceptron/](https://appliedgo.net/perceptron/)
 
