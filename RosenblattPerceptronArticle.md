@@ -1,4 +1,4 @@
-# The Math behind the Perceptron: Part 1 The Rosenblatt Perceptron
+# The Math behind the Perceptron: Part 1 - The Rosenblatt Perceptron
 
 ## Introduction
 
@@ -835,6 +835,9 @@ https://en.wikipedia.org/wiki/Convex_set
 ### Perceptron
 
 Wikipedia on the perceptron: [Perceptron](https://en.m.wikipedia.org/wiki/Perceptron)
+Another explanation of the perceptron: [The Simple Perceptron](http://aass.oru.se/~lilien/ml/seminars/2007_02_01b-Janecek-Perceptron.pdf)
+A Peceptron is a special kind of [linear classifier](https://en.wikipedia.org/wiki/Linear_classifier)
+Following article as an interesting view on what they call the duality of input and weight-space: [3. Weighted Networks – The Perceptron](http://page.mi.fu-berlin.de/rojas/neural/chapter/K3.pdf)
 
 ### Perceptron Learning
 
@@ -842,45 +845,42 @@ Following article gives another intuitive explanation on why the learning algori
 
 
 
+== dit nog ergens te behandelen ==
 
-
-
-
-
-
-
- ==alles hier onder is geen definitieve tekst==
-
-**Loss function**
-https://www.quora.com/What-is-the-loss-function-of-the-standard-perceptron-algorithm
-"Hinge loss"
-
-https://proofwiki.org/wiki/Continuity_of_Heaviside_Step_Function
-https://math.stackexchange.com/questions/497798/proving-discontinuity-by-epsilon-delta
-https://www.intmath.com/functions-and-graphs/7-continuous-discontinuous-functions.php
-https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function-not-be-differentiable
-
-[https://en.wikipedia.org/wiki/Linear_classifier](https://en.wikipedia.org/wiki/Linear_classifier)
-
-
-
-[https://appliedgo.net/perceptron/](https://appliedgo.net/perceptron/)
-
-[https://natureofcode.com/book/chapter-10-neural-networks/](https://natureofcode.com/book/chapter-10-neural-networks/) part about perceptron
-
-[http://page.mi.fu-berlin.de/rojas/neural/chapter/K3.pdf](http://page.mi.fu-berlin.de/rojas/neural/chapter/K3.pdf)
-
-[https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/](https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/)
-
-[http://aass.oru.se/~lilien/ml/seminars/2007_02_01b-Janecek-Perceptron.pdf](http://aass.oru.se/~lilien/ml/seminars/2007_02_01b-Janecek-Perceptron.pdf)
-
-[https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images](https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images)
 
 linear binary classifier. They both compute a linear (actually affine) function of the input using a set of adaptive weight ww and a bias > wat is een “affine function”
 
 [http://mathworld.wolfram.com/AffineFunction.html](http://mathworld.wolfram.com/AffineFunction.html)
 
 [https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function](https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function)
+
+
+== alles hieronder is afgekeurd voor dit artikel == 
+
+
+[https://appliedgo.net/perceptron/](https://appliedgo.net/perceptron/)
+[https://natureofcode.com/book/chapter-10-neural-networks/](https://natureofcode.com/book/chapter-10-neural-networks/) part about perceptron
+[https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/](https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/)
+
+[https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images](https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images)
+
+**Loss function**
+https://www.quora.com/What-is-the-loss-function-of-the-standard-perceptron-algorithm
+"Hinge loss"
+https://proofwiki.org/wiki/Continuity_of_Heaviside_Step_Function
+https://math.stackexchange.com/questions/497798/proving-discontinuity-by-epsilon-delta
+https://www.intmath.com/functions-and-graphs/7-continuous-discontinuous-functions.php
+https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function-not-be-differentiable
+
+ ==alles hier onder is geen definitieve tekst==
+
+
+
+
+
+
+
+
 
 Cost Function
 
