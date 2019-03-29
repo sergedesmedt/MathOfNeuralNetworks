@@ -2,6 +2,14 @@
 <html>
 <head>
 	<title>Definition of convexity</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
+	<script type="text/javascript" src="./MathJax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
@@ -13,35 +21,50 @@
 	<script type="text/javascript" src="./js/line.js"></script>
 	<script type="text/javascript" src="./js/region.js"></script>
 
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 	<link rel="stylesheet" type="text/css" href="./css/line.css">
 	<link rel="stylesheet" type="text/css" href="./css/region.css">
 
 	<style>
-		div {
-			height: 450px;
-			width: 500px;
-			border: 2px solid #000;
-			overflow: auto;
-		}
-
-		/*inside {
-			fill: green;
-		}
-
-		outside {
-			fill: red;
-		}*/
 	</style>
 </head>
 <body>
-	<input type="range" min="0" max="1" step="0.01" data-bind="value: LineSegment.lambda, valueUpdate: 'input'" />
-	<div id="linesegment"></div>
-	<input type="range" min="0" max="1" step="0.01" data-bind="value: Convex.lambda, valueUpdate: 'input'" />
-	<div id="convex"></div>
-	<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
-	<div id="notconvex"></div>
+	<div>
+		<h1>Line segment</h1>
+		<p>Two vector in 2-dimensional space:</p>
+		<p>
+			$$ \begin{aligned}
+			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\end{aligned}$$
+		</p>
+	</div>
+	<div style="width:100%">
+		<div class="divcentered">
+			<input type="range" min="0" max="1" step="0.01" data-bind="value: LineSegment.lambda, valueUpdate: 'input'" />
+		</div>
+		<div id="linesegment" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>Convex</h1>
+	</div>
+	<div style="width:100%">
+		<div class="divcentered">
+			<input type="range" min="0" max="1" step="0.01" data-bind="value: Convex.lambda, valueUpdate: 'input'" />
+		</div>
+		<div id="convex" class="divcentered"></div>
+	</div>
+	<div>
+		<h1>Concave (not Convex)</h1>
+	</div>
+	<div>
+		<div class="divcentered">
+			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
+		</div>
+		<div id="notconvex" class="divcentered"></div>
+	</div>
 	<script>
 
 		function createLineSegmentDefinition() {
@@ -403,11 +426,11 @@
 		}
 
 		function ViewModel() {
-			this.LineSegment =  createLineSegmentDefinition();
+			this.LineSegment = createLineSegmentDefinition();
 			this.Convex = createConvexDefinition();
 			this.Concave = createNotConvexDefinition();
 		}
-			
+
 		var vm = new ViewModel();
 
 		ko.applyBindings(vm);

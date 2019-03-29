@@ -91,16 +91,16 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(-40);
-				this.p1y = ko.observable(30);
+				this.a = ko.observable(-40);
+				this.b = ko.observable(30);
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.a.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.b.subscribe(function (newValue) { space2dimvsum.update(); });
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
+				var p1 = new Point2Dim(this.a, this.b);
 
 				var prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
@@ -135,8 +135,8 @@
 					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
 				);
 
-				this.ricoDX = ko.computed(function () { return this.p1x() / prico.getSize(); }, this);
-				this.ricoDY = ko.computed(function () { return this.p1y() / prico.getSize(); }, this);
+				this.ricoDX = ko.computed(function () { return this.a() / prico.getSize(); }, this);
+				this.ricoDY = ko.computed(function () { return this.b() / prico.getSize(); }, this);
 				var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
 
 				var ray = new Line2Dim(

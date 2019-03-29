@@ -37,23 +37,43 @@ VectorAngle2Dim.prototype.getAngle = function()
 }
 
 VectorAngle2Dim.draw = function (space2Dim, angles) {
+
+    var svg = space2Dim.getCanvas();
+    newVectorAngles = svg.selectAll(".vec2vecangle")
+        .data(angles).enter();
+
+    createVectorAngles(space2Dim, newVectorAngles);
+}
+
+VectorAngle2Dim.update = function (space2Dim, angles) {
+    //console.log("VectorAngle2Dim.update");
+
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();
 
-    vec2vecangledata = svg.selectAll(".vec2vecangle")
-        .data(angles).enter()
+    var angles = svg.selectAll(".vec2vecangle")
+        .data(angles);
 
-    vec2vecangleg = vec2vecangledata
+    var newVectorAngles = angles.enter();
+    var removedVectorAngles = angles.exit();
+
+    createVectorAngles(space2Dim, newVectorAngles);
+    deleteVectorAngles(space2Dim, removedVectorAngles);
+    updateVectorAngles(space2Dim, angles);
+}
+
+function createVectorAngles(space, newVectorAngles) {
+
+    var svg = space.getCanvas();
+
+    vec2vecangleg = newVectorAngles
         .append("g")
         .attr("class", "vec2vecangle");
 
     vec2vecangleg.append("path")
         .attr("class", "vec2vecarc")
         .attr("d", function (d) { return vector2vectorArc(space, d); })
-        .attr("stroke", "blue")
-        .attr("stroke-width", 1)
-        .attr("fill", "none")
 
     vec2vecangleg.filter(function (d) { return d._showAngle != 0 }).append("text")
         .attr("class", function (d) { return "vectorangle" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
@@ -117,25 +137,22 @@ VectorAngle2Dim.draw = function (space2Dim, angles) {
             var result = space.convertYToCanvas(origY + (domainR * Math.sin(angleMid)));
             return result;
         })
+
 }
 
-VectorAngle2Dim.update = function (space2Dim, angles) {
-    //console.log("VectorAngle2Dim.update");
+function deleteVectorAngles(space2Dim, removedVectorAngles) {
+    removedVectorAngles.remove();
+}
 
-    var space = space2Dim;
+function updateVectorAngles(space, angles) {
 
-    var svg = space2Dim.getCanvas();
-
-    var v2varcs = svg.selectAll(".vec2vecangle")
-        .data(angles);
-
-    v2varcs.select(".vec2vecarc")
+    angles.select(".vec2vecarc")
         .attr("d", function (d) {
             return vector2vectorArc(space, d);
         })
         ;
 
-    v2varcs.select(".vectorangle")
+    angles.select(".vectorangle")
         .text(function (d) {
             var angleBetween = getAngleBetweenVectors(d._vs, d._ve);
             //console.log("VectorAngle2Dim.update: angleBetween = " + angleBetween);
