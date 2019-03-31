@@ -184,3 +184,18 @@ Space2Dim.prototype.CreatePoint = function (x, y) {
     var p = new Point2Dim(px, py);
     return p;
 }
+
+Space2Dim.prototype.CreatePointAndUpdate = function (x, y, updateFunc) {
+
+    var px = ko.observable(x);
+    var py = ko.observable(y);
+
+    var space2dim = this;
+    var callFunc = updateFunc;
+
+    px.subscribe(function (newValue) { space2dim.update(); callFunc(); });
+    py.subscribe(function (newValue) { space2dim.update(); callFunc(); });
+
+    var p = new Point2Dim(px, py);
+    return p;
+}

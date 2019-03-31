@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
 	<script type="text/javascript" src="./js/rico.js"></script>
@@ -36,10 +37,31 @@
 		<p>Two vector in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
+		<p>Then a line segment going from A to B can be defined as:</p>
+		<p>
+			$$r = \vec{oa} + \lambda \vec{ab}$$
+		</p>
+		<p>This is simply the adition of the vector $a$ with a part of the vector going from $a$ to $b$</p>
+		<p>We know from the section on vector math that the vector going from $a$ to $b$ is equal to $b-a$ and thus we can write:</p>
+		<p>
+			$$\begin{aligned}
+			r &= \vec{oa} + \lambda \vec{ab}\\
+			&= A + {\lambda}(B-A) \\
+			&= A + {\lambda}B-{\lambda}A \\
+			&= (1-{\lambda})A + {\lambda}B \\
+			&= ((1-{\lambda})a1 + {\lambda}b1, (1-{\lambda})a2 + {\lambda}b2) \\
+			\end{aligned}$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="linesegment_sample">
+				$${}$$
+			</div>
+		</div>
 	</div>
 	<div style="width:100%">
 		<div class="divcentered">
@@ -49,8 +71,10 @@
 	</div>
 	<div>
 		<h1>Convex</h1>
+		<p>In a Euclidean space, a convex region is a region where, for every pair of points within the region, every point on the straight line segment that joins the pair of points is also within the region</p>
 	</div>
 	<div style="width:100%">
+		<div class="divmanual">(You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave)</div>
 		<div class="divcentered">
 			<input type="range" min="0" max="1" step="0.01" data-bind="value: Convex.lambda, valueUpdate: 'input'" />
 		</div>
@@ -58,8 +82,10 @@
 	</div>
 	<div>
 		<h1>Concave (not Convex)</h1>
+		<p>If the region is not convext (see above for the definition) then it is concave.</p>
 	</div>
-	<div>
+	<div style="width:100%">
+		<div class="divmanual">(You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave)</div>
 		<div class="divcentered">
 			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
 		</div>
@@ -68,6 +94,7 @@
 	<script>
 
 		function createLineSegmentDefinition() {
+			var summationMathExpression = new MathExpressions();
 			var space2dimlinesegment = new Space2Dim("linesegment", 300, 300, -50, 50, -50, 50);
 
 			function LineSegmentViewModel() {
@@ -75,11 +102,12 @@
 				this.lambda = ko.observable(0.5);
 				this.lambda.subscribe(function (newValue) {
 					space2dimlinesegment.update();
+					summationMathExpression.QueueUpdate();
 				});
 
-				this.p0 = space2dimlinesegment.CreatePoint(0, 0);
-				this.p1 = space2dimlinesegment.CreatePoint(-10, -20);
-				this.p2 = space2dimlinesegment.CreatePoint(40, 20);
+				this.p0 = space2dimlinesegment.CreatePointAndUpdate(0, 0, function(){ summationMathExpression.QueueUpdate(); });
+				this.p1 = space2dimlinesegment.CreatePointAndUpdate(-10, -20, function(){ summationMathExpression.QueueUpdate(); });
+				this.p2 = space2dimlinesegment.CreatePointAndUpdate(40, 20, function(){ summationMathExpression.QueueUpdate(); });
 
 				this.psx = ko.computed(function () {
 					var x = (1 - this.lambda()) * this.p1.getX() + this.lambda() * this.p2.getX();
@@ -104,13 +132,48 @@
 					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var linesegment = new Vector2Dim(
-					{ p1: this.p1, p2: this.ps },
-					{ name: "S", showEndArrow: 0, dvaluelvl: 3, p1draggable: 0, p2draggable: 0 }
+				var vsegment = new Vector2Dim(
+					{ p1: this.p0, p2: this.ps },
+					{ name: "V", showEndArrow: 1, dvaluelvl: 3, p1draggable: 0, p2draggable: 0 }
 				);
 
+				var linesegment = new Vector2Dim(
+					{ p1: this.p1, p2: this.ps },
+					{ name: "R", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
+				);
+
+				var me = this;
+				var getMathExpression = function () {
+					var lambdaFormatted = d3.format(".1f")(me.lambda());
+					var a1XFormatted = d3.format(".1f")(me.p1.getX());
+					var a2YFormatted = d3.format(".1f")(me.p1.getY());
+					var b1XFormatted = d3.format(".1f")(me.p2.getX());
+					var b2YFormatted = d3.format(".1f")(me.p2.getY());
+					var r1Formatted = d3.format(".1f")(me.ps.getX());
+					var r2Formatted = d3.format(".1f")(me.ps.getY());
+
+					//console.log("update linesegment equation");
+
+					var mathExpression = 
+						"\\begin{aligned}"
+						+ "r &= a + {\\lambda}(b-a) \\\\"
+						+ "&= (a1 + {\\lambda}(b1-a1), a2 + {\\lambda}(b2-a2)) \\\\"
+						+ "&= ("+a1XFormatted+" + {" + lambdaFormatted + "}("+b1XFormatted+"-"+a1XFormatted+"), "+a2YFormatted+" + {" + lambdaFormatted + "}("+b2YFormatted+"-"+a2YFormatted+")) \\\\"
+						+ "&= ("+r1Formatted+", "+r2Formatted+")"
+						+ "\\end{aligned}";
+
+					// var mathExpression = 
+					// 	"\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
+					// 	+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
+					// 	+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
+					// 	+ " \\end{aligned}";
+					return mathExpression;
+				}
+
+				summationMathExpression.RegisterExpression("linesegment_sample", getMathExpression);
+
 				this.circlesToShow = [];
-				this.vectorsToShow = [vector1, vector2, linesegment];
+				this.vectorsToShow = [vector1, vector2, vsegment, linesegment];
 				this.raysToShow = [];
 				this.poliesToShow = [];
 
