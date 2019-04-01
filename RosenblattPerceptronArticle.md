@@ -488,25 +488,25 @@ Mathematically this can be more rigourously be described as:
 
 The equation $(1 −  {\lambda})a  +  {\lambda}b$ is actually the equation of a line segment between points $a$ and $b$. We can see this from following:
 
-Let us define two vectors in the multi-dimensional space:
+Let us define two points in the multi-dimensional space:
 $$\begin{aligned}
 A &= (a_1, a_2, ..., a_i, ..., a_n), \text{ in }\mathbb{R}^n\\
 B &= (b_1, b_2, ..., b_i, ..., b_n), \text{ in }\mathbb{R}^n\\
 \end{aligned}$$
-Then a line segment going from A to B can be defined as:
-$$r = \vec{oa} + \lambda \vec{ab}$$
-with $\vec{oa}$ being the vector going from the origin $o$ to $a$ and $\vec{ab}$ the vector going from $a$ to $b$. 
-==hier nog een prentje die dat illustreert==
+Then a line segment going from point A to point B can be defined as:
+$$r = \vec{OA} + \lambda \vec{AB}$$
+with $\vec{OA}$ being the vector going from the origin $O$ to $A$ and $\vec{AB}$ the vector going from $A$ to $B$. $\lambda$ is in the interval $(0, 1)$
+This is simply the adition of the vector $a$ with a part of the vector going from $a$ to $b$
 
 Try it yourself:
 ==interactieve versie van deze regel==
 
 We know from the section on vector math above that the vector going from  $a$ to $b$ is equal to $b-a$ and thus we can write:
 $$\begin{aligned}
-r &= \vec{oa} + \lambda \vec{ab}\\
-&= A + {\lambda}(B-A) \\
-&= A + {\lambda}B-{\lambda}A \\
-&= (1-{\lambda})A + {\lambda}B \\
+r &= \vec{OA} + \lambda \vec{AB}\\
+&= a + {\lambda}(b-a) \\
+&= a + {\lambda}b-{\lambda}a \\
+&= (1-{\lambda})a + {\lambda}b \\
 \end{aligned}$$
 
 Now we can proof the half spaces separated by the hyper-plane are convex:
@@ -531,16 +531,6 @@ Since we now that $0 < {\lambda} < 1$ and $X \cdot W > b$ and also $Y \cdot W > 
 
 Try it yourself:
 ==interactieve versie van deze regel==
-
-https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf
-https://en.wikipedia.org/wiki/Line_segment
-https://en.wikipedia.org/wiki/Line_(geometry)
-https://math.stackexchange.com/questions/344416/line-segment-connecting-points-in-a-convex-set
-https://www.quora.com/How-do-I-prove-that-half-a-plane-is-convex
-http://answers.google.com/answers/threadview/id/262560.html
-http://www.math.pitt.edu/~sparling/23012/*vectors5/node6.html
-
-
 
 ## As i was saying: Linearily seperable ...
 
@@ -876,7 +866,15 @@ https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function
 
 
 
+line segments in convextity
 
+https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf
+https://en.wikipedia.org/wiki/Line_segment
+https://en.wikipedia.org/wiki/Line_(geometry)
+https://math.stackexchange.com/questions/344416/line-segment-connecting-points-in-a-convex-set
+https://www.quora.com/How-do-I-prove-that-half-a-plane-is-convex
+http://answers.google.com/answers/threadview/id/262560.html
+http://www.math.pitt.edu/~sparling/23012/*vectors5/node6.html
 
 
 
