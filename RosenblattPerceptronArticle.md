@@ -14,9 +14,9 @@ So, let us get started.
 
 ### Setting some bounds
 
-A perceptron basically takes some input values, called "features" and represented by the values $x_1, x_2, ... x_n$ in the following formula , multiplies them by some factors called "weights", represented by $w_1, w_2, ... w_n$, takes the sum of these multiplications and depending on the value of this sum outputs another value &o&:
+A perceptron basically takes some input values, called "features" and represented by the values $x_1, x_2, ... x_n$ in the following formula , multiplies them by some factors called "weights", represented by $w_1, w_2, ... w_n$, takes the sum of these multiplications and depending on the value of this sum outputs another value $o$:
 
-$$o = f(x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n)$$
+$$o = f(w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n)$$
 
 There are  a few types of perceptrons, differing in the way the sum results in the output, thus the function $f()$ in the above formula.
 
@@ -29,12 +29,12 @@ We will investigate the math envolved and discuss its limitations, thereby setti
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n > b\\
+ 1 & \text{if } w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b\\
  0 & \text{otherwise} 
   \end{cases}
 $$
 
-So, what the perceptron basically does is take some *linear combination* of *input values*, compare it to a *threshold* value $b$, and *return 1 if the threshold is exceeded and zero if not*.
+So, what the perceptron basically does is take some *linear combination* of *input values* or *features*, compare it to a *threshold* value $b$, and *return 1 if the threshold is exceeded and zero if not*.
 
 In other words, we classify our observations into two classes: a set of observations which result in in output of $1$, and a set of observations resulting in an output of $0$.
 
@@ -43,7 +43,7 @@ If you search the internet on information about the perceptron you will find alt
 $$
 f(x)  =  
   \begin{cases}
- +1 & \text{if } x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n > b\\
+ +1 & \text{if } w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b\\
  -1 & \text{otherwise} 
   \end{cases}
 $$
@@ -55,43 +55,34 @@ Lets digg a little deeper:
 ## Take a linear combination of input values
 
 
-Remember the introduction. In it we said the perceptron takes some input value $[x_1, x_2, ..., x_i, ..., x_n]$, some weights $[w_1, w_2, ..., w_i, ..., w_n]$, multiplies them with each other and takes the sum of these multiplications:
+Remember the introduction. In it we said the perceptron takes some input value $[x_1, x_2, ..., x_i, ..., x_n]$, also called features, some weights $[w_1, w_2, ..., w_i, ..., w_n]$, multiplies them with each other and takes the sum of these multiplications:
 
-$$x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n$$
+$$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n$$
 
 This is the definition of a *Linear Combination*: it is the sum of some terms multiplied by constant values. In our case the terms are the features and the constants are the weights.
 
 If we substitute the subscript by a variable $i$, then we can write the sum as
 
-$$\sum_{i=1}^{n} x_iw_i$$
+$$\sum_{i=1}^{n} w_ix_i$$
 
-This is called the [Capital-sigma notation](https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation), the $\sum$ represents the summation, the subscript $_{i=1}$ and the superscript $^{n}$ represent the range over which we take the sum and finally $x_iw_i$ represents the "things" we take the sum of.
+This is called the [Capital-sigma notation](https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation), the $\sum$ represents the summation, the subscript $_{i=1}$ and the superscript $^{n}$ represent the range over which we take the sum and finally $w_ix_i$ represents the "things" we take the sum of.
 
 Also, we can see all $x_i$ and all $w_i$ as *vectors*:
 $$
 \begin{aligned}
-X&=[x_1, x_2, ..., x_i, ..., x_n]\\
-W&=[w_1, w_2, ..., w_i, ..., w_n]
+\mathbf{x}&=[x_1, x_2, ..., x_i, ..., x_n]\\
+\mathbf{w}&=[w_1, w_2, ..., w_i, ..., w_n]
 \end{aligned}
 $$
 
 In this, $n$ represents the dimension of the vector: it is the number of scalar elements in the vector.
 In this case, the summation is the so-called *dot-product* of the vectors:
 
-$$X \cdot W$$
+$$\mathbf{w} \cdot \mathbf{x}$$
+
+> About the notation: we write simple scalars (thus simple numbers) as small letters, and vectors as bold letters. So in the above x and w are vectors and $x_i$ and $w_i$ are scalars: they are simple numbers representing the components of the vector.
 
 ## Oooh, hold your horses! You say what? A 'Vector' ?
-
- 
-
-https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)
-https://personalpages.manchester.ac.uk/staff/Andrew.Hazel/MATH45061/MATH45061_Ch1.pdf
-https://physics.stackexchange.com/questions/131348/is-force-a-contravariant-vector-or-a-covariant-vector-or-either
-https://www.mathpages.com/home/kmath398/kmath398.htm
-http://nct.goetheanum.org/cocontra.htm
-https://www.google.be/search?q=contravariance+vs+magnitude+and+direction&safe=active&rlz=1C1GCEA_enBE778BE778&ei=AXjqW53HN4-kwQLbj73YBQ&start=10&sa=N&ved=0ahUKEwjdy6yt59DeAhUPUlAKHdtHD1sQ8tMDCKQB&biw=1375&bih=878
-https://en.wikipedia.org/wiki/Coordinate_vector
-
 
 Ok, I may have gone a little too fast there by introducing vectors and not explaining them.
 
@@ -111,7 +102,7 @@ In text (from Wikipedia):
 > A (Euclidean) Vector is a geometric object that has a magnitude and a direction
 
 #### The Magnitude of a Vector 
-The magnitude of a vector, also called its norm, is defined by the root of the sum of the squares of it's components and is written as $\lvert\lvert{a}\lvert\lvert$
+The magnitude of a vector, also called its norm, is defined by the root of the sum of the squares of it's components and is written as $\lvert\lvert{\mathbf{a}}\lvert\lvert$
 In 2-dimensions, the definition comes from Pythagoras' Theorem:
 $$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{(a_1)^2 + (x_2)^2}$$
 Extended to n-dimensional space, we talk about the Euclidean norm:
@@ -261,21 +252,21 @@ The perceptron formula now becomes:
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } X \cdot W > b\\
+ 1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
  0 & \text{otherwise} 
   \end{cases}
 $$
 
 Remember what we did originally: we took a linear combination of the input values $[x_1, x_2, ..., x_i, ..., x_n]$ which resulted in the formula:
-$$x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n > b$$
+$$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b$$
 
 You may remember a similar formula from your mathematics class, the equation of a hyperplane:
-$$x_1w_1 + x_2w_2 + ... + x_iw_i + ... + x_nw_n = b$$
+$$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n = b$$
 
 Or, with dot product notation:
-$$X \cdot W = b$$
+$$\mathbf{w} \cdot \mathbf{x} = b$$
 
-So, the equation $X \cdot W > b$ defines all the points on one side of the hyperplane, and $X \cdot W <= b$ all the points on the other side of the hyperplane and on the hyperplane itself. This happens to be the very definition of ["linear seperability"](https://en.wikipedia.org/wiki/Linear_separability) 
+So, the equation $\mathbf{w} \cdot \mathbf{x} > b$ defines all the points on one side of the hyperplane, and $\mathbf{w} \cdot \mathbf{x} <= b$ all the points on the other side of the hyperplane and on the hyperplane itself. This happens to be the very definition of ["linear seperability"](https://en.wikipedia.org/wiki/Linear_separability) 
 
 Thus, the perceptron allows us to seperate our feature space in two convex half spaces.
 
@@ -293,22 +284,22 @@ $$ax + by = 0$$
 
 Now, if we fix the values for $a$ and $b$ and solve the equation for various $x$ and $y$ and plot these values we see that the resulting points are all on a line.
 
-If we consider the components $a$ and $b$ as a vector $M$, and $x$ en $y$ as a vector $P$, then the above is the dot product:
+If we consider $a$ and $b$ as the components of a vector $\mathbf{l}$, and $x$ en $y$ as the components of a vector $\mathbf{p}$, then the above is the dot product:
 $$\begin{aligned}
-M &= (a, b), \text{ in }\mathbb{R}^2\\
-P &= (x, y), \text{ in }\mathbb{R}^2\\
+\mathbf{l} &= (a, b), \text{ in }\mathbb{R}^2\\
+\mathbf{p} &= (x, y), \text{ in }\mathbb{R}^2\\
 \end{aligned}$$
 Then:
 $$\begin{aligned}
 ax + by &= 0\\
-M \cdot P &= 0\\
+\mathbf{l} \cdot \mathbf{p} &= 0\\
 \end{aligned}$$
 
 So, how come our dot product in two dimensions appears to be a line through the origin? 
 
-Remember that when we discussed the dot product, we came to the conclusion that if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $M$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $M$, which equals to all points on the line perpendicular to the vector $M$ and going through the origin.
+Remember that when we discussed the dot product, we came to the conclusion that if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $\mathbf{l}$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $\mathbf{l}$, which equals to all points on the line perpendicular to the vector $\mathbf{l}$ and going through the origin.
 
-So, vector M determines the direction of the line: the vector is perpendicular to the direction of the line.
+So, vector $\mathbf{l}$ determines the direction of the line: the vector is perpendicular to the direction of the line.
 
 Try it yourself:
 ==interactieve versie van deze regel==
@@ -330,29 +321,29 @@ $$ax + by = d$$
 Here also, we can consider replacing this with the dot product of vectors:
 
 $$\begin{aligned}
-M &= (a, b), \text{ in }\mathbb{R}^2\\
-P &= (x, y), \text{ in }\mathbb{R}^2\\
+\mathbf{l} &= (a, b), \text{ in }\mathbb{R}^2\\
+\mathbf{p} &= (x, y), \text{ in }\mathbb{R}^2\\
 \end{aligned}$$
 
 Then:
 
 $$\begin{aligned}
 ax + by &= d\\
-M \cdot P &= d\\
-&= {\lvert\lvert{M}\lvert\lvert}\text{ }{\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)
+\mathbf{l} \cdot \mathbf{p} &= d\\
+&= {\lvert\lvert{\mathbf{l}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
 \end{aligned}$$
 
-We can "normalize" this equation by dividing it through the length of $M$, resulting in the dot product of the unit vector in the direction of $M$, $u$ and the vector $P$:
+We can "normalize" this equation by dividing it through the length of $\mathbf{l}$, resulting in the dot product of the unit vector in the direction of $\mathbf{l}$: $\mathbf{u}$ and the vector $\mathbf{p}$:
 
 $$\begin{aligned}
-\frac{M \cdot P}{\lvert\lvert{M}\lvert\lvert} &= \frac{d}{\lvert\lvert{M}\lvert\lvert}\\
-u \cdot P &= \frac{d}{\lvert\lvert{M}\lvert\lvert}\\
-&= {\lvert\lvert{u}\lvert\lvert}\text{ }{\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)\\
-&= {\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)
+\frac{\mathbf{l} \cdot \mathbf{p}}{\lvert\lvert{\mathbf{l}}\lvert\lvert} &= \frac{d}{\lvert\lvert{\mathbf{l}}\lvert\lvert}\\
+\mathbf{u} \cdot \mathbf{p} &= \frac{d}{\lvert\lvert{\mathbf{l}}\lvert\lvert}\\
+&= {\lvert\lvert{\mathbf{u}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)\\
+&= {\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
 \end{aligned}$$
 
-And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $P$ onto the unit vector in the direction of $M$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $M$ equals $d/{\lvert\lvert{M}\lvert\lvert}$
-This equals all vectors to points on the line perpendicular to $M$ and at a distance $d/{\lvert\lvert{M}\lvert\lvert}$ from the origin.
+And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $\mathbf{p}$ onto the unit vector in the direction of $\mathbf{m}$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $\mathbf{m}$ equals $d/{\lvert\lvert{\mathbf{m}}\lvert\lvert}$
+This equals all vectors to points on the line perpendicular to $\mathbf{m}$ and at a distance $d/{\lvert\lvert{\mathbf{m}}\lvert\lvert}$ from the origin.
 
 Try it yourself:
 ==interactieve versie van deze regel==
@@ -362,18 +353,18 @@ Try it yourself:
 $$ax + by + cz= 0$$
 
 Again, through vectors:
-If we consider the components $a$, $b$ and $c$ as a vector $M$, and $x$, $y$ and $z$ as a vector $P$, then the above is the dot product:
+If we consider the components $a$, $b$ and $c$ as a vector $\mathbf{m}$, and $x$, $y$ and $z$ as a vector $\mathbf{p}$, then the above is the dot product:
 $$\begin{aligned}
-M &= (a, b, c), \text{ in }\mathbb{R}^3\\
-P &= (x, y, z), \text{ in }\mathbb{R}^3\\
+\mathbf{m} &= (a, b, c), \text{ in }\mathbb{R}^3\\
+\mathbf{p} &= (x, y, z), \text{ in }\mathbb{R}^3\\
 \end{aligned}$$
 Then:
 $$\begin{aligned}
 ax + by + cz &= 0\\
-M \cdot P &= 0\\
+\mathbf{m} \cdot \mathbf{p} &= 0\\
 \end{aligned}$$
 
-Again, if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the unit vector $M$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $M$, which equals to all points in the plane perpendicular to the vector $M$ and going through the origin.
+Again, if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $\mathbf{m}$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $\mathbf{m}$, which equals to all points in the plane perpendicular to the vector $\mathbf{m}$ and going through the origin.
 
 A similar line of thought can be followed for the equation:
 
@@ -382,27 +373,27 @@ $$ax + by + cz= d$$
 Here also, we can consider replacing this with the dot product of vectors:
 
 $$\begin{aligned}
-M &= (a, b, c), \text{ in }\mathbb{R}^3\\
-P &= (x, y, z), \text{ in }\mathbb{R}^3\\
+\mathbf{m} &= (a, b, c), \text{ in }\mathbb{R}^3\\
+\mathbf{p} &= (x, y, z), \text{ in }\mathbb{R}^3\\
 \end{aligned}$$
 
 $$\begin{aligned}
 ax + by + cz &= d\\
-M \cdot P &= d\\
-&= {\lvert\lvert{M}\lvert\lvert}\text{ }{\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)
+\mathbf{m} \cdot \mathbf{p} &= d\\
+&= {\lvert\lvert{\mathbf{m}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
 \end{aligned}$$
 
-Normalizing by dividing through the length of $M$, with $u$ being the unit vector in the direction of $M$:
+Normalizing by dividing through the length of $\mathbf{m}$, with $\mathbf{u}$ being the unit vector in the direction of $\mathbf{m}$:
 
 $$\begin{aligned}
-\frac{M \cdot P}{\lvert\lvert{M}\lvert\lvert} &= \frac{d}{\lvert\lvert{M}\lvert\lvert}\\
-u \cdot P &= \frac{d}{\lvert\lvert{M}\lvert\lvert}\\
-&= {\lvert\lvert{u}\lvert\lvert}\text{ }{\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)\\
-&= {\lvert\lvert{P}\lvert\lvert}\text{ }cos(\alpha)
+\frac{\mathbf{m} \cdot \mathbf{p}}{\lvert\lvert{\mathbf{m}}\lvert\lvert} &= \frac{d}{\lvert\lvert{\mathbf{m}}\lvert\lvert}\\
+\mathbf{u} \cdot \mathbf{p} &= \frac{d}{\lvert\lvert{\mathbf{m}}\lvert\lvert}\\
+&= {\lvert\lvert{\mathbf{u}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)\\
+&= {\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
 \end{aligned}$$
 
-And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $P$ onto the unit vector in the direction of $M$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $M$ equals $d/\lvert\lvert{M}\lvert\lvert$
-This equals all vectors in the plane perpendicular to $M$ and at a distance $d/\lvert\lvert{M}\lvert\lvert$ from the origin.
+And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $\mathbf{p}$ onto the unit vector in the direction of $\mathbf{m}$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $\mathbf{m}$ equals $d/\lvert\lvert{\mathbf{m}}\lvert\lvert$
+This equals all vectors to points in the plane perpendicular to $\mathbf{m}$ and at a distance $d/\lvert\lvert{\mathbf{m}}\lvert\lvert$ from the origin.
 
 ### Extending to n-dimensional space: equation of a hyper-plane
 
@@ -410,13 +401,12 @@ In 3-dimensional space, we defined the equation of a plane as:
 $$ax + by + cz= d$$
 
 If we use the symbols we are customed to in our discussion of the percpetron rule, we can write:
-$$w_1x_1 + w_2x_2 + w_3x_3= b$$
+$$w_1x_1 + w_2x_2 + w_3x_3= e$$
 
-*NOTE: Mind you however that the scalar $b$ in this last equation is not the same as the scalar $b$ in the first equation*
 
 If we extend this to multiple dimensions, we get:
 $$\begin{aligned}
-w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
+w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= e\\
 &= \sum_{i=1}^{n} w_ix_i
 \end{aligned}$$
 
@@ -428,20 +418,20 @@ Ok, lets go back to the definition of the perceptron:
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } X \cdot W > b\\
+ 1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
  0 & \text{otherwise} 
   \end{cases}
 $$
 
-So, we output 1 if the dot product of the feature vector $X$ and weight vector $W$ is larger then $b$, and zero $\text{otherwise}$. But what is $\text{otherwise}$ ?
+So, we output 1 if the dot product of the feature vector $\mathbf{x}$ and weight vector $\mathbf{w}$ is larger then $b$, and zero $\text{otherwise}$. But what is $\text{otherwise}$ ?
 Well $\text{otherwise}$ is:
-$$X \cdot W <= b$$
+$$\mathbf{w} \cdot \mathbf{x} <= b$$
 
 Ah, equal to or less then $b$. We know the *equal to* part, that is our above hyper-plane.
-$$X \cdot W = b$$
+$$\mathbf{w} \cdot \mathbf{x} = b$$
 
 So what remains is the *less than* part
-$$X \cdot W < b$$
+$$\mathbf{w} \cdot \mathbf{x} < b$$
 
 It just so happens the inequality equations define two so called half-spaces: one half space above the hyper-plane and one half-space below the hyper-plane.
 
@@ -451,30 +441,30 @@ Let us again take the equation of a hyperplane:
 $$\begin{aligned}
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
 \sum_{i=1}^{n} w_ix_i &= b\\
-X \cdot W &= b
+\mathbf{w} \cdot \mathbf{x} &= b
 \end{aligned}$$
 
 This hyperplane seperates the space $\mathbb{R}^n$ in two convex sets of points, hence the name half-space.
 
 One half-space is represented by the equation
-$$X \cdot W > b$$
+$$\mathbf{w} \cdot \mathbf{x} > b$$
 
 The other by
-$$X \cdot W < b$$
+$$\mathbf{w} \cdot \mathbf{x}  < b$$
 
 Let us analize the first equation. First, convert it to a vector representation:
 
 $$\begin{aligned}
-X \cdot W &> b\\
-{\lvert\lvert{X}\lvert\lvert}\text{ }{\lvert\lvert{W}\lvert\lvert}\text{ }cos(\alpha) &> b
+\mathbf{w} \cdot \mathbf{x}  &> b\\
+{\lvert\lvert{\mathbf{w}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{x}}\lvert\lvert}\text{ }cos(\alpha) &> b
 \end{aligned}$$
 
 Normalizing:
-$${\lvert\lvert{X}\lvert\lvert}\text{ }cos(\alpha) > \frac{b}{\lvert\lvert{W}\lvert\lvert}$$
+$${\lvert\lvert{\mathbf{x}}\lvert\lvert}\text{ }cos(\alpha) > \frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}$$
 
-So, the geometric interpretation is the set of all points with a projection on the unit vector in the direction of the weight vector $W$ *larger* then some constant value $\frac{b}{\lvert\lvert{W}\lvert\lvert}$.
+So, the geometric interpretation is the set of all vectors to points with a projection on the unit vector in the direction of the weight vector $\mathbf{w}$ *larger* then some constant value $\frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}$.
 
-A similar reasoning can be made for the equation $X \cdot W < b$ : it results in the set of points with a projection on the unit vector in the direction of the weight vector $W$ *smaller* then some constant value $\frac{b}{\lvert\lvert{W}\lvert\lvert}$.
+A similar reasoning can be made for the equation $\mathbf{w} \cdot \mathbf{x} < b$ : it results in the set of vectors to points with a projection on the unit vector in the direction of the weight vector $W$ *smaller* then some constant value $\frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}$.
 
 We can imagine these two sets as being the set of all points on either one side or the other side of the hyper-plane.
 
@@ -484,9 +474,9 @@ The definition of convex goes as follows (from Wikipedia):
 > in a Euclidean space, a convex region is a region where, for every pair of points within the region, every point on the straight line segment that joins the pair of points is also within the region.
 
 Mathematically this can be more rigourously be described as:
-> A set $C$ in $S$ is said to be convex if, for all $a$ and $b$ in $C$ and all $\lambda$ in the interval $(0, 1)$, the point $(1 −  {\lambda})a  +  {\lambda}b$ also belongs to $C$.
+> A set $\mathbf{C}$ in $\mathbf{S}$ is said to be convex if, for all points $A$ and $B$ in $\mathbf{C}$ and all $\lambda$ in the interval $(0, 1)$, the point $(1 −  {\lambda})A  +  {\lambda}B$ also belongs to $C$.
 
-The equation $(1 −  {\lambda})a  +  {\lambda}b$ is actually the equation of a line segment between points $a$ and $b$. We can see this from following:
+The equation $(1 −  {\lambda})A  +  {\lambda}B$ is actually the equation of a line segment between points $A$ and $B$. We can see this from following:
 
 Let us define two points in the multi-dimensional space:
 $$\begin{aligned}
@@ -495,51 +485,51 @@ B &= (b_1, b_2, ..., b_i, ..., b_n), \text{ in }\mathbb{R}^n\\
 \end{aligned}$$
 Then a line segment going from point A to point B can be defined as:
 $$r = \vec{OA} + \lambda \vec{AB}$$
-with $\vec{OA}$ being the vector going from the origin $O$ to $A$ and $\vec{AB}$ the vector going from $A$ to $B$. $\lambda$ is in the interval $(0, 1)$
-This is simply the adition of the vector $a$ with a part of the vector going from $a$ to $b$
+with $\vec{OA}$ being the vector going from the origin $O$ to point $A$ and $\vec{AB}$ the vector going from point $A$ to point $B$. $\lambda$ is in the interval $(0, 1)$
+This is simply the adition of the vector $\mathbf{a}$ with a part of the vector going from point $A$ to point $B$
 
 Try it yourself:
 ==interactieve versie van deze regel==
 
-We know from the section on vector math above that the vector going from  $a$ to $b$ is equal to $b-a$ and thus we can write:
+We know from the section on vector math above that the vector going from  $A$ to $B$ is equal to $\mathbf{b}-\mathbf{a}$ and thus we can write:
 $$\begin{aligned}
 r &= \vec{OA} + \lambda \vec{AB}\\
-&= a + {\lambda}(b-a) \\
-&= a + {\lambda}b-{\lambda}a \\
-&= (1-{\lambda})a + {\lambda}b \\
+&= \mathbf{a} + {\lambda}(\mathbf{b}-\mathbf{a}) \\
+&= \mathbf{a} + {\lambda}\mathbf{b}-{\lambda}\mathbf{a} \\
+&= (1-{\lambda})\mathbf{a} + {\lambda}\mathbf{b} \\
 \end{aligned}$$
 
 Now we can proof the half spaces separated by the hyper-plane are convex:
 
-Let us consider the upper half plane. For any two vectors $X$, $Y$ in that half space we have:
+Let us consider the upper half plane. For any two vectors $\mathbf{x}$, $\mathbf{y}$ in that half space we have:
 $$\begin{aligned}
-X \cdot W > b\\
-Y \cdot W > b
+\mathbf{w} \cdot \mathbf{x} > d\\
+\mathbf{w} \cdot \mathbf{y} > d
 \end{aligned}$$
 
 If the half space is convex, then each point resulting from the equation
-$$(1-{\lambda})X + {\lambda}Y$$
-must belong to the half space, which is equal to saying that every point on the line segment between $X$ and $Y$ must belong to the half space. Substituation in the equation of the half space gives:
-$$((1-{\lambda})X + {\lambda}Y) \cdot W > b$$
+$$(1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}$$
+must belong to the half space, which is equal to saying that every point on the line segment between the endpoints $X$ and $Y$ of the vectors must belong to the half space. Substituation in the equation of the half space gives:
+$$\mathbf{w} \cdot ((1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}) > d$$
 Then, by the distributive and scalar multiplication properties of the dot product we can re-arrange to:
 $$\begin{aligned}
-(1-{\lambda})X \cdot W + {\lambda}Y \cdot W &> b\\
-(1-{\lambda})X \cdot W + {\lambda}Y \cdot W - b &> 0\\
-(1-{\lambda})X \cdot W + {\lambda}Y \cdot W &> b\\
+\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w}\cdot {\lambda}\mathbf{y}  &> d\\
+\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w} \cdot {\lambda}\mathbf{y}  - d &> 0\\
+\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w} \cdot {\lambda}\mathbf{y} &> d\\
 \end{aligned}$$
-Since we now that $0 < {\lambda} < 1$ and $X \cdot W > b$ and also $Y \cdot W > b$ then the above inequality must also hold true. And thus we have proven that the half space is indeed convex.
+Since we now that $0 < {\lambda} < 1$ and $\mathbf{w} \cdot \mathbf{x} > d$ and also $\mathbf{w} \cdot \mathbf{y} > d$ then the above inequality must also hold true. And thus we have proven that the half space is indeed convex.
 
 Try it yourself:
 ==interactieve versie van deze regel==
 
-## As i was saying: Linearily seperable ...
+## As I was saying: Linearily seperable ...
 
 Thus, getting back at our formula for the preceptron:
 
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } X \cdot W > b\\
+ 1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
  0 & \text{otherwise} 
   \end{cases}
 $$
@@ -555,7 +545,7 @@ If you've been reading about the perceptron allready, you may have read about th
 If you search the internet for the formula of the Rosenblatt perceptron, you will also find some in which the factor $b$ is no longer present. What happened to it? Some re-arrangement of the components of the addition make it end up in the dot product:
 
 $$\begin{aligned}
-W \cdot X &> b\\
+\mathbf{w} \cdot \mathbf{x}  &> b\\
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &> b\\
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n - b &> 0\\
 w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (-b)1 &> 0\\
@@ -570,8 +560,8 @@ $$w_0x_0 + w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n > 0$$
 And by taking $w_0$ and $x_0$ inside the vector:
 $$
 \begin{aligned}
-X'&=[x_0, x_1, x_2, ..., x_i, ..., x_n]\\
-W'&=[w_0, w_1, w_2, ..., w_i, ..., w_n]
+\mathbf{x'}&=[x_0, x_1, x_2, ..., x_i, ..., x_n]\\
+\mathbf{w'}&=[w_0, w_1, w_2, ..., w_i, ..., w_n]
 \end{aligned}
 $$
 
@@ -579,14 +569,14 @@ We can now write:
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } X' \cdot W' > 0\\
+ 1 & \text{if } \mathbf{w'} \cdot \mathbf{x'} > 0\\
  0 & \text{otherwise} 
   \end{cases}
 $$
 
 So we have a function which classifies our features into two classes by multiplying them with a weight and if the result is positive assigns them a label "1" and "0" otherwise. 
 
-Further in the article I will leave the accent of the vectors and just write $W$ and $X$ which have the $w_0$ and $x_0$ included.
+Further in the article I will leave the accent of the vectors and just write $\mathbf{w}$ and $\mathbf{x}$ which have the $w_0$ and $x_0$ included.
 
 Try it yourself:
 ==interactieve versie van deze regel==
@@ -621,12 +611,12 @@ This is where the perceptron learning rule comes in.
 http://hagan.okstate.edu/4_Perceptron.pdf
 https://en.wikipedia.org/wiki/Perceptron
 
-First, we define the error $e$ as being the difference between the desired output $d$ and the effective output $o$ for an input vector $X$ and a weight vector $W$:
+First, we define the error $e$ as being the difference between the desired output $d$ and the effective output $o$ for an input vector $\mathbf{x}$ and a weight vector $\mathbf{w}$:
 $$e = d-o$$
 Then we can write the learning rule as:
-$$W_{i+1} = W_{i} + eX$$
+$$\mathbf{w}_{i+1} = \mathbf{w}_{i} + e\mathbf{x}$$
 
-In this $W_{i+1}$ is the new weight vector, $W_{i}$ is the current weight vector and $e$ is the current error. We initialize the weight vector with some random values, thus $W_0$ has some random values. You will find similar definitions of the learning rule which also use a learning rate factor. As we will show later when we proof the convergence of the learning rule this factor is not really necessary. That is why we leave it out here.
+In this $\mathbf{w}_{i+1}$ is the new weight vector, $\mathbf{w}_{i}$ is the current weight vector and $e$ is the current error. We initialize the weight vector with some random values, thus $\mathbf{w}_0$ has some random values. You will find similar definitions of the learning rule which also use a learning rate factor. As we will show later when we proof the convergence of the learning rule this factor is not really necessary. That is why we leave it out here.
 
 Why does this work? First, let us analyse the error function:
 $$e = d-o$$
@@ -641,7 +631,7 @@ As stated before, in this $d$ and $o$ are resp. the desired output and the effec
 |wrong|1|0|1
 
 From the above we can see that
-1. We only change the weight vector $W$ if the prediction made by the perceptron is wrong, because if it is correct the error amounts to zero.
+1. We only change the weight vector $\mathbf{w}$ if the prediction made by the perceptron is wrong, because if it is correct the error amounts to zero.
 2. If we incorrectly predict a feature to be above the hyperplane then the error is -1 and we subtract the feature vector from the weight vector.
 3. If we incorrectly predict a feature to be below the hyperplane then the error is 1 and we add the feature vector to the weight vector.
 
@@ -653,7 +643,7 @@ So, we are left with the factors determining the direction of the seperating hyp
 #### Case 1: Desired result is 0 but 1 was predicted
 
 The error $e$ is -1, so we need to subtract the new feature vector from the current weight vector to get the new weight vector:
-$$W_{i+1} = W_{i} - X$$
+$$\mathbf{w}_{i+1} = \mathbf{w}_{i} - \mathbf{x}$$
 
 Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
 
@@ -663,7 +653,7 @@ Try it yourself:
 #### Case 2: Desired result is 1 but 0 was predicted
 
 The error $e$ is 1, so we need to add the new feature vector to the current weight vector to get the new weight vector:
-$$W_{i+1} = W_{i} + X$$
+$$\mathbf{w}_{i+1} = \mathbf{w}_{i} + \mathbf{x}$$
 
 The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
 
@@ -722,12 +712,12 @@ https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-867-ma
 ### Basic formula of the Rosenblatt Perceptron
 
 The basic formula classifies the features by weighting them into two seperate classes.
-We have seen that the way this is done, is by comparing the dot product of the feature vector $X$ and the weight vector $W$ with some fixed value $b$. If the dot product is larger then this fixed value, then we classisify them info one class by assigning them a label 1, otherwise we put them into the other class by assigning them a label 0.
+We have seen that the way this is done, is by comparing the dot product of the feature vector $\mathbf{x}$ and the weight vector $\mathbf{w}$ with some fixed value $b$. If the dot product is larger then this fixed value, then we classisify them info one class by assigning them a label 1, otherwise we put them into the other class by assigning them a label 0.
 
 $$
 f(x)  =  
   \begin{cases}
- 1 & \text{if } (X \cdot W - b) > 0\\
+ 1 & \text{if } (\mathbf{w} \cdot \mathbf{x} - b) > 0\\
  0 & \text{otherwise} 
   \end{cases}
 $$
@@ -865,7 +855,15 @@ https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function
  ==alles hier onder is geen definitieve tekst==
 
 
+ 
 
+https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)
+https://personalpages.manchester.ac.uk/staff/Andrew.Hazel/MATH45061/MATH45061_Ch1.pdf
+https://physics.stackexchange.com/questions/131348/is-force-a-contravariant-vector-or-a-covariant-vector-or-either
+https://www.mathpages.com/home/kmath398/kmath398.htm
+http://nct.goetheanum.org/cocontra.htm
+https://www.google.be/search?q=contravariance+vs+magnitude+and+direction&safe=active&rlz=1C1GCEA_enBE778BE778&ei=AXjqW53HN4-kwQLbj73YBQ&start=10&sa=N&ved=0ahUKEwjdy6yt59DeAhUPUlAKHdtHD1sQ8tMDCKQB&biw=1375&bih=878
+https://en.wikipedia.org/wiki/Coordinate_vector
 line segments in convextity
 
 https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf
