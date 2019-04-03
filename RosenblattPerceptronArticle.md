@@ -598,7 +598,7 @@ If you search the internet for the definition of the Heaviside step function, yo
 
 The Heaviside step function is discontinuous. A function $f(x)$ is continuous if a small change of $x$ results in a small change in the outcome of the function. This is clearly not the case for the Heaviyside step function: if at 0 and moving to the negative side then the function outcome changes suddenly from 1 to 0.
 
-I will not elaborate much more on this function not being continuous because it is not important for the discussion at hand. In a next article, when we discuss the ADALINE perceptron I will get back to this.
+I will not elaborate much more on this function not being continuous because it is not important for the discussion at hand. In a next article, when we discuss the ADALINE perceptron, I will get back to this.
 
 ## Learning the weights
 
@@ -607,9 +607,6 @@ We've covered a lot about how the perceptron classifies the features in two line
 This is where the perceptron learning rule comes in.
 
 ### The perceptron learning rule
-
-http://hagan.okstate.edu/4_Perceptron.pdf
-https://en.wikipedia.org/wiki/Perceptron
 
 First, we define the error $e$ as being the difference between the desired output $d$ and the effective output $o$ for an input vector $\mathbf{x}$ and a weight vector $\mathbf{w}$:
 $$e = d-o$$
@@ -635,7 +632,7 @@ From the above we can see that
 2. If we incorrectly predict a feature to be above the hyperplane then the error is -1 and we subtract the feature vector from the weight vector.
 3. If we incorrectly predict a feature to be below the hyperplane then the error is 1 and we add the feature vector to the weight vector.
 
-Let's see what this gives geometrically. The following discussion gives an intuitive feel of what the learning algorithm does, but is by no means a mathematically rigourous discussion. So, we start with ignoring the threshold factor of the vectors: that is, we ignore $w_0$ and $x_0$.
+Let's see what this gives geometrically. The following discussion gives an intuitive feel of what the learning algorithm does, but is by no means a mathematically rigourous discussion. We start with ignoring the threshold factor of the vectors: that is, we ignore $w_0$ and $x_0$.
 
 
 So, we are left with the factors determining the direction of the seperating hyperplane. Let us now plot some examples and see what happens.
@@ -645,7 +642,7 @@ So, we are left with the factors determining the direction of the seperating hyp
 The error $e$ is -1, so we need to subtract the new feature vector from the current weight vector to get the new weight vector:
 $$\mathbf{w}_{i+1} = \mathbf{w}_{i} - \mathbf{x}$$
 
-Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
+Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.
 
 Try it yourself:
 ==interactieve versie van deze regel==
@@ -655,41 +652,16 @@ Try it yourself:
 The error $e$ is 1, so we need to add the new feature vector to the current weight vector to get the new weight vector:
 $$\mathbf{w}_{i+1} = \mathbf{w}_{i} + \mathbf{x}$$
 
-The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it should reside in.
+The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.
 
 Try it yourself:
 ==interactieve versie van deze regel==
 
-
-==
-wat is de invloed van het niet in rekening brengen van $w_0$ en $x_0$ ?
-https://datascience.stackexchange.com/questions/16843/perceptron-learning-rate==
-
-==VANAF HIER nog eens goed onderzoeken voor die otherwise: er zijn artikelen die spreken over 0, en er zijn er die spreken over -1. Hier aantonen dat dit geen probleem is voor de learning rule.==
-dit maakt mogelijks ook geen verschil tijdens  de learning phase 
-*in het geval van 0*:
-je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
-je wenst 0 en hebt 0: 0-0 = 0, dus geen aanpassing
-je wenst 1 en hebt 0: 0-1 = -1, aanpassen met -r*X
-je wenst 0 en hebt 1: 1-0 = 1, aanpassen met r*X
-
-*in het geval van -1*:
-je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
-je wenst -1 en hebt -1: (-1)-(-1) = 0, dus geen aanpassing
-je wenst 1 en hebt -1: (-1)-1 = -2, aanpassen met -2r*X
-je wenst (-1) en hebt 1: 1-(-1) = 2, aanpassen met 2r*X
-
-is dus gewoon een verschaling van de learning rate !!!!
-==TOT HIER==
-
-
 ## Convergence of the learning rule.
-https://stackoverflow.com/questions/41989830/geometric-proof-of-convergence-of-perceptron-algorithm
-https://jaidevd.github.io/posts/a-geometric-proof-of-the-perceptron-convergence-theorem/
 
 The above gives an intuïtive feel of what makes the learning rule work, but is not a mathematical prove. In following we will develop a mathematical prove showing the perceptron rule will converge to a solution in a finite number of steps if the samples given are linearily seperable.
 
-Read that sentence again please. First, we talk about a finite number of steps but we don't now what that number is up front ==is dit correct?==. Second, this is only thru if the samples given are lineariliy seperable. Thus, if they are *not* linearily seperable we can keep on learning and have no idea when to stop !!!
+Read that sentence again please. First, we talk about a finite number of steps but we don't now what that number is up front ==is dit correct?==. Second, this is only true if the samples given are linearily seperable. Thus, if they are *not* linearily seperable we can keep on learning and have no idea when to stop !!!
 
 This is the proof:
 
@@ -854,8 +826,33 @@ https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function
 
  ==alles hier onder is geen definitieve tekst==
 
+https://stackoverflow.com/questions/41989830/geometric-proof-of-convergence-of-perceptron-algorithm
+https://jaidevd.github.io/posts/a-geometric-proof-of-the-perceptron-convergence-theorem/
+
+==wat is de invloed van het niet in rekening brengen van $w_0$ en $x_0$ ?
+https://datascience.stackexchange.com/questions/16843/perceptron-learning-rate==
+
+==VANAF HIER nog eens goed onderzoeken voor die otherwise: er zijn artikelen die spreken over 0, en er zijn er die spreken over -1. Hier aantonen dat dit geen probleem is voor de learning rule.==
+dit maakt mogelijks ook geen verschil tijdens  de learning phase 
+*in het geval van 0*:
+je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
+je wenst 0 en hebt 0: 0-0 = 0, dus geen aanpassing
+je wenst 1 en hebt 0: 0-1 = -1, aanpassen met -r*X
+je wenst 0 en hebt 1: 1-0 = 1, aanpassen met r*X
+
+*in het geval van -1*:
+je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
+je wenst -1 en hebt -1: (-1)-(-1) = 0, dus geen aanpassing
+je wenst 1 en hebt -1: (-1)-1 = -2, aanpassen met -2r*X
+je wenst (-1) en hebt 1: 1-(-1) = 2, aanpassen met 2r*X
+
+is dus gewoon een verschaling van de learning rate !!!!
+==TOT HIER==
+
 
  
+http://hagan.okstate.edu/4_Perceptron.pdf
+https://en.wikipedia.org/wiki/Perceptron
 
 https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)
 https://personalpages.manchester.ac.uk/staff/Andrew.Hazel/MATH45061/MATH45061_Ch1.pdf
