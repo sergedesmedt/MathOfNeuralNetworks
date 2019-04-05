@@ -149,7 +149,7 @@ Space2Dim.prototype.update = function () {
 
 Space2Dim.prototype.OnClick = function (func) {
     var callback = func;
-    var svg = d3.select("svg")
+    var svg = this.getSvg(); //d3.select("svg")
     var me = this;
     svg.on("click", function () {
         var coords = d3.mouse(this);

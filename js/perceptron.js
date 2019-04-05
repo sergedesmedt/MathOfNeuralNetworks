@@ -1,22 +1,22 @@
 ﻿function Perceptron(props, config) {
-    this._a = props["a"];
-    this._b = props["b"];
-    this._c = props["c"];
+    this._w0 = props["w0"];
+    this._w1 = props["w1"];
+    this._w2 = props["w2"];
 
     this._deftype = "drico";
     this._d = ko.computed(function () { 
-        let c = -1 * this._c() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
+        let c = -1 * this._w0() / Math.sqrt(this._w1() * this._w1() + this._w2() * this._w2());
         //console.log("Percetron: c=" + c)
         return c;
     }, this);
     this._prico = new Rico2Dim(
         ko.computed(function () {
-            var anorm = this._a() / Math.sqrt(this._a() * this._a() + this._b() * this._b()); 
+            var anorm = this._w1() / Math.sqrt(this._w1() * this._w1() + this._w2() * this._w2()); 
             //console.log("Percetron: anorm=" + anorm);
             return anorm;
         }, this),
         ko.computed(function () {
-            var bnorm = this._b() / Math.sqrt(this._a() * this._a() + this._b() * this._b());
+            var bnorm = this._w2() / Math.sqrt(this._w1() * this._w1() + this._w2() * this._w2());
             //console.log("Percetron: bnorm=" + bnorm);
             return bnorm;
         }, this)
@@ -25,46 +25,46 @@
 }
 
 Perceptron.prototype.SetWeightVector = function (w) {
-    this._a(w.a);
-    this._b(w.b);
-    this._c(w.c);
+    this._w0(w.w0);
+    this._w1(w.w1);
+    this._w2(w.w2);
 
-    //console.log("Perceptron weights: a=" + this._a() + ", b=" + this._b() + ", c=" + this._c());
+    //console.log("Perceptron weights: a=" + this._w1() + ", b=" + this._w2() + ", c=" + this._w0());
 }
 
 Perceptron.prototype.CalcPerceptronOutcome = function (x, y) {
     return (this.CalcPerceptronFunction(x, y) >= 0) ? 1 : 0;
 }
 
-Perceptron.prototype.CalcPerceptronFunction = function (x, y) {
-    let a = this._a();
-    let b = this._b();
-    let c = this._c();
-    var r = (a * x) + (b * y) + (c * 1);
+Perceptron.prototype.CalcPerceptronFunction = function (x1, x2) {
+    let w0 = this._w0();
+    let w1 = this._w1();
+    let w2 = this._w2();
+    var r = (w0 * 1) + (w1 * x1) + (w2 * x2);
 
     //console.log("CalcPerceptronOutcome a(" + a + ") * x(" + x + ") + b(" + b + ") * y(" + y + ") + c(" + c + ") = r(" + r + ")");
 
     return r;
 }
 
-Perceptron.prototype.LearnFromData = function (x, y, desiredclass) {
-    let currentclass = this.CalcPerceptronOutcome(x, y);
+Perceptron.prototype.LearnFromData = function (x1, x2, desiredclass) {
+    let currentclass = this.CalcPerceptronOutcome(x1, x2);
 
     //console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
 	
     if (currentclass != desiredclass) {
         let error = desiredclass - currentclass;
         return {
-            a: (this._a() + ((error) * x)),
-            b: (this._b() + ((error) * y)),
-            c: (this._c() + ((error) * 1))
+            w0: (this._w0() + ((error) * 1)),
+            w1: (this._w1() + ((error) * x1)),
+            w2: (this._w2() + ((error) * x2))
         };
     }
 
     return {
-        a: this._a(),
-        b: this._b(),
-        c: this._c()
+        w0: this._w0(),
+        w1: this._w1(),
+        w2: this._w2()
     };
 }
 

@@ -51,34 +51,34 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				var abGenerator = d3.randomUniform(-1, 1);
-				var a = abGenerator();
-				var b = abGenerator();
-				//var cGenerator = d3.randomUniform(-50, 50);
-				var c = 0; //cGenerator();
+				//var w0Generator = d3.randomUniform(-50, 50);
+				var w0 = 0; //w0Generator();
+				var wGenerator = d3.randomUniform(-1, 1);
+				var w1 = wGenerator();
+				var w2 = wGenerator();
 
-				var anorm = a / Math.sqrt(a * a + b * b);
-				var bnorm = b / Math.sqrt(a * a + b * b);
+				var w1norm = w1 / Math.sqrt(w1 * w1 + w2 * w2);
+				var w2norm = w2 / Math.sqrt(w1 * w1 + w2 * w2);
 
-				this.perc1a = ko.observable(anorm);
-				this.perc1b = ko.observable(bnorm);
-				this.perc1c = ko.observable(c);
+				console.log("w0[" + w0 + "], w1[" + w1norm + "], w2[" + w2norm + "]");
 
-				console.log("a[" + anorm + "], b[" + b + "], c[" + c + "]");
+				this.perc1w0 = ko.observable(w0);
+				this.perc1w1 = ko.observable(w1norm);
+				this.perc1w2 = ko.observable(w2norm);
 
-				this.perc1a.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1c.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1w0.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1w1.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1w2.subscribe(function (newValue) { space2dimpercep.update(); });
 
 				var perceptron1 = new Perceptron(
-					{ a: this.perc1a, b: this.perc1b, c: this.perc1c },
+					{ w0: this.perc1w0, w1: this.perc1w1, w2: this.perc1w2 },
 					{});
 
 
 				var p0 = new Point2Dim(this.p0x, this.p0y);
 				var p1 = new Point2Dim(
-					ko.computed(function () { return this.perc1a() /* * -1 * this.perc1c()*/; }, this),
-					ko.computed(function () { return this.perc1b() /* * -1 * this.perc1c()*/; }, this)
+					ko.computed(function () { return this.perc1w1() /* * -1 * this.perc1c()*/; }, this),
+					ko.computed(function () { return this.perc1w2() /* * -1 * this.perc1c()*/; }, this)
 				);
 
 				var prico = new Vector2Dim(
@@ -232,9 +232,9 @@
 						.transition().duration(1500);
 
 					var initialWeights = {
-						a: perceptron1._a(),
-						b: perceptron1._b(),
-						c: perceptron1._c()
+						w0: perceptron1._w0(),
+						w1: perceptron1._w1(),
+						w2: perceptron1._w2()
 					};
 
 					animationTransition.tween("learnTween", function () {
@@ -243,9 +243,9 @@
 							//console.log("justSomeTween: " + t)
 
 							var newWeights = {
-								a: (initialWeights.a + (t * (error) * x)),
-								b: (initialWeights.b + (t * (error) * y)),
-								c: initialWeights.c
+								w0: initialWeights.w0,
+								w1: (initialWeights.w1 + (t * (error) * x)),
+								w2: (initialWeights.w2 + (t * (error) * y))
 							};
 							perceptron1.SetWeightVector(newWeights);
 						};
@@ -275,33 +275,34 @@
 			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
 			space2dimpercep.show();
 
-			ko.applyBindings(vm);
+			//ko.applyBindings(vm);
 
 			return vm;
 		}
 
 
 		function createPerceptronANDLearningSample() {
-			var space2dimpercep = new Space2Dim("perceptronandlearning", 200, 200, -2, 2, -2, 2);
+			var space2dimpercepand = new Space2Dim("perceptronandlearning", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
-				var abGenerator = d3.randomUniform(-1, 1);
-				var a = abGenerator();
-				var b = abGenerator();
-				var cGenerator = d3.randomUniform(-1, 1);
-				var c = cGenerator();
-				console.log("a[" + a + "], b[" + b + "], c[" + c + "]");
+				var w0Generator = d3.randomUniform(-1, 1);
+				var w0 = w0Generator();
+				var wGenerator = d3.randomUniform(-1, 1);
+				var w1 = wGenerator();
+				var w2 = wGenerator();
 
-				this.perc1a = ko.observable(a);
-				this.perc1b = ko.observable(b);
-				this.perc1c = ko.observable(c);
+				console.log("createPerceptronANDLearningSample: w0[" + w0 + "], w1[" + w1 + "], w2[" + w2 + "]");
 
-				this.perc1a.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1c.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.perc1w0 = ko.observable(w0);
+				this.perc1w1 = ko.observable(w1);
+				this.perc1w2 = ko.observable(w2);
+
+				this.perc1w0.subscribe(function (newValue) { space2dimpercepand.update(); });
+				this.perc1w1.subscribe(function (newValue) { space2dimpercepand.update(); });
+				this.perc1w2.subscribe(function (newValue) { space2dimpercepand.update(); });
 
 				var perceptron1 = new Perceptron(
-					{ a: this.perc1a, b: this.perc1b, c: this.perc1c },
+					{ w0: this.perc1w0, w1: this.perc1w1, w2: this.perc1w2},
 					{});
 
 				this.circlesToShow = [];
@@ -311,7 +312,7 @@
 				this.allPerceptronLearnings = ko.observableArray([]);
 				this.allPerceptronLearnings.subscribe(function (newValue) {
 					//console.log("allPerceptronResults.subscribe");
-					space2dimpercep.update();
+					space2dimpercepand.update();
 				});
 
 				var me = this;
@@ -323,28 +324,29 @@
 					{ x: 0, y: 1, outcome: 0 },
 					{ x: 1, y: 1, outcome: 1 }
 				];
-				space2dimpercep.OnClick(function (x, y, shiftKey) {
-					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+				console.log("space2dim attach onclick");
+				space2dimpercepand.OnClick(function (x, y, shiftKey) {
+					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					step++;
 					if (step >= 4)
 						step = 0;
 
-					console.log("will learn datapoint for step=" + step);
-					console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+					//console.log("will learn datapoint for step=" + step);
+					//console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
+					//console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
+					//console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
+					//console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
 
-					console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
+					//console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
 
 					let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
 					perceptron1.SetWeightVector(newWeights);
 
-					console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+					//console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
+					//console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
+					//console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
+					//console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
 
 					me.allPerceptronLearnings.removeAll();
 
@@ -370,16 +372,16 @@
 
 			var vm = new ViewModel();
 
-			space2dimpercep.appenGlobalAttributes(Vector2Dim.global);
-			space2dimpercep.appenGlobalAttributes(PerceptronResult.global);
-			space2dimpercep.registerHandler(Perceptron.draw, Perceptron.update, function () { return vm.perceptronsToShow; });
-			space2dimpercep.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
-			space2dimpercep.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
-			space2dimpercep.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
-			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
-			space2dimpercep.show();
+			space2dimpercepand.appenGlobalAttributes(Vector2Dim.global);
+			space2dimpercepand.appenGlobalAttributes(PerceptronResult.global);
+			space2dimpercepand.registerHandler(Perceptron.draw, Perceptron.update, function () { return vm.perceptronsToShow; });
+			space2dimpercepand.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
+			space2dimpercepand.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
+			space2dimpercepand.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
+			space2dimpercepand.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
+			space2dimpercepand.show();
 
-			ko.applyBindings(vm);
+			//ko.applyBindings(vm);
 
 			return vm;
 		}
@@ -483,7 +485,7 @@
 			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
 			space2dimpercep.show();
 
-			ko.applyBindings(vm);
+			//ko.applyBindings(vm);
 
 			return vm;
 		}
@@ -555,7 +557,7 @@
 			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
 			space2dimpercep.show();
 
-			ko.applyBindings(vm);
+			//ko.applyBindings(vm);
 
 			return vm;
 		}
@@ -626,16 +628,28 @@
 			space2dimpercep.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
 			space2dimpercep.show();
 
-			ko.applyBindings(vm);
+			//ko.applyBindings(vm);
 
 			return vm;
 		}
 
-		createPerceptronLearningAnimationSample();
+		//createPerceptronLearningAnimationSample();
 		//createPerceptronANDLearningSample();
 		//createPerceptronORLearningSample();
 		//createPerceptronLearningSample();
 		//createPerceptronLearningNormalizedSample()
+
+		function ViewModel() {
+			this.LearningAnimation = createPerceptronLearningAnimationSample();
+			this.ANDLearning = createPerceptronANDLearningSample();
+			//this.ORLearning = createPerceptronORLearningSample();
+			//this.Learning = createPerceptronLearningSample();
+			//this.LearningNormalized = createPerceptronLearningNormalizedSample();
+		}
+
+		var vm = new ViewModel();
+
+		ko.applyBindings(vm);
 
 	</script>
 

@@ -50,16 +50,17 @@ PerceptronResult.draw = function (space2Dim, results) {
             var elemPos = space.getElemPosition(elem);
 
             var cx = elemPos.x; //d3.event.pageX; //space.convertXToCanvas(d._x);
-            var cy = elemPos.y - 5; // d3.event.pageY - 50; //space.convertYToCanvas(d._y);
+            var cy = elemPos.y; // d3.event.pageY - 50; //space.convertYToCanvas(d._y);
 
             var f = d3.format(".1f");
             var tooltipText = ""
-                + f(d._perceptron._a()) + "*"
+                + f(d._perceptron._w0()) + " = "
+                + f(d._perceptron.CalcPerceptronFunction(d._x, d._y))
+                + f(d._perceptron._w1()) + "*"
                 + f(d._x) + " + "
-                + f(d._perceptron._b()) + "*"
+                + f(d._perceptron._w2()) + "*"
                 + f(d._y) + " + "
-                + f(d._perceptron._c()) + " = "
-                + f(d._perceptron.CalcPerceptronFunction(d._x, d._y));
+                ;
             //tooltipText = "txt";
             console.log("tooltipText: " + tooltipText);
 
@@ -67,15 +68,16 @@ PerceptronResult.draw = function (space2Dim, results) {
                 .html(tooltipText);
 
             PerceptronResult.tooltip
-                .html(d._perceptron._a() + "*" + d._x + " + " + d._perceptron._b() + "*" + d._y + " + " + d._perceptron._c() + " = " + d._perceptron.CalcPerceptronFunction(d._x, d._y));
+                .html(d._perceptron._w1() + "*" + d._x + " + " + d._perceptron._w2() + "*" + d._y + " + " + d._perceptron._w0() + " = " + d._perceptron.CalcPerceptronFunction(d._x, d._y));
 
-            //var bbox = PerceptronResult.tooltip.node().getBBox();
-            //let xOffset = bbox.width / 2;
-            let xOffset = 30;
+            var canvasBbox = space.getParent().node().getBoundingClientRect();
+            var bbox = PerceptronResult.tooltip.node().getBoundingClientRect(); //node().getBBox();
+            let xOffset = cx + canvasBbox.x - bbox.width / 2;
+            let yOffset = cy + canvasBbox.y - 35;
 
             PerceptronResult.tooltip
-                .style("left", (cx - xOffset) + "px")
-                .style("top", (cy + 10) + "px");
+                .style("left", (xOffset) + "px")
+                .style("top", (yOffset) + "px");
 
         })
         .on("mousemove", function () {
@@ -137,29 +139,32 @@ PerceptronResult.update = function (space2Dim, results) {
             var elemPos = space.getElemPosition(elem);
 
             var cx = elemPos.x; //d3.event.pageX; //space.convertXToCanvas(d._x);
-            var cy = elemPos.y - 5; // d3.event.pageY - 50; //space.convertYToCanvas(d._y);
+            var cy = elemPos.y; // d3.event.pageY - 50; //space.convertYToCanvas(d._y);
 
             var f = d3.format(".1f");
             var tooltipText = ""
-                + f(d._perceptron._a()) + "*"
+                + f(d._perceptron._w0()) + "*"
+                + "1.0 + "
+                + f(d._perceptron._w1()) + "*"
                 + f(d._x) + " + "
-                + f(d._perceptron._b()) + "*"
-                + f(d._y) + " + "
-                + f(d._perceptron._c()) + " = "
-                + f(d._perceptron.CalcPerceptronFunction(d._x, d._y));
+                + f(d._perceptron._w2()) + "*"
+                + f(d._y) + " = "
+                + f(d._perceptron.CalcPerceptronFunction(d._x, d._y))
+                ;
             //tooltipText = "txt";
             console.log("tooltipText: " + tooltipText);
 
             PerceptronResult.tooltip
                 .html(tooltipText);
 
-            //var bbox = PerceptronResult.tooltip.node().getBBox();
-            //let xOffset = bbox.width / 2;
-            let xOffset = 30;
+            var canvasBbox = space.getParent().node().getBoundingClientRect();
+            var bbox = PerceptronResult.tooltip.node().getBoundingClientRect(); //.node().getBBox();
+            let xOffset = cx + canvasBbox.x - bbox.width / 2;
+            let yOffset = cy + canvasBbox.y - 35;
 
             PerceptronResult.tooltip
-                .style("left", (cx - xOffset) + "px")
-                .style("top", (cy + 10) + "px");
+                .style("left", (xOffset) + "px")
+                .style("top", (yOffset) + "px");
 
         })
         .on("mousemove", function (d, i) {

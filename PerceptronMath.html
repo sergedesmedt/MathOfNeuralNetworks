@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
 	<script type="text/javascript" src="./js/rico.js"></script>
@@ -33,29 +34,82 @@
 	</style>
 </head>
 <body>
-	<input type="range" min="-100" max="100" step="1" data-bind="value: perc1a, valueUpdate: 'input'" />
-	<input type="range" min="-100" max="100" step="1" data-bind="value: perc1b, valueUpdate: 'input'" />
-	<input type="range" min="-1000" max="1000" step="1" data-bind="value: perc1c, valueUpdate: 'input'" />
-	<div id="perceptron"></div>
+	<div>
+		<h1>The Rosenblatt Perceptron</h1>
+		<p>Definition of the Rosenblatt perceptron:</p>
+		<p>
+			$$
+			f(x)  =
+			\begin{cases}
+			1 & \text{if } \mathbf{w} \cdot \mathbf{x} > 0\\
+			0 & \text{otherwise}
+			\end{cases}
+			$$
+		</p>
+		<p>
+			With a 2-dimensional feature space and the dot-product expanded we get:
+		</p>
+		<p>
+			$$
+			f(x)  =
+			\begin{cases}
+			1 & \text{if } w_0x_0 + w_1x_1 + w_2x_2 > 0\\
+			0 & \text{otherwise}
+			\end{cases}
+			$$
+		</p>
+		<p>A sample:</p>
+		<div class="sample_container_height100">
+			<div id="perceptron_sample">
+				$${}$$
+			</div>
+		</div>
+	</div>
+	<div style="width:100%">
+		<div class="divcentered">
+			<table>
+				<tr><td>$w_0$=<span data-bind="text: percw0"></span></td><td><input type="range" min="-1000" max="1000" step="1" data-bind="value: percw0, valueUpdate: 'input'" /></td></tr>
+				<tr><td>$w_1$=<span data-bind="text: percw1"></span></td><td><input type="range" min="-100" max="100" step="1" data-bind="value: percw1, valueUpdate: 'input'" /></td></tr>
+				<tr><td>$w_2$=<span data-bind="text: percw2"></span></td><td><input type="range" min="-100" max="100" step="1" data-bind="value: percw2, valueUpdate: 'input'" /></td></tr>
+			</table>
+		</div>
+		<div id="perceptron" class="divcentered"></div>
+	</div>
 
 	<script type="text/javascript">
 
 		function createPerceptronSample() {
+			var perceptronMathExpression = new MathExpressions();
 			var space2dimpercep = new Space2Dim("perceptron", 200, 200, -75, 75, -75, 75);
 
 			function ViewModel() {
 
-				this.perc1a = ko.observable(7);
-				this.perc1b = ko.observable(10);
-				this.perc1c = ko.observable(100);
+				this.percw0 = ko.observable(100);
+				this.percw1 = ko.observable(7);
+				this.percw2 = ko.observable(10);
 
-				this.perc1a.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1b.subscribe(function (newValue) { space2dimpercep.update(); });
-				this.perc1c.subscribe(function (newValue) { space2dimpercep.update(); });
+				this.percw0.subscribe(function (newValue) { space2dimpercep.update(); perceptronMathExpression.QueueUpdate(); });
+				this.percw1.subscribe(function (newValue) { space2dimpercep.update(); perceptronMathExpression.QueueUpdate(); });
+				this.percw2.subscribe(function (newValue) { space2dimpercep.update(); perceptronMathExpression.QueueUpdate(); });
 
 				var perceptron1 = new Perceptron(
-					{ a: this.perc1a, b: this.perc1b, c: this.perc1c },
+					{ w0: this.percw0, w1: this.percw1, w2: this.percw2 },
 					{});
+
+				var getMathExpression = function () {
+					var w0Formatted = d3.format(".1f")(perceptron1._w0());
+					var w1Formatted = d3.format(".1f")(perceptron1._w1());
+					var w2Formatted = d3.format(".1f")(perceptron1._w2());
+
+					var mathExpression = "f(x) =" +
+						"\\begin{cases}" +
+						"1 & \\text{ if } " + w0Formatted + " * 1 + " + w1Formatted + " * x_1 + " + w2Formatted+" * x_2 > 0\\\\" +
+						"0 & \\text{ otherwise }" +
+						"\\end{cases}";
+					return mathExpression;
+				}
+
+				perceptronMathExpression.RegisterExpression("perceptron_sample", getMathExpression);
 
 				this.circlesToShow = [];
 				this.vectorsToShow = [];
@@ -69,7 +123,7 @@
 
 				var me = this;
 				space2dimpercep.OnClick(function (x, y) {
-					console.log("space2dim clicked at [" + x + "," + y + "]");
+					//console.log("space2dim clicked at [" + x + "," + y + "]");
 
 					let perceptronResult = new PerceptronResult(
 						{ x: x, y: y, perceptron: perceptron1},
