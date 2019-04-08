@@ -12,6 +12,10 @@ Of course, when explaining the math, the question is: when do you stop explainin
 
 So, let us get started.
 
+### Disclaimer
+
+This article is about the math involved in the perceptron and NOT about the code used and written to illustrate these mathematical concepts. Although it is not my intention to write such an article, never say never....
+
 ### Setting some bounds
 
 A perceptron basically takes some input values, called "features" and represented by the values $x_1, x_2, ... x_n$ in the following formula , multiplies them by some factors called "weights", represented by $w_1, w_2, ... w_n$, takes the sum of these multiplications and depending on the value of this sum outputs another value $o$:
@@ -36,7 +40,9 @@ $$
 
 So, what the perceptron basically does is take some *linear combination* of *input values* or *features*, compare it to a *threshold* value $b$, and *return 1 if the threshold is exceeded and zero if not*.
 
-In other words, we classify our observations into two classes: a set of observations which result in in output of $1$, and a set of observations resulting in an output of $0$.
+The feature vector is a group of characteristics describing the objects we want to classify
+
+In other words, we classify our objects into two classes: a set of objects with characteristics (and thus a feature vector) resulting in in output of $1$, and a set of objects with characteristics resulting in an output of $0$.
 
 If you search the internet on information about the perceptron you will find alternative definitions which define the formula as follows:
 
@@ -67,7 +73,7 @@ $$\sum_{i=1}^{n} w_ix_i$$
 
 This is called the [Capital-sigma notation](https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation), the $\sum$ represents the summation, the subscript $_{i=1}$ and the superscript $^{n}$ represent the range over which we take the sum and finally $w_ix_i$ represents the "things" we take the sum of.
 
-Also, we can see all $x_i$ and all $w_i$ as *vectors*:
+Also, we can see all $x_i$ and all $w_i$ as so-called *vectors*:
 $$
 \begin{aligned}
 \mathbf{x}&=[x_1, x_2, ..., x_i, ..., x_n]\\
@@ -75,7 +81,7 @@ $$
 \end{aligned}
 $$
 
-In this, $n$ represents the dimension of the vector: it is the number of scalar elements in the vector.
+In this, $n$ represents the dimension of the vector: it is the number of scalar elements in the vector. For our discussion, it is the number of characteristics used to describe the objects we want to classify.
 In this case, the summation is the so-called *dot-product* of the vectors:
 
 $$\mathbf{w} \cdot \mathbf{x}$$
@@ -126,7 +132,7 @@ Try it yourself:
 So, the definition of the direction cosine becomes
 $$(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, \frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_n}{\lvert\lvert{\mathbf{a}}\lvert\lvert})$$
 
-This direction cosine is a vector $v$ with length 1 in the same direction as the original vector. This can be simply determined from the definition of the magnitude of a vector:
+This direction cosine is a vector $\mathbf{v}$ with length 1 in the same direction as the original vector. This can be simply determined from the definition of the magnitude of a vector:
 
 $$
 \begin{aligned}
@@ -260,7 +266,7 @@ $$
 Remember what we did originally: we took a linear combination of the input values $[x_1, x_2, ..., x_i, ..., x_n]$ which resulted in the formula:
 $$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b$$
 
-You may remember a similar formula from your mathematics class, the equation of a hyperplane:
+You may remember a similar formula from your mathematics class: the equation of a hyperplane:
 $$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n = b$$
 
 Or, with dot product notation:
@@ -295,7 +301,7 @@ ax + by &= 0\\
 \mathbf{l} \cdot \mathbf{p} &= 0\\
 \end{aligned}$$
 
-So, how come our dot product in two dimensions appears to be a line through the origin? 
+So, how come that setting our dot product to zero in two dimensions appears to be a line through the origin? 
 
 Remember that when we discussed the dot product, we came to the conclusion that if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $\mathbf{l}$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $\mathbf{l}$, which equals to all points on the line perpendicular to the vector $\mathbf{l}$ and going through the origin.
 
@@ -364,7 +370,7 @@ ax + by + cz &= 0\\
 \mathbf{m} \cdot \mathbf{p} &= 0\\
 \end{aligned}$$
 
-Again, if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $\mathbf{m}$, thus fix the values $a$ and $b$, then the above equation resolves to all vectors perpendicular to the vector $\mathbf{m}$, which equals to all points in the plane perpendicular to the vector $\mathbf{m}$ and going through the origin.
+Again, if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector $\mathbf{m}$, thus fix the values $a$, $b$ and $c$, then the above equation resolves to all vectors perpendicular to the vector $\mathbf{m}$, which equals to all points in the plane perpendicular to the vector $\mathbf{m}$ and going through the origin.
 
 A similar line of thought can be followed for the equation:
 
@@ -401,12 +407,12 @@ In 3-dimensional space, we defined the equation of a plane as:
 $$ax + by + cz= d$$
 
 If we use the symbols we are customed to in our discussion of the percpetron rule, we can write:
-$$w_1x_1 + w_2x_2 + w_3x_3= e$$
-
+$$w_1x_1 + w_2x_2 + w_3x_3= b$$
+*This may be a bit confusing, but the $b$ in this last equation has nothing to do with the $b$ in the first equation*
 
 If we extend this to multiple dimensions, we get:
 $$\begin{aligned}
-w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= e\\
+w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
 &= \sum_{i=1}^{n} w_ix_i
 \end{aligned}$$
 
@@ -659,25 +665,11 @@ Try it yourself:
 
 ## Convergence of the learning rule.
 
-The above gives an intuïtive feel of what makes the learning rule work, but is not a mathematical prove. In following we will develop a mathematical prove showing the perceptron rule will converge to a solution in a finite number of steps if the samples given are linearily seperable.
+The above gives an intuïtive feel of what makes the learning rule work, but is not a mathematical prove. It can be proven mathematically that the perceptron rule will converge to a solution in a finite number of steps if the samples given are linearily seperable.
 
-Read that sentence again please. First, we talk about a finite number of steps but we don't now what that number is up front ==is dit correct?==. Second, this is only true if the samples given are linearily seperable. Thus, if they are *not* linearily seperable we can keep on learning and have no idea when to stop !!!
+Read that sentence again please. First, we talk about a finite number of steps but we don't now what that number is up front ==is dit correct?==. Second, this is only true if the samples given are linearly seperable. Thus, if they are *not* linearly seperable we can keep on learning and have no idea when to stop !!!
 
-This is the proof:
-
-### Proof of the convergence
-==hier komt het bewijs van de convergentie van de learning rule==
-
-http://www.cs.ubbcluj.ro/~csatol/kozgaz_mestint/4_neuronhalo/PerceptConvProof.pdf
-http://130.243.105.49/~lilien/ml/seminars/2007_02_01b-Janecek-Perceptron.pdf
-https://www.pearsonhighered.com/assets/samplechapter/0/1/3/1/0131471392.pdf
-https://www.youtube.com/watch?v=tRG-OnnQ9g4
-
-alternative proof:
-http://web.mit.edu/course/other/i2course/www/vision_and_learning/perceptron_notes.pdf
-https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-867-machine-learning-fall-2006/lecture-notes/lec2.pdf
-
-
+I will not repeat the proof here because it would just be repeating some information you can find on the web. Second, the Rosenblatt perceptron has some problems which make it only interesting for historical reasons. If you are interested, look in the references section for some very understandable proofs go this convergence. Of course, if anyone wants to see it here just leave a comment.
 
 ## Wrap up
 
@@ -759,6 +751,12 @@ If the above is gong a little to fast, don't panic. In the next article about th
 
 ## References 
 
+### Javascript libraries used in the *Try it yourself* pages
+
+For the SVG illustrations I use the well known [D3.js](https://d3js.org) library
+For databinding [Knockout.js](https://knockoutjs.com) is used
+Mathematical formulas are displayed using [MathJax](https://www.mathjax.org)
+
 ### Vector Math
 
 The inspiration for writing this article and a good introduction to vector math: [SVM - Understanding the math - Part 2](https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/)
@@ -782,7 +780,12 @@ Two math stackexchange Q&A's on the equation of a hyperplane:
 
 ### Convexity
 
-https://en.wikipedia.org/wiki/Convex_set
+Definition of convexity: [Convex set](https://en.wikipedia.org/wiki/Convex_set)
+Discussing convexity, we also discussed Line segments: [Line segment](https://en.wikipedia.org/wiki/Line_segment)
+
+Proving a half-plane is convex: [How do I prove that half a plane is convex?](https://www.quora.com/How-do-I-prove-that-half-a-plane-is-convex)
+
+A more in depth discussion of convexity: [Lecture 1 Convex Sets](https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf)
 
 ### Perceptron
 
@@ -795,7 +798,13 @@ Following article as an interesting view on what they call the duality of input 
 
 Following article gives another intuitive explanation on why the learning algorithm works: [Perceptron Learning Algorithm: A Graphical Explanation Of Why It Works](https://towardsdatascience.com/perceptron-learning-algorithm-d5db0deab975)
 
+An animated gif of the perceptron learning rule: [Perceptron training without bias](https://commons.m.wikimedia.org/wiki/File:Perceptron_training_without_bias.gif)
 
+### Convergence of the learning algorithm
+
+This YouTube video presents a very understandable proof: [Lec-16 Perceptron Convergence Theorem](https://www.youtube.com/watch?v=tRG-OnnQ9g4)
+
+A written version of the same proof can be found in this pdf: [CHAPTER 1 Rosenblatt’s Perceptron](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/1/0131471392.pdf) By the way, there is much more inside that pdf then just the proof.
 
 == dit nog ergens te behandelen ==
 
@@ -807,160 +816,5 @@ linear binary classifier. They both compute a linear (actually affine) function 
 [https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function](https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function)
 
 
-== alles hieronder is afgekeurd voor dit artikel == 
 
 
-[https://appliedgo.net/perceptron/](https://appliedgo.net/perceptron/)
-[https://natureofcode.com/book/chapter-10-neural-networks/](https://natureofcode.com/book/chapter-10-neural-networks/) part about perceptron
-[https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/](https://machinelearningmastery.com/implement-perceptron-algorithm-scratch-python/)
-
-[https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images](https://www.quora.com/Artificial-Neural-Networks-what-is-the-difference-between-perceptron-and-adaline-in-recognition-+-and-X-images)
-
-**Loss function**
-https://www.quora.com/What-is-the-loss-function-of-the-standard-perceptron-algorithm
-"Hinge loss"
-https://proofwiki.org/wiki/Continuity_of_Heaviside_Step_Function
-https://math.stackexchange.com/questions/497798/proving-discontinuity-by-epsilon-delta
-https://www.intmath.com/functions-and-graphs/7-continuous-discontinuous-functions.php
-https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function-not-be-differentiable
-
- ==alles hier onder is geen definitieve tekst==
-
-https://stackoverflow.com/questions/41989830/geometric-proof-of-convergence-of-perceptron-algorithm
-https://jaidevd.github.io/posts/a-geometric-proof-of-the-perceptron-convergence-theorem/
-
-==wat is de invloed van het niet in rekening brengen van $w_0$ en $x_0$ ?
-https://datascience.stackexchange.com/questions/16843/perceptron-learning-rate==
-
-==VANAF HIER nog eens goed onderzoeken voor die otherwise: er zijn artikelen die spreken over 0, en er zijn er die spreken over -1. Hier aantonen dat dit geen probleem is voor de learning rule.==
-dit maakt mogelijks ook geen verschil tijdens  de learning phase 
-*in het geval van 0*:
-je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
-je wenst 0 en hebt 0: 0-0 = 0, dus geen aanpassing
-je wenst 1 en hebt 0: 0-1 = -1, aanpassen met -r*X
-je wenst 0 en hebt 1: 1-0 = 1, aanpassen met r*X
-
-*in het geval van -1*:
-je wenst 1 en hebt 1: 1-1 = 0, dus geen aanpassing
-je wenst -1 en hebt -1: (-1)-(-1) = 0, dus geen aanpassing
-je wenst 1 en hebt -1: (-1)-1 = -2, aanpassen met -2r*X
-je wenst (-1) en hebt 1: 1-(-1) = 2, aanpassen met 2r*X
-
-is dus gewoon een verschaling van de learning rate !!!!
-==TOT HIER==
-
-
- 
-http://hagan.okstate.edu/4_Perceptron.pdf
-https://en.wikipedia.org/wiki/Perceptron
-
-https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)
-https://personalpages.manchester.ac.uk/staff/Andrew.Hazel/MATH45061/MATH45061_Ch1.pdf
-https://physics.stackexchange.com/questions/131348/is-force-a-contravariant-vector-or-a-covariant-vector-or-either
-https://www.mathpages.com/home/kmath398/kmath398.htm
-http://nct.goetheanum.org/cocontra.htm
-https://www.google.be/search?q=contravariance+vs+magnitude+and+direction&safe=active&rlz=1C1GCEA_enBE778BE778&ei=AXjqW53HN4-kwQLbj73YBQ&start=10&sa=N&ved=0ahUKEwjdy6yt59DeAhUPUlAKHdtHD1sQ8tMDCKQB&biw=1375&bih=878
-https://en.wikipedia.org/wiki/Coordinate_vector
-line segments in convextity
-
-https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf
-https://en.wikipedia.org/wiki/Line_segment
-https://en.wikipedia.org/wiki/Line_(geometry)
-https://math.stackexchange.com/questions/344416/line-segment-connecting-points-in-a-convex-set
-https://www.quora.com/How-do-I-prove-that-half-a-plane-is-convex
-http://answers.google.com/answers/threadview/id/262560.html
-http://www.math.pitt.edu/~sparling/23012/*vectors5/node6.html
-
-
-
-
-
-Cost Function
-
-some measure of inaccuracy relative to the target output of the network
-
-[https://www.cc.gatech.edu/~bboots3/CS4641-Fall2016/Lectures/Lecture5.pdf](https://www.cc.gatech.edu/~bboots3/CS4641-Fall2016/Lectures/Lecture5.pdf)
-
-[http://ai.cs.umbc.edu/~oates/classes/2011/ML/slides/perceptron.pdf](http://ai.cs.umbc.edu/~oates/classes/2011/ML/slides/perceptron.pdf)
-
-Plotting the decision boundary
-
-[https://stats.stackexchange.com/questions/71335/decision-boundary-plot-for-a-perceptron](https://stats.stackexchange.com/questions/71335/decision-boundary-plot-for-a-perceptron)
-
-[https://stackoverflow.com/questions/31292393/how-do-you-draw-a-line-using-the-weight-vector-in-a-linear-perceptron](https://stackoverflow.com/questions/31292393/how-do-you-draw-a-line-using-the-weight-vector-in-a-linear-perceptron)
-
-  
-  
-  
-
-Learning
-
-[http://page.mi.fu-berlin.de/rojas/neural/chapter/K4.pdf](http://page.mi.fu-berlin.de/rojas/neural/chapter/K4.pdf)
-
-[https://www.researchgate.net/profile/Steve_Gallant/publication/5569039_Perceptron-based_learning_algorithms/links/0f3175344302564821000000/Perceptron-based-learning-algorithms.pdf?origin=publication_detail](https://www.researchgate.net/profile/Steve_Gallant/publication/5569039_Perceptron-based_learning_algorithms/links/0f3175344302564821000000/Perceptron-based-learning-algorithms.pdf?origin=publication_detail)
-
-[https://commons.m.wikimedia.org/wiki/File:Perceptron_training_without_bias.gif](https://commons.m.wikimedia.org/wiki/File:Perceptron_training_without_bias.gif)
-
-[https://stats.stackexchange.com/questions/137834/clarification-about-perceptron-rule-vs-gradient-descent-vs-stochastic-gradient](https://stats.stackexchange.com/questions/137834/clarification-about-perceptron-rule-vs-gradient-descent-vs-stochastic-gradient)
-
-[https://stackoverflow.com/questions/4895485/delta-rule-vs-gradient-descent](https://stackoverflow.com/questions/4895485/delta-rule-vs-gradient-descent)
-
-[http://www.cs.ubbcluj.ro/~csatol/kozgaz_mestint/4_neuronhalo/PerceptConvProof.pdf](http://www.cs.ubbcluj.ro/~csatol/kozgaz_mestint/4_neuronhalo/PerceptConvProof.pdf)
-
-[https://www.cse.iitb.ac.in/~shivaram/teaching/old/cs344+386-s2017/resources/classnote-1.pdf](https://www.cse.iitb.ac.in/~shivaram/teaching/old/cs344+386-s2017/resources/classnote-1.pdf)
-
-Volgende bevat een omschrijving waarom de delta rule niet gewoon gradient descent is:
-
-[https://medium.com/@neuralnets/delta-learning-rule-gradient-descent-neural-networks-f880c168a804](https://medium.com/@neuralnets/delta-learning-rule-gradient-descent-neural-networks-f880c168a804)
-
-Kort samengevat: voor de gradient descent moet je een afgeleide kunnen nemen, en dat is bij de delta rule niet mogelijk om dat je daar de “heavyside step function” gebruikt
-
-[https://lcn.epfl.ch/tutorial/english/apb/html/theory.html#Perceptron](https://lcn.epfl.ch/tutorial/english/apb/html/theory.html#Perceptron)
-
-Corrsponds to gradient descend on error surface
-
-  
-
-Conversion theorem
-
-[https://www.youtube.com/watch?v=tRG-OnnQ9g4](https://www.youtube.com/watch?v=tRG-OnnQ9g4) (ergens rond 23 minuten)
-
-Cauchy-schwartz inequality
-
-  
-
-Activation function
-
-[https://en.m.wikipedia.org/wiki/Heaviside_step_function](https://en.m.wikipedia.org/wiki/Heaviside_step_function)
-
-What is limitation of heavyside step function
-
-[https://www.reddit.com/r/MachineLearning/comments/7oms3j/d_despite_the_problematic_derivative_of_the/](https://www.reddit.com/r/MachineLearning/comments/7oms3j/d_despite_the_problematic_derivative_of_the/)
-
-[https://stats.stackexchange.com/questions/263768/can-a-perceptron-with-sigmoid-activation-function-perform-nonlinear-classificati/263816](https://stats.stackexchange.com/questions/263768/can-a-perceptron-with-sigmoid-activation-function-perform-nonlinear-classificati/263816)
-
-Volgende bevat een omschrijving waarom de activatie gaat van -1 tot 1en niet van 0 tot 1: (omdat je met 0 geen correctie kan uitvoeren)
-
-[https://emunix.emich.edu/~sverdlik/DM/Perceptron_Learning.html](https://emunix.emich.edu/~sverdlik/DM/Perceptron_Learning.html)
-
-  
-
-
-
-Geometric Representation
-
-[https://stackoverflow.com/questions/22121469/geometric-representation-of-perceptrons-artificial-neural-networks](https://stackoverflow.com/questions/22121469/geometric-representation-of-perceptrons-artificial-neural-networks)
-
-[http://slideplayer.com/slide/5032291/](http://slideplayer.com/slide/5032291/)
-
-[https://math.stackexchange.com/questions/2141076/how-to-detect-on-which-side-of-hyper-plane-the-point-in-rn-is-located](https://math.stackexchange.com/questions/2141076/how-to-detect-on-which-side-of-hyper-plane-the-point-in-rn-is-located)
-
-Zie ook de opmerking “Inner norm product”
-
-Het inner product is een veralgemening van dot-product die dan weer wordt gebruikt bij de perceptron
-
-[https://stackoverflow.com/questions/15688232/check-which-side-of-a-plane-points-are-on](https://stackoverflow.com/questions/15688232/check-which-side-of-a-plane-points-are-on)
-
-[https://math.stackexchange.com/questions/2276176/two-sides-of-a-plane](https://math.stackexchange.com/questions/2276176/two-sides-of-a-plane)
-
-[https://math.stackexchange.com/questions/2607163/how-to-determine-if-a-point-lies-on-the-same-side-of-the-plane-that-origin-does](https://math.stackexchange.com/questions/2607163/how-to-determine-if-a-point-lies-on-the-same-side-of-the-plane-that-origin-does)
