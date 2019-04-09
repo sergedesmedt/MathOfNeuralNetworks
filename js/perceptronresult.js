@@ -62,7 +62,7 @@ PerceptronResult.draw = function (space2Dim, results) {
                 + f(d._y) + " + "
                 ;
             //tooltipText = "txt";
-            console.log("tooltipText: " + tooltipText);
+            //console.log("tooltipText: " + tooltipText);
 
             PerceptronResult.tooltip
                 .html(tooltipText);
@@ -75,17 +75,19 @@ PerceptronResult.draw = function (space2Dim, results) {
             let xOffset = cx + canvasBbox.x - bbox.width / 2;
             let yOffset = cy + canvasBbox.y - 35;
 
+            console.log("tooltip coord: canvasBbox=" + canvasBbox + "x=" + xOffset + ", y=" + yOffset);
+
             PerceptronResult.tooltip
                 .style("left", (xOffset) + "px")
                 .style("top", (yOffset) + "px");
 
         })
         .on("mousemove", function () {
-            console.log("PerceptronResult> mousemove");
+            //console.log("PerceptronResult> mousemove");
             //PerceptronResult.tooltip.style("top", (event.pageY) + "px").style("left", (event.pageX) + "px");
         })
         .on("mouseout", function () {
-            console.log("PerceptronResult> mouseout");
+            //console.log("PerceptronResult> mouseout");
             //return PerceptronResult.tooltip.style("visibility", "hidden");
 
             PerceptronResult.tooltip.transition()
@@ -152,7 +154,7 @@ PerceptronResult.update = function (space2Dim, results) {
                 + f(d._perceptron.CalcPerceptronFunction(d._x, d._y))
                 ;
             //tooltipText = "txt";
-            console.log("tooltipText: " + tooltipText);
+            //console.log("tooltipText: " + tooltipText);
 
             PerceptronResult.tooltip
                 .html(tooltipText);
@@ -162,17 +164,19 @@ PerceptronResult.update = function (space2Dim, results) {
             let xOffset = cx + canvasBbox.x - bbox.width / 2;
             let yOffset = cy + canvasBbox.y - 35;
 
+            console.log("tooltip coord: cy=" + cy + ", canvasBbox.y=" + canvasBbox.y + ", y=" + yOffset);
+
             PerceptronResult.tooltip
                 .style("left", (xOffset) + "px")
                 .style("top", (yOffset) + "px");
 
         })
         .on("mousemove", function (d, i) {
-            console.log("PerceptronResult> mousemove");
+            //console.log("PerceptronResult> mousemove");
             //PerceptronResult.tooltip.style("top", (event.pageY) + "px").style("left", (event.pageX) + "px");
         })
         .on("mouseout", function (d, i) {
-            console.log("PerceptronResult> mouseout");
+            //console.log("PerceptronResult> mouseout");
             //return PerceptronResult.tooltip.style("visibility", "hidden");
 
             PerceptronResult.tooltip.transition()

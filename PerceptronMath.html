@@ -66,6 +66,19 @@
 		</div>
 	</div>
 	<div style="width:100%">
+		<div class="divmanual">
+			<p>
+				The tree sliders allow to adapt the windividual weights of the preceptron. Notice how changing the sliders for weights $w_1$ and $w_2$ change the
+				direction of the hyperplane while changing the slider for $w_0$ changes only the position of the hyperplane. Clicking inside the the grid applies the preceptron evaluation
+				to the point clicked resulting in a colored dot:
+			</p>
+			<ul>
+				<li>A red dot meaning the result of the dot-product is positive</li>
+				<li>A green dot meaning the result of the dot-product is negative</li>
+			</ul>
+			<p>Dragging the sliders and thus changing the weights of the preceptron will re-evaluate existing points.</p>
+			<p>Hovering with the cursor over the dots will reveal as a tooltip the calculation made for that point.</p>
+		</div>
 		<div class="divcentered">
 			<table>
 				<tr><td>$w_0$=<span data-bind="text: percw0"></span></td><td><input type="range" min="-1000" max="1000" step="1" data-bind="value: percw0, valueUpdate: 'input'" /></td></tr>
