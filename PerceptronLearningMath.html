@@ -43,16 +43,50 @@
 			stroke-width: 1;
 			fill: #ff6a00;
 		}
+
+		.learnstep0.hidden {
+			visibility: hidden;
+		}
+
+		.learnstep1.hidden {
+			visibility: hidden;
+		}
+
+		.learnstep2.hidden {
+			visibility: hidden;
+		}
+
+		.learnstep3zero.hidden {
+			visibility: hidden;
+		}
+
+		.learnstep3notzero.hidden {
+			visibility: hidden;
+		}
 	</style>
 </head>
 <body>
 	<div>
 		<h1>Perceptron Learning: animation of the procedure</h1>
-		<p>The perecptron learning procedure:</p>
 		<p>
-			$$
-			$$
+			The perceptron learning procedure:
+			<ol>
+				<li>Calculate the current perceptron outcome for the feature vector $\mathbf{x}$ to learn: $o$</li>
+				<li>Compare the outcome with the desired outcome $d$: this is the error, thus $e = d-o$</li>
+				<li>If the error is zero (the outcome is the same as the desired outcome), then to nothing</li>
+				<li>Else, updates the weights of the perceptron with the scalar product of the error and the feature vector: $\mathbf{w}_{i+1} = \mathbf{w}_{i} + e\mathbf{x}$</li>
+			</ol>
 		</p>
+		<p>A sample:</p>
+		<div>
+			<ol>
+				<li class="learnstep0">Desired for feature vector: <span id="perceptronlearn_sample_step0">${}$</span></li>
+				<li class="learnstep1">Outcome for feature vector: <span id="perceptronlearn_sample_step1">${}$</span></li>
+				<li class="learnstep2">Error: <span id="perceptronlearn_sample_step2">${}$</span></li>
+				<li class="learnstep3zero">Error is zero: do nothing</li>
+				<li class="learnstep3notzero">Error is not zero. Update the perceptrons weight: <span id="perceptronlearn_sample_step3b">${}$</span></li>
+			</ol>
+		</div>
 	</div>
 	<div id="perceptronlearninganimation"></div>
 	<div>
@@ -75,6 +109,8 @@
 	<script type="text/javascript">
 
 		function createPerceptronLearningAnimationSample() {
+			var perceptronLearnStep0Expression = new MathExpressions();
+			var perceptronLearnStep1Expression = new MathExpressions();
 			var space2dimpercepanim = new Space2Dim("perceptronlearninganimation", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
@@ -135,13 +171,46 @@
 					if (shiftKey)
 						desiredclass = 0;
 
+					getPerceptronLearnStep1MathExpression = function () {
+						var mathExpression = desiredclass;
+						return mathExpression;
+					}
+
+					perceptronLearnStep0Expression.RegisterExpression("perceptronlearn_sample_step0", getPerceptronLearnStep1MathExpression);
+					perceptronLearnStep0Expression.QueueUpdate(); 
+
 					let perceptronLearningPoint = new PerceptronLearningPoint(
 						{ x: x, y: y, desiredclass: desiredclass, perceptron: perceptron1 },
 						{}
 					);
 					me.allPerceptronLearnings.push(perceptronLearningPoint);
 
+					let currentDotProduct = perceptron1.CalcPerceptronFunction(x, y);
 					let currentclass = perceptron1.CalcPerceptronOutcome(x, y);
+
+
+					getPerceptronLearnStep1MathExpression = function () {
+						var w0Formatted = d3.format(".1f")(perceptron1._w0());
+						var w1Formatted = d3.format(".1f")(perceptron1._w1());
+						var w2Formatted = d3.format(".1f")(perceptron1._w2());
+
+						var x1Formatted = d3.format(".1f")(x);
+						var x2Formatted = d3.format(".1f")(y);
+
+						var currentDotProductFormatted = d3.format(".1f")(currentDotProduct);
+
+						var compare = (currentDotProduct > 0) ? ">" : "\\leq";
+
+						var mathExpression = w0Formatted + " * 1 + " + w1Formatted + " * " + x1Formatted + " + " + w2Formatted + " * " + x2Formatted
+							+ " = " + currentDotProductFormatted
+							+ " " + compare + " 0 \\Rightarrow " + currentclass;
+						return mathExpression;
+					}
+
+					perceptronLearnStep1Expression.RegisterExpression("perceptronlearn_sample_step1", getPerceptronLearnStep1MathExpression);
+					perceptronLearnStep1Expression.QueueUpdate(); 
+
+
 
 					let error = 0;
 					if (currentclass != desiredclass) {
@@ -273,6 +342,14 @@
 							perceptron1.SetWeightVector(newWeights);
 						};
 					});
+
+
+					var animationTransition = animationTransition
+						.transition().duration(1500);
+
+					animationTransition.selectAll(".vectorline.learnvector")
+						.style("opacity", 0);
+
 
 					animationTransition
 						.on("end", function () {

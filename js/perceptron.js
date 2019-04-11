@@ -32,8 +32,8 @@ Perceptron.prototype.SetWeightVector = function (w) {
     //console.log("Perceptron weights: a=" + this._w1() + ", b=" + this._w2() + ", c=" + this._w0());
 }
 
-Perceptron.prototype.CalcPerceptronOutcome = function (x, y) {
-    return (this.CalcPerceptronFunction(x, y) >= 0) ? 1 : 0;
+Perceptron.prototype.CalcPerceptronOutcome = function (x1, x2) {
+    return (this.CalcPerceptronFunction(x1, x2) >= 0) ? 1 : 0;
 }
 
 Perceptron.prototype.CalcPerceptronFunction = function (x1, x2) {
