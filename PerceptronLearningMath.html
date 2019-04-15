@@ -57,11 +57,11 @@
 		}
 
 		.learnstep3zero.hidden {
-			visibility: hidden;
+			display: none;
 		}
 
 		.learnstep3notzero.hidden {
-			visibility: hidden;
+			display: none;
 		}
 	</style>
 </head>
@@ -71,20 +71,21 @@
 		<p>
 			The perceptron learning procedure:
 			<ol>
-				<li>Calculate the current perceptron outcome for the feature vector $\mathbf{x}$ to learn: $o$</li>
+				<li>We have a desired outcome of the perceptron for the feature vector $\mathbf{x}$ to learn: $d$</li>
+				<li>Calculate the current perceptron outcome for the feature vector $\mathbf{x}$: $o$</li>
 				<li>Compare the outcome with the desired outcome $d$: this is the error, thus $e = d-o$</li>
 				<li>If the error is zero (the outcome is the same as the desired outcome), then to nothing</li>
 				<li>Else, updates the weights of the perceptron with the scalar product of the error and the feature vector: $\mathbf{w}_{i+1} = \mathbf{w}_{i} + e\mathbf{x}$</li>
 			</ol>
 		</p>
 		<p>A sample:</p>
-		<div>
+		<div id="learningsteps">
 			<ol>
-				<li class="learnstep0">Desired for feature vector: <span id="perceptronlearn_sample_step0">${}$</span></li>
-				<li class="learnstep1">Outcome for feature vector: <span id="perceptronlearn_sample_step1">${}$</span></li>
-				<li class="learnstep2">Error: <span id="perceptronlearn_sample_step2">${}$</span></li>
-				<li class="learnstep3zero">Error is zero: do nothing</li>
-				<li class="learnstep3notzero">Error is not zero. Update the perceptrons weight: <span id="perceptronlearn_sample_step3b">${}$</span></li>
+				<li class="learnstep0 hidden">Desired for feature vector: <span id="perceptronlearn_sample_step0">${}$</span></li>
+				<li class="learnstep1 hidden">Outcome for feature vector: <span id="perceptronlearn_sample_step1">${}$</span></li>
+				<li class="learnstep2 hidden">Error: <span id="perceptronlearn_sample_step2">${}$</span></li>
+				<li class="learnstep3zero hidden">Error is zero: do nothing</li>
+				<li class="learnstep3notzero hidden">Error is not zero. Update the perceptrons weight: <span id="perceptronlearn_sample_step3b">${}$</span></li>
 			</ol>
 		</div>
 	</div>
@@ -111,6 +112,7 @@
 		function createPerceptronLearningAnimationSample() {
 			var perceptronLearnStep0Expression = new MathExpressions();
 			var perceptronLearnStep1Expression = new MathExpressions();
+			var perceptronLearnStep2Expression = new MathExpressions();
 			var space2dimpercepanim = new Space2Dim("perceptronlearninganimation", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
@@ -165,11 +167,15 @@
 
 				var me = this;
 				space2dimpercepanim.OnClick(function (x, y, shiftKey) {
-					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					let desiredclass = 1;
 					if (shiftKey)
 						desiredclass = 0;
+
+					d3.selectAll("#learningsteps")
+						.selectAll(".learnstep0")
+						.classed("hidden", false);
 
 					getPerceptronLearnStep1MathExpression = function () {
 						var mathExpression = desiredclass;
@@ -180,37 +186,13 @@
 					perceptronLearnStep0Expression.QueueUpdate(); 
 
 					let perceptronLearningPoint = new PerceptronLearningPoint(
-						{ x: x, y: y, desiredclass: desiredclass, perceptron: perceptron1 },
-						{}
+						{ x: x, y: y, desiredclass: desiredclass/*, perceptron: perceptron1*/ },
+						{ cssclass : "latestlearningpoint" }
 					);
 					me.allPerceptronLearnings.push(perceptronLearningPoint);
 
 					let currentDotProduct = perceptron1.CalcPerceptronFunction(x, y);
 					let currentclass = perceptron1.CalcPerceptronOutcome(x, y);
-
-
-					getPerceptronLearnStep1MathExpression = function () {
-						var w0Formatted = d3.format(".1f")(perceptron1._w0());
-						var w1Formatted = d3.format(".1f")(perceptron1._w1());
-						var w2Formatted = d3.format(".1f")(perceptron1._w2());
-
-						var x1Formatted = d3.format(".1f")(x);
-						var x2Formatted = d3.format(".1f")(y);
-
-						var currentDotProductFormatted = d3.format(".1f")(currentDotProduct);
-
-						var compare = (currentDotProduct > 0) ? ">" : "\\leq";
-
-						var mathExpression = w0Formatted + " * 1 + " + w1Formatted + " * " + x1Formatted + " + " + w2Formatted + " * " + x2Formatted
-							+ " = " + currentDotProductFormatted
-							+ " " + compare + " 0 \\Rightarrow " + currentclass;
-						return mathExpression;
-					}
-
-					perceptronLearnStep1Expression.RegisterExpression("perceptronlearn_sample_step1", getPerceptronLearnStep1MathExpression);
-					perceptronLearnStep1Expression.QueueUpdate(); 
-
-
 
 					let error = 0;
 					if (currentclass != desiredclass) {
@@ -218,11 +200,6 @@
 					}
 
 					console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ") > error(" + error + ")");
-
-					if (error == 0) {
-						return;
-					}
-
 
 					this.pspx = ko.observable(0);
 					this.pspy = ko.observable(0);
@@ -272,78 +249,151 @@
 						yme = space2dimpercepanim.convertYToCanvas(learnmp2y); console.log("mirror yme(" + yme + ")");
 					}
 
+
+
+					getPerceptronLearnStep1MathExpression = function () {
+						var w0Formatted = d3.format(".1f")(perceptron1._w0());
+						var w1Formatted = d3.format(".1f")(perceptron1._w1());
+						var w2Formatted = d3.format(".1f")(perceptron1._w2());
+
+						var x1Formatted = d3.format(".1f")(x);
+						var x2Formatted = d3.format(".1f")(y);
+
+						var currentDotProductFormatted = d3.format(".1f")(currentDotProduct);
+
+						var compare = (currentDotProduct > 0) ? ">" : "\\leq";
+
+						var mathExpression = w0Formatted + " * 1 + " + w1Formatted + " * " + x1Formatted + " + " + w2Formatted + " * " + x2Formatted
+							+ " = " + currentDotProductFormatted
+							+ " " + compare + " 0 \\Rightarrow " + currentclass;
+						return mathExpression;
+					}
+
+
+					// Animate the learning vector into view
 					var animationTransition = svg
 						.transition().duration(1500);
 
 					animationTransition.selectAll(".vectorline.learnvector")
-						.style("opacity", 1);
+						.style("opacity", 1)
+						.on("end", function () {
+							console.log("Animate into view ended");
+							perceptronLearnStep1Expression.RegisterExpression("perceptronlearn_sample_step1", getPerceptronLearnStep1MathExpression);
+							perceptronLearnStep1Expression.QueueUpdate(); 
+						});
 
-					if (error < 0) {
-						// if the error is negative we must subtract, so mirror the learned vector
-						animationTransition = animationTransition
-							.transition().duration(5000);
+					// interpret the error
+					if (error == 0) {
+
+						getPerceptronLearnStep2MathExpression = function () {
+							var mathExpression = ("e = " + desiredclass + " - " + currentclass + " = " + error);
+							return mathExpression;
+						}
+
+						var animationTransition = animationTransition
+							.transition().duration(1500);
+
+						animationTransition.selectAll(".latestlearningpoint")
+							.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
+							.on("end", function () {
+								console.log("Animate error ended");
+								perceptronLearningPoint.SetPerceptron(perceptron1);
+
+								perceptronLearnStep2Expression.RegisterExpression("perceptronlearn_sample_step2", getPerceptronLearnStep2MathExpression);
+								perceptronLearnStep2Expression.QueueUpdate();
+							});
+					}
+					else {
+
+						if (error < 0) {
+							// if the error is negative we must subtract, so mirror the learned vector
+							// Animate the mirroring of the learning vector
+							animationTransition = animationTransition
+								.transition().duration(5000);
+
+							animationTransition.select(".vectorline.learnvector")
+								.attrs({
+									x2: xmie,
+									y2: ymie
+								})
+								.on("end", function () {
+									console.log("mirrorTransition ended");
+
+									vlearn._p2.setX(learnmix);
+									vlearn._p2.setY(learnmiy);
+
+								});
+						}
+
+						getPerceptronLearnStep2MathExpression = function () {
+							var mathExpression = ("e = " + desiredclass + " - " + currentclass + " = " + error);
+							return mathExpression;
+						}
+
+						var animationTransition = animationTransition
+							.transition().duration(1500);
+
+						animationTransition.selectAll(".latestlearningpoint")
+							.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
+							.on("end", function () {
+								console.log("Animate error ended");
+								perceptronLearningPoint.SetPerceptron(perceptron1);
+
+								perceptronLearnStep2Expression.RegisterExpression("perceptronlearn_sample_step2", getPerceptronLearnStep2MathExpression);
+								perceptronLearnStep2Expression.QueueUpdate();
+							});
+
+						//console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");
+
+						// Animate the summation of the learningvector to the perceptron weight vector
+						var animationTransition = animationTransition
+							.transition().duration(1500);
 
 						animationTransition.select(".vectorline.learnvector")
 							.attrs({
-								x2: xmie,
-								y2: ymie
+								x1: function (d) { console.log("move xms(" + xms + ")"); return xms; },
+								y1: function (d) { console.log("move xms(" + yms + ")"); return yms; },
+								x2: function (d) { console.log("move xms(" + xme + ")"); return xme; },
+								y2: function (d) { console.log("move xms(" + yme + ")"); return yme; }
 							})
 							.on("end", function () {
-								console.log("mirrorTransition ended");
+								console.log("moveTransition ended");
 
-								vlearn._p2.setX(learnmix);
-								vlearn._p2.setY(learnmiy);
+								vlearn._p1.setX(learnmp1x);
+								vlearn._p1.setY(learnmp1y);
+								vlearn._p2.setX(learnmp2x);
+								vlearn._p2.setY(learnmp2y);
 
 							});
+
+						// animate the weightvector to the new value
+						animationTransition = animationTransition
+							.transition().duration(1500);
+
+						var initialWeights = {
+							w0: perceptron1._w0(),
+							w1: perceptron1._w1(),
+							w2: perceptron1._w2()
+						};
+
+
+
+						animationTransition.tween("learnTween", function () {
+							var interpolate = d3.interpolate(0, 1);
+							return function (t) {
+								//console.log("justSomeTween: " + t)
+
+								var newWeights = {
+									w0: initialWeights.w0,
+									w1: (initialWeights.w1 + (t * (error) * x)),
+									w2: (initialWeights.w2 + (t * (error) * y))
+								};
+								perceptron1.SetWeightVector(newWeights);
+							};
+						});
 					}
 
-					//console.log("will animate to point start(x[" + xs + "], y[" + ys + "]) - end(x[" + xe + "], y[" + ye +"])");
-
-					var animationTransition = animationTransition
-						.transition().duration(1500);
-
-					animationTransition.select(".vectorline.learnvector")
-						.attrs({
-							x1: function (d) { console.log("move xms(" + xms + ")"); return xms; },
-							y1: function (d) { console.log("move xms(" + yms + ")"); return yms; },
-							x2: function (d) { console.log("move xms(" + xme + ")"); return xme; },
-							y2: function (d) { console.log("move xms(" + yme + ")"); return yme; }
-						})
-						.on("end", function () {
-							console.log("moveTransition ended");
-
-							vlearn._p1.setX(learnmp1x);
-							vlearn._p1.setY(learnmp1y);
-							vlearn._p2.setX(learnmp2x);
-							vlearn._p2.setY(learnmp2y);
-
-						});
-
-					// animate the weightvector to the new value
-					animationTransition = animationTransition
-						.transition().duration(1500);
-
-					var initialWeights = {
-						w0: perceptron1._w0(),
-						w1: perceptron1._w1(),
-						w2: perceptron1._w2()
-					};
-
-					animationTransition.tween("learnTween", function () {
-						var interpolate = d3.interpolate(0, 1);
-						return function (t) {
-							//console.log("justSomeTween: " + t)
-
-							var newWeights = {
-								w0: initialWeights.w0,
-								w1: (initialWeights.w1 + (t * (error) * x)),
-								w2: (initialWeights.w2 + (t * (error) * y))
-							};
-							perceptron1.SetWeightVector(newWeights);
-						};
-					});
-
-
+					// Animate the learning vector out of view
 					var animationTransition = animationTransition
 						.transition().duration(1500);
 
@@ -356,6 +406,11 @@
 							console.log("last transition ended");
 
 							me.vectorsToShow.pop(vlearn);
+							me.allPerceptronLearnings().map(function (l) { l.setConfig({}); });
+
+							space2dimpercepanim.getSvg()
+								.selectAll(".perceptronResultPoint")
+								.style("fill", null);
 
 							space2dimpercepanim.update();
 						});
@@ -424,7 +479,7 @@
 				];
 				console.log("space2dim attach onclick");
 				space2dimpercepand.OnClick(function (x, y, shiftKey) {
-					console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					step++;
 					if (step >= 4)

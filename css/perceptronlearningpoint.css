@@ -12,6 +12,10 @@
     stroke-width: 2px;
 }
 
+.perceptronclassunkown {
+    fill: rgba(255, 255, 255, 0.00);
+}
+
 .perceptronclass1 {
     fill: #ff6a00;
 }
