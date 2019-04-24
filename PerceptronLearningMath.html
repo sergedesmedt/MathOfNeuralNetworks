@@ -86,27 +86,45 @@
 				<li class="learnstepoutcome hidden">Outcome for feature vector: <span id="perceptronlearn_sample_outcome">${}$</span></li>
 				<li class="learnsteperror hidden">Error: <span id="perceptronlearn_sample_error">${}$</span></li>
 				<li class="learnsteperroriszero hidden">Error is zero: do nothing</li>
-				<li class="learnsteperrorisnotzero hidden">Error is not zero. Update the perceptrons weight: <span id="perceptronlearn_sample_step3b">${}$</span></li>
+				<li class="learnsteperrorisnotzero hidden">Error is not zero. Update the perceptrons weight: <span id="perceptronlearn_sample_errorisnotzero">$${}$$</span></li>
 			</ol>
 		</div>
+		<div style="width:100%">
+			<div id="perceptronlearninganimation" class="divcentered"></div>
+		</div>
 	</div>
-	<div id="perceptronlearninganimation"></div>
 	<div>
 		<h1>Perceptron Learning: learning an AND gate</h1>
+		<p>By using the perceptron learning procedure, it is possible to learn a perceptron to implement an AND gate.</p>
+		<p>A sample:</p>
+		<div style="width:100%">
+			<div class="divmanual">
+				<p>Click anywhere on the space to learn a new point. The code iterates through the truth table of an AND gate to select points to learn. It does NOT use the point clicked !!!</p>
+				<p>As a result, when a point is choosen which is already correctly classified nothing will be happening.</p>
+			</div>
+			<div id="perceptronandlearning" class="divcentered"></div>
+		</div>
 	</div>
-	<div id="perceptronandlearning"></div>
 	<div>
 		<h1>Perceptron Learning: learning an OR gate</h1>
+		<p>By using the perceptron learning procedure, it is possible to learn a perceptron to implement an OR gate.</p>
+		<p>A sample:</p>
+		<div style="width:100%">
+			<div class="divmanual">
+				<p>Click anywhere on the space to learn a new point. The code iterates through the truth table of an OR gate to select points to learn. It does NOT use the point clicked !!!</p>
+				<p>As a result, when a point is choosen which is already correctly classified nothing will be happening.</p>
+			</div>
+			<div id="perceptronorlearning" class="divcentered"></div>
+		</div>
 	</div>
-	<div id="perceptronorlearning"></div>
 	<div>
 		<h1>Perceptron Learning: do it yourself</h1>
+		<div id="perceptronlearning" class="divcentered"></div>
 	</div>
-	<div id="perceptronlearning"></div>
 	<div>
 		<h1>Perceptron Learning: do it yourself (normalization)</h1>
+		<div id="perceptronlearningnormalized" class="divcentered"></div>
 	</div>
-	<div id="perceptronlearningnormalized"></div>
 
 	<script type="text/javascript">
 
@@ -114,6 +132,7 @@
 			var perceptronLearnStepDesiredExpression = new MathExpressions();
 			var perceptronLearnStepOutcomeExpression = new MathExpressions();
 			var perceptronLearnStepCalcErrorExpression = new MathExpressions();
+			var perceptronLearnStepUpdateWeightExpression = new MathExpressions();
 			var space2dimpercepanim = new Space2Dim("perceptronlearninganimation", 200, 200, -2, 2, -2, 2);
 
 			function ViewModel() {
@@ -282,9 +301,9 @@
 							console.log("Animate error ended");
 							perceptronLearningPoint.SetPerceptron(perceptron1);
 
-							learningStepsDiv
-								.selectAll(".learnstep3zero")
-								.classed("hidden", false);
+							//learningStepsDiv
+							//	.selectAll(".learnstep3zero")
+							//	.classed("hidden", false);
 
 							perceptronLearnStepOutcomeExpression.RegisterExpression("perceptronlearn_sample_outcome", getPerceptronLearnStepOutcomeMathExpression);
 							perceptronLearnStepOutcomeExpression.QueueUpdate();
@@ -359,9 +378,14 @@
 
 
 
+					//* STEP 4 **************************************************
+					//*
+					//* interpret the error
+					//*
+					//***********************************************************
 
-					// interpret the error
 					if (error == 0) {
+						// if the error is zero, there is nothing more to do
 
 						// Animate the learning vector out of view
 						var animationTransition = animationTransition
@@ -386,6 +410,7 @@
 
 						if (error < 0) {
 							// if the error is negative we must subtract, so mirror the learned vector
+
 							// Animate the mirroring of the learning vector
 							animationTransition = animationTransition
 								.transition().duration(5000);
@@ -430,7 +455,7 @@
 
 							});
 
-						// animate the weightvector to the new value
+						// Animate the weightvector to the new value
 						animationTransition = animationTransition
 							.transition().duration(1500);
 
@@ -440,18 +465,49 @@
 							w2: perceptron1._w2()
 						};
 
-						animationTransition.tween("learnTween", function () {
-							var interpolate = d3.interpolate(0, 1);
-							return function (t) {
-								//console.log("justSomeTween: " + t)
+						var finalWeights = {
+							w0: initialWeights.w0,
+							w1: (initialWeights.w1 + (error * x)),
+							w2: (initialWeights.w2 + (error * y))
+						};
 
-								var newWeights = {
-									w0: initialWeights.w0,
-									w1: (initialWeights.w1 + (t * (error) * x)),
-									w2: (initialWeights.w2 + (t * (error) * y))
+						getPerceptronLearnStepUpdateWeightExpression = function () {
+							var w0Formatted = d3.format(".1f")(initialWeights.w0);
+							var w1Formatted = d3.format(".1f")(initialWeights.w1);
+							var w2Formatted = d3.format(".1f")(initialWeights.w2);
+
+							var x1Formatted = d3.format(".1f")(x);
+							var x2Formatted = d3.format(".1f")(y);
+
+							var w0NewFormatted = d3.format(".1f")(finalWeights.w0);
+							var w1NewFormatted = d3.format(".1f")(finalWeights.w1);
+							var w2NewFormatted = d3.format(".1f")(finalWeights.w2);
+
+							return "\\begin{aligned} \\mathbf{w}_{i+1} &= \\mathbf{w}_{i} + e\\mathbf{x} \\\\"
+								+ "&= (" + w0Formatted + ", " + w1Formatted + ", " + w2Formatted + ") + " + error + " * (0, " + x1Formatted + ", " + x2Formatted + ") \\\\"
+								+ "&= (" + w0NewFormatted + ", " + w1NewFormatted + ", " + w2NewFormatted + ") \\\\"
+								+ " \\end{aligned}";
+						};
+
+						animationTransition
+							.tween("learnTween", function () {
+								var interpolate = d3.interpolate(0, 1);
+								return function (t) {
+									//console.log("justSomeTween: " + t)
+
+									var newWeights = {
+										w0: initialWeights.w0,
+										w1: (initialWeights.w1 + (t * (error) * x)),
+										w2: (initialWeights.w2 + (t * (error) * y))
+									};
+									perceptron1.SetWeightVector(newWeights);
 								};
-								perceptron1.SetWeightVector(newWeights);
-							};
+							})
+							.on("end", function () {
+								console.log("moveTransition ended");
+
+								perceptronLearnStepDesiredExpression.RegisterExpression("perceptronlearn_sample_errorisnotzero", getPerceptronLearnStepUpdateWeightExpression);
+								perceptronLearnStepUpdateWeightExpression.QueueUpdate(); 
 						});
 					}
 
