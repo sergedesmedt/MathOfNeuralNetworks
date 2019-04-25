@@ -6,11 +6,21 @@
     this._x = props["x"];
     this._y = props["y"];
     this._desiredclass = props["desiredclass"];
+    this._r = 4;
+    if (props.hasOwnProperty("r")) {
+        this._r = props["r"];
+        //console.log("this._cssclass: " + this._cssclass);
+    }
 
     this._cssclass = "";
     if (config.hasOwnProperty("cssclass")) {
         this._cssclass = config["cssclass"];
         //console.log("this._cssclass: " + this._cssclass);
+    }
+
+    if (config.hasOwnProperty("id")) {
+        this._id = config["id"];
+        //console.log("this._id: " + this._id);
     }
 
 }
@@ -38,6 +48,35 @@ PerceptronLearningPoint.prototype.SetPerceptron = function(perceptron) {
     this._perceptron = perceptron;
 }
 
+PerceptronLearningPoint.prototype.AnimateProperty = function (d3animation, props, actions) {
+    let propAnimation = d3animation;
+    if (props.hasOwnProperty("r")) {
+        propAnimation = propAnimation.select("#" + this._id)
+            .selectAll(".perceptronResultPoint")
+            .attr("r", props["r"]);
+    }
+    let onstartAction = "undefined";
+    if (actions != undefined && actions.hasOwnProperty("onstart")) {
+        onstartAction = actions["onstart"];
+    }
+    propAnimation = propAnimation.on("start", function () {
+        if (onstartAction != "undefined")
+            onstartAction();
+    })
+    let onendAction = "undefined";
+    if (actions != undefined && actions.hasOwnProperty("onend")) {
+        onendAction = actions["onend"];
+    }
+    propAnimation = propAnimation.on("end", function () {
+        this._r = props["r"];
+        console.log("end animation learningpoint radius to value " + props["r"]);
+        if (onendAction != "undefined")
+            onendAction();
+    })
+
+    return propAnimation;
+}
+
 PerceptronLearningPoint.draw = function (space2Dim, results) {
     var space = space2Dim;
 
@@ -51,6 +90,12 @@ PerceptronLearningPoint.draw = function (space2Dim, results) {
 
     gnew = newData
         .append("g")
+        .attr("id", function (d) {
+            if (d._id == undefined)
+                return (Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36));
+            else
+                return d._id;
+        })  
         .attr("class", "perceptronResult")
 
     gnew.append("circle")
@@ -69,8 +114,7 @@ PerceptronLearningPoint.draw = function (space2Dim, results) {
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
-        .attr("r", "4px")
-
+        .attr("r", function (d) { return d._r /*+ "px"*/; })
 
 
     var updateData = allResults;
@@ -99,6 +143,12 @@ PerceptronLearningPoint.update = function (space2Dim, results) {
 
     gnew = newData
         .append("g")
+        .attr("id", function (d) {
+            if (d._id == undefined)
+                return (Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36));
+            else
+                return d._id;
+        })  
         .attr("class", "perceptronResult")
 
     gnew.append("circle")
@@ -117,7 +167,7 @@ PerceptronLearningPoint.update = function (space2Dim, results) {
         })
         .attr("cx", function (d) { return space.convertXToCanvas(d._x); })
         .attr("cy", function (d) { return space.convertYToCanvas(d._y); })
-        .attr("r", "4px")
+        .attr("r", function (d) { return d._r /*+ "px"*/; })
         //.on("mouseover", function (d, i) {
         //    console.log("PerceptronResult> mouseover[" + d._x + "][" + d._y + "]");
         //    //return PerceptronResult.tooltip.style("visibility", "visible");

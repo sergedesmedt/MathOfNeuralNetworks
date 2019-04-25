@@ -97,6 +97,19 @@
 		<h1>Perceptron Learning: learning an AND gate</h1>
 		<p>By using the perceptron learning procedure, it is possible to learn a perceptron to implement an AND gate.</p>
 		<p>A sample:</p>
+		<div class="divcentered">
+			<table>
+				<thead>
+					<tr><th>x1</th><th>x2</th><th>desired outcome</th><th>effective outcome</th></tr>
+				</thead>
+				<tbody>
+					<tr><th>0</th><th>0</th><th>0</th><th>${}$</th></tr>
+					<tr><th>0</th><th>1</th><th>0</th><th>${}$</th></tr>
+					<tr><th>1</th><th>0</th><th>0</th><th>${}$</th></tr>
+					<tr><th>1</th><th>1</th><th>1</th><th>${}$</th></tr>
+				</tbody>
+			</table>
+		</div>
 		<div style="width:100%">
 			<div class="divmanual">
 				<p>Click anywhere on the space to learn a new point. The code iterates through the truth table of an AND gate to select points to learn. It does NOT use the point clicked !!!</p>
@@ -245,12 +258,13 @@
 						.transition().duration(1500);
 
 					animationTransition.selectAll(".vectorline.learnvector")
+						.style("opacity", 1)
 						.on("start", function () {
+							console.log("Animate into view started");
 							learningStepsDiv
 								.selectAll(".learnstep1")
 								.classed("hidden", false);
 						})
-						.style("opacity", 1)
 						.on("end", function () {
 							console.log("Animate into view ended");
 							perceptronLearnStepDesiredExpression.RegisterExpression("perceptronlearn_sample_desired", getPerceptronLearnStepDesiredMathExpression);
@@ -291,12 +305,12 @@
 						.transition().duration(1500);
 
 					animationTransition.selectAll(".latestlearningpoint")
+						.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
 						.on("start", function () {
 							learningStepsDiv
 								.selectAll(".learnstepoutcome")
 								.classed("hidden", false);
 						})
-						.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
 						.on("end", function () {
 							console.log("Animate error ended");
 							perceptronLearningPoint.SetPerceptron(perceptron1);
@@ -362,12 +376,12 @@
 						.transition().duration(1500);
 
 					animationTransition.selectAll(".latestlearningpoint")
+						.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
 						.on("start", function () {
 							learningStepsDiv
 								.selectAll(".learnsteperror")
 								.classed("hidden", false);
 						})
-						.style("fill", function () { return currentclass == 1 ? "#ff6a00" : "#b6ff00"; })
 						.on("end", function () {
 							console.log("Animate error ended");
 							perceptronLearningPoint.SetPerceptron(perceptron1);
@@ -392,12 +406,12 @@
 							.transition().duration(1500);
 
 						animationTransition.selectAll(".vectorline.learnvector")
+							.style("opacity", 0)
 							.on("start", function () {
 								learningStepsDiv
 									.selectAll(".learnsteperroriszero")
 									.classed("hidden", false);
 							})
-							.style("opacity", 0)
 							.on("end", function () {
 								console.log("Animate error ended");
 								perceptronLearningPoint.SetPerceptron(perceptron1);
@@ -434,16 +448,16 @@
 							.transition().duration(1500);
 
 						animationTransition.select(".vectorline.learnvector")
-							.on("start", function () {
-								learningStepsDiv
-									.selectAll(".learnsteperrorisnotzero")
-									.classed("hidden", false);
-							})
 							.attrs({
 								x1: function (d) { console.log("move xms(" + xms + ")"); return xms; },
 								y1: function (d) { console.log("move xms(" + yms + ")"); return yms; },
 								x2: function (d) { console.log("move xms(" + xme + ")"); return xme; },
 								y2: function (d) { console.log("move xms(" + yme + ")"); return yme; }
+							})
+							.on("start", function () {
+								learningStepsDiv
+									.selectAll(".learnsteperrorisnotzero")
+									.classed("hidden", false);
 							})
 							.on("end", function () {
 								console.log("moveTransition ended");
@@ -491,7 +505,7 @@
 
 						animationTransition
 							.tween("learnTween", function () {
-								var interpolate = d3.interpolate(0, 1);
+								//var interpolate = d3.interpolate(0, 1);
 								return function (t) {
 									//console.log("justSomeTween: " + t)
 
@@ -595,6 +609,31 @@
 					{ x: 0, y: 1, outcome: 0 },
 					{ x: 1, y: 1, outcome: 1 }
 				];
+
+				var leanringPointIds = ["lp00", "lp10", "lp01", "lp11"];
+
+				var learningPoint00 = new PerceptronLearningPoint(
+					{ x: 0, y: 0, desiredclass: 0, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[0] }
+				)
+				var learningPoint10 = new PerceptronLearningPoint(
+					{ x: 1, y: 0, desiredclass: 0, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[1] }
+				)
+				var learningPoint01 = new PerceptronLearningPoint(
+					{ x: 0, y: 1, desiredclass: 0, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[2] }
+				)
+				var learningPoint11 = new PerceptronLearningPoint(
+					{ x: 1, y: 1, desiredclass: 1, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[3] }
+				)
+
+				me.allPerceptronLearnings.push(learningPoint00);
+				me.allPerceptronLearnings.push(learningPoint10);
+				me.allPerceptronLearnings.push(learningPoint01);
+				me.allPerceptronLearnings.push(learningPoint11);
+
 				console.log("space2dim attach onclick");
 				space2dimpercepand.OnClick(function (x, y, shiftKey) {
 					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
@@ -602,6 +641,11 @@
 					step++;
 					if (step >= 4)
 						step = 0;
+
+					let svg = space2dimpercepand.getSvg();
+
+					let animationTransition1 = svg
+						.transition().duration(500);
 
 					//console.log("will learn datapoint for step=" + step);
 					//console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
@@ -611,32 +655,19 @@
 
 					//console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
 
-					let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
-					perceptron1.SetWeightVector(newWeights);
+					me.allPerceptronLearnings()[step].AnimateProperty(animationTransition1, { r: 10 });
 
-					//console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					//console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					//console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					//console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+					let animationTransition2 = animationTransition1
+						.transition().duration(500);
+					me.allPerceptronLearnings()[step].AnimateProperty(animationTransition2, { r: 5 }, {
+						onend: function () {
+							let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
+							perceptron1.SetWeightVector(newWeights);
 
-					me.allPerceptronLearnings.removeAll();
+							space2dimpercepand.update();
+						}
+					});
 
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 0, y: 0, desiredclass: 0, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 1, y: 0, desiredclass: 0, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 0, y: 1, desiredclass: 0, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 1, y: 1, desiredclass: 1, perceptron: perceptron1 },
-						{}
-					));
 				});
 
 			}
