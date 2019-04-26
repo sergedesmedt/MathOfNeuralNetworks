@@ -68,6 +68,27 @@ Perceptron.prototype.LearnFromData = function (x1, x2, desiredclass) {
     };
 }
 
+Perceptron.prototype.LearnFromDataUsingLearningRate = function (x1, x2, desiredclass, learningrate) {
+    let currentclass = this.CalcPerceptronOutcome(x1, x2);
+
+    //console.log("LearnFromData currentclass(" + currentclass + ") ? desiredclass(" + desiredclass + ")");
+
+    if (currentclass != desiredclass) {
+        let error = desiredclass - currentclass;
+        return {
+            w0: (this._w0() + (learningrate * (error) * 1)),
+            w1: (this._w1() + (learningrate * (error) * x1)),
+            w2: (this._w2() + (learningrate * (error) * x2))
+        };
+    }
+
+    return {
+        w0: this._w0(),
+        w1: this._w1(),
+        w2: this._w2()
+    };
+}
+
 Perceptron.draw = function (space2Dim, lines) {
     var space = space2Dim;
 

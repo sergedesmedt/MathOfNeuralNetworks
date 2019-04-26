@@ -64,6 +64,14 @@
 		.learnsteperrorisnotzero.hidden {
 			display: none;
 		}
+
+		table {
+			border-collapse: collapse;
+		}
+
+		table, th, td {
+			border: 1px solid black;
+		}
 	</style>
 </head>
 <body>
@@ -80,7 +88,7 @@
 			</ol>
 		</p>
 		<p>A sample:</p>
-		<div id="learningsteps" class="container_height100">
+		<div id="learningsteps" class="container_height150">
 			<ol>
 				<li class="learnstepdesired hidden">Desired for feature vector: <span id="perceptronlearn_sample_desired">${}$</span></li>
 				<li class="learnstepoutcome hidden">Outcome for feature vector: <span id="perceptronlearn_sample_outcome">${}$</span></li>
@@ -90,6 +98,10 @@
 			</ol>
 		</div>
 		<div style="width:100%">
+			<div class="divmanual">
+				<p>Click anywhere to learn the point to the perceptron visualized by the line and the vector (which represents the weight vctor of the perceptron.</p>
+				<p>If you simply click, the desired class of the point will be considered 1, if you click while holding down the shift key, the desired class will be considered 0.</p>
+			</div>
 			<div id="perceptronlearninganimation" class="divcentered"></div>
 		</div>
 	</div>
@@ -100,13 +112,13 @@
 		<div class="divcentered">
 			<table>
 				<thead>
-					<tr><th>x1</th><th>x2</th><th>desired outcome</th><th>effective outcome</th></tr>
+					<tr><th>x1</th><th>x2</th><th>desired outcome</th></tr>
 				</thead>
 				<tbody>
-					<tr><th>0</th><th>0</th><th>0</th><th>${}$</th></tr>
-					<tr><th>0</th><th>1</th><th>0</th><th>${}$</th></tr>
-					<tr><th>1</th><th>0</th><th>0</th><th>${}$</th></tr>
-					<tr><th>1</th><th>1</th><th>1</th><th>${}$</th></tr>
+					<tr><th>0</th><th>0</th><th>0</th></tr>
+					<tr><th>0</th><th>1</th><th>0</th></tr>
+					<tr><th>1</th><th>0</th><th>0</th></tr>
+					<tr><th>1</th><th>1</th><th>1</th></tr>
 				</tbody>
 			</table>
 		</div>
@@ -114,6 +126,8 @@
 			<div class="divmanual">
 				<p>Click anywhere on the space to learn a new point. The code iterates through the truth table of an AND gate to select points to learn. It does NOT use the point clicked !!!</p>
 				<p>As a result, when a point is choosen which is already correctly classified nothing will be happening.</p>
+				<p>As feedback to which point is choosen, the point will grow and shrink</p>
+				<p>Green means class 0 and orange means class 1. The border color signals the desired class and the fill color signals the effective class. So a dot with a green border and an orange fill means the dot should be classified to class 0 but is currently classified into class 1.</p>
 			</div>
 			<div id="perceptronandlearning" class="divcentered"></div>
 		</div>
@@ -122,22 +136,46 @@
 		<h1>Perceptron Learning: learning an OR gate</h1>
 		<p>By using the perceptron learning procedure, it is possible to learn a perceptron to implement an OR gate.</p>
 		<p>A sample:</p>
+		<div class="divcentered">
+			<table>
+				<thead>
+					<tr><th>x1</th><th>x2</th><th>desired outcome</th></tr>
+				</thead>
+				<tbody>
+					<tr><th>0</th><th>0</th><th>0</th></tr>
+					<tr><th>0</th><th>1</th><th>1</th></tr>
+					<tr><th>1</th><th>0</th><th>1</th></tr>
+					<tr><th>1</th><th>1</th><th>1</th></tr>
+				</tbody>
+			</table>
+		</div>
 		<div style="width:100%">
 			<div class="divmanual">
 				<p>Click anywhere on the space to learn a new point. The code iterates through the truth table of an OR gate to select points to learn. It does NOT use the point clicked !!!</p>
 				<p>As a result, when a point is choosen which is already correctly classified nothing will be happening.</p>
+				<p>As feedback to which point is choosen, the point will grow and shrink</p>
+				<p>Green means class 0 and orange means class 1. The border color signals the desired class and the fill color signals the effective class. So a dot with a green border and an orange fill means the dot should be classified to class 0 but is currently classified into class 1.</p>
 			</div>
 			<div id="perceptronorlearning" class="divcentered"></div>
 		</div>
 	</div>
 	<div>
 		<h1>Perceptron Learning: do it yourself</h1>
-		<div id="perceptronlearning" class="divcentered"></div>
+		<p>Now try it yourself: image a line and try to learn this line to the perceptron.</p>
+		<div style="width:100%">
+			<div class="divmanual">
+
+			</div>
+			<div class="divcentered">
+				<input type="range" min="0" max="1" step="0.01" data-bind="value: Learning.learningrate, valueUpdate: 'input'" />
+			</div>
+			<div id="perceptronlearning" class="divcentered"></div>
+		</div>
 	</div>
-	<div>
+	<!--<div>
 		<h1>Perceptron Learning: do it yourself (normalization)</h1>
 		<div id="perceptronlearningnormalized" class="divcentered"></div>
-	</div>
+	</div>-->
 
 	<script type="text/javascript">
 
@@ -152,16 +190,13 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				//var w0Generator = d3.randomUniform(-50, 50);
-				var w0 = 0; //w0Generator();
+				var w0 = 0;
 				var wGenerator = d3.randomUniform(-1, 1);
 				var w1 = wGenerator();
 				var w2 = wGenerator();
 
 				var w1norm = w1 / Math.sqrt(w1 * w1 + w2 * w2);
 				var w2norm = w2 / Math.sqrt(w1 * w1 + w2 * w2);
-
-				//console.log("w0[" + w0 + "], w1[" + w1norm + "], w2[" + w2norm + "]");
 
 				this.perc1w0 = ko.observable(w0);
 				this.perc1w1 = ko.observable(w1norm);
@@ -315,10 +350,6 @@
 							console.log("Animate error ended");
 							perceptronLearningPoint.SetPerceptron(perceptron1);
 
-							//learningStepsDiv
-							//	.selectAll(".learnstep3zero")
-							//	.classed("hidden", false);
-
 							perceptronLearnStepOutcomeExpression.RegisterExpression("perceptronlearn_sample_outcome", getPerceptronLearnStepOutcomeMathExpression);
 							perceptronLearnStepOutcomeExpression.QueueUpdate();
 
@@ -415,9 +446,6 @@
 							.on("end", function () {
 								console.log("Animate error ended");
 								perceptronLearningPoint.SetPerceptron(perceptron1);
-
-								//perceptronLearnStep2Expression.RegisterExpression("perceptronlearn_sample_error", getPerceptronLearnStep2MathExpression);
-								//perceptronLearnStep2Expression.QueueUpdate();
 							});
 					}
 					else {
@@ -505,9 +533,7 @@
 
 						animationTransition
 							.tween("learnTween", function () {
-								//var interpolate = d3.interpolate(0, 1);
 								return function (t) {
-									//console.log("justSomeTween: " + t)
 
 									var newWeights = {
 										w0: initialWeights.w0,
@@ -596,7 +622,6 @@
 				this.perceptronsToShow = [perceptron1];
 				this.allPerceptronLearnings = ko.observableArray([]);
 				this.allPerceptronLearnings.subscribe(function (newValue) {
-					//console.log("allPerceptronResults.subscribe");
 					space2dimpercepand.update();
 				});
 
@@ -634,9 +659,7 @@
 				me.allPerceptronLearnings.push(learningPoint01);
 				me.allPerceptronLearnings.push(learningPoint11);
 
-				console.log("space2dim attach onclick");
 				space2dimpercepand.OnClick(function (x, y, shiftKey) {
-					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					step++;
 					if (step >= 4)
@@ -646,14 +669,6 @@
 
 					let animationTransition1 = svg
 						.transition().duration(500);
-
-					//console.log("will learn datapoint for step=" + step);
-					//console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					//console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					//console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					//console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
-
-					//console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
 
 					me.allPerceptronLearnings()[step].AnimateProperty(animationTransition1, { r: 10 });
 
@@ -717,7 +732,6 @@
 				this.perceptronsToShow = [perceptron1];
 				this.allPerceptronLearnings = ko.observableArray([]);
 				this.allPerceptronLearnings.subscribe(function (newValue) {
-					//console.log("allPerceptronResults.subscribe");
 					space2dimpercepor.update();
 				});
 
@@ -730,47 +744,55 @@
 					{ x: 0, y: 1, outcome: 1 },
 					{ x: 1, y: 1, outcome: 1 }
 				];
+
+				var leanringPointIds = ["lp00", "lp10", "lp01", "lp11"];
+
+				var learningPoint00 = new PerceptronLearningPoint(
+					{ x: 0, y: 0, desiredclass: 0, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[0] }
+				)
+				var learningPoint10 = new PerceptronLearningPoint(
+					{ x: 1, y: 0, desiredclass: 1, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[1] }
+				)
+				var learningPoint01 = new PerceptronLearningPoint(
+					{ x: 0, y: 1, desiredclass: 1, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[2] }
+				)
+				var learningPoint11 = new PerceptronLearningPoint(
+					{ x: 1, y: 1, desiredclass: 1, r: 5, perceptron: perceptron1 },
+					{ id: leanringPointIds[3] }
+				)
+
+				me.allPerceptronLearnings.push(learningPoint00);
+				me.allPerceptronLearnings.push(learningPoint10);
+				me.allPerceptronLearnings.push(learningPoint01);
+				me.allPerceptronLearnings.push(learningPoint11);
+
 				space2dimpercepor.OnClick(function (x, y, shiftKey) {
-					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
 					step++;
 					if (step >= 4)
 						step = 0;
 
-					//console.log("will learn datapoint for step=" + step);
-					//console.log("Step1 outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					//console.log("Step1 outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					//console.log("Step1 outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					//console.log("Step1 outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+					let svg = space2dimpercepor.getSvg();
 
-					//console.log("will learn datapoint x=" + truthTable[step].x + ", y=" + truthTable[step].y + ", desired outcome:" + truthTable[step].outcome);
+					let animationTransition1 = svg
+						.transition().duration(500);
 
-					let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
-					perceptron1.SetWeightVector(newWeights);
+					me.allPerceptronLearnings()[step].AnimateProperty(animationTransition1, { r: 10 });
 
-					//console.log("Final outcome x[" + 0 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 0) + "]");
-					//console.log("Final outcome x[" + 1 + "], y[" + 0 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 0) + "]");
-					//console.log("Final outcome x[" + 0 + "], y[" + 1 + "], desired[" + 0 + "], current[" + perceptron1.CalcPerceptronOutcome(0, 1) + "]");
-					//console.log("Final outcome x[" + 1 + "], y[" + 1 + "], desired[" + 1 + "], current[" + perceptron1.CalcPerceptronOutcome(1, 1) + "]");
+					let animationTransition2 = animationTransition1
+						.transition().duration(500);
+					me.allPerceptronLearnings()[step].AnimateProperty(animationTransition2, { r: 5 }, {
+						onend: function () {
+							let newWeights = perceptron1.LearnFromData(truthTable[step].x, truthTable[step].y, truthTable[step].outcome);
+							perceptron1.SetWeightVector(newWeights);
 
-					me.allPerceptronLearnings.removeAll();
+							space2dimpercepor.update();
+						}
+					});
 
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 0, y: 0, desiredclass: 0, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 1, y: 0, desiredclass: 1, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 0, y: 1, desiredclass: 1, perceptron: perceptron1 },
-						{}
-					));
-					me.allPerceptronLearnings.push(new PerceptronLearningPoint(
-						{ x: 1, y: 1, desiredclass: 1, perceptron: perceptron1 },
-						{}
-					));
 				});
 
 			}
@@ -814,6 +836,8 @@
 					{ w0: this.perc1w0, w1: this.perc1w1, w2: this.perc1w2 },
 					{});
 
+				this.learningrate = ko.observable(1);
+
 				this.circlesToShow = [];
 				this.vectorsToShow = [];
 				this.raysToShow = [];
@@ -838,7 +862,7 @@
 						{}
 					);
 
-					let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
+					let newWeights = perceptron1.LearnFromDataUsingLearningRate(x, y, desiredclass, me.learningrate());
 					perceptron1.SetWeightVector(newWeights);
 
 					me.allPerceptronLearnings.push(perceptronLearningPoint);
@@ -861,81 +885,81 @@
 		}
 
 
-		function createPerceptronLearningNormalizedSample() {
-			var space2dimpercepnorm = new Space2Dim("perceptronlearningnormalized", 200, 200, -1, 1, -1, 1);
+		//function createPerceptronLearningNormalizedSample() {
+		//	var space2dimpercepnorm = new Space2Dim("perceptronlearningnormalized", 200, 200, -1, 1, -1, 1);
 
-			function ViewModel() {
-				var w0Generator = d3.randomUniform(-1, 1);
-				var w0 = w0Generator();
-				var wGenerator = d3.randomUniform(-1, 1);
-				var w1 = wGenerator();
-				var w2 = wGenerator();
+		//	function ViewModel() {
+		//		var w0Generator = d3.randomUniform(-1, 1);
+		//		var w0 = w0Generator();
+		//		var wGenerator = d3.randomUniform(-1, 1);
+		//		var w1 = wGenerator();
+		//		var w2 = wGenerator();
 
-				console.log("createPerceptronORLearningSample: w0[" + w0 + "], w1[" + w1 + "], w2[" + w2 + "]");
+		//		console.log("createPerceptronORLearningSample: w0[" + w0 + "], w1[" + w1 + "], w2[" + w2 + "]");
 
-				this.perc1w0 = ko.observable(w0);
-				this.perc1w1 = ko.observable(w1);
-				this.perc1w2 = ko.observable(w2);
+		//		this.perc1w0 = ko.observable(w0);
+		//		this.perc1w1 = ko.observable(w1);
+		//		this.perc1w2 = ko.observable(w2);
 
-				this.perc1w0.subscribe(function (newValue) { space2dimpercepnorm.update(); });
-				this.perc1w1.subscribe(function (newValue) { space2dimpercepnorm.update(); });
-				this.perc1w2.subscribe(function (newValue) { space2dimpercepnorm.update(); });
+		//		this.perc1w0.subscribe(function (newValue) { space2dimpercepnorm.update(); });
+		//		this.perc1w1.subscribe(function (newValue) { space2dimpercepnorm.update(); });
+		//		this.perc1w2.subscribe(function (newValue) { space2dimpercepnorm.update(); });
 
-				var perceptron1 = new Perceptron(
-					{ w0: this.perc1w0, w1: this.perc1w1, w2: this.perc1w2 },
-					{});
+		//		var perceptron1 = new Perceptron(
+		//			{ w0: this.perc1w0, w1: this.perc1w1, w2: this.perc1w2 },
+		//			{});
 
-				this.circlesToShow = [];
-				this.vectorsToShow = [];
-				this.raysToShow = [];
-				this.perceptronsToShow = [perceptron1];
-				this.allPerceptronLearnings = ko.observableArray([]);
-				this.allPerceptronLearnings.subscribe(function (newValue) {
-					//console.log("allPerceptronResults.subscribe");
-					space2dimpercepnorm.update();
-				});
+		//		this.circlesToShow = [];
+		//		this.vectorsToShow = [];
+		//		this.raysToShow = [];
+		//		this.perceptronsToShow = [perceptron1];
+		//		this.allPerceptronLearnings = ko.observableArray([]);
+		//		this.allPerceptronLearnings.subscribe(function (newValue) {
+		//			//console.log("allPerceptronResults.subscribe");
+		//			space2dimpercepnorm.update();
+		//		});
 
-				var me = this;
-				space2dimpercepnorm.OnClick(function (x, y, shiftKey) {
-					//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
+		//		var me = this;
+		//		space2dimpercepnorm.OnClick(function (x, y, shiftKey) {
+		//			//console.log("space2dim clicked at [" + x + "," + y + "], shiftKey[" + shiftKey + "]");
 
-					let desiredclass = 1;
-					if (shiftKey)
-						desiredclass = 0;
+		//			let desiredclass = 1;
+		//			if (shiftKey)
+		//				desiredclass = 0;
 
-					let perceptronLearningPoint = new PerceptronLearningPoint(
-						{ x: x, y: y, desiredclass: desiredclass, perceptron: perceptron1 },
-						{}
-					);
+		//			let perceptronLearningPoint = new PerceptronLearningPoint(
+		//				{ x: x, y: y, desiredclass: desiredclass, perceptron: perceptron1 },
+		//				{}
+		//			);
 
-					let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
-					perceptron1.SetWeightVector(newWeights);
+		//			let newWeights = perceptron1.LearnFromData(x, y, desiredclass);
+		//			perceptron1.SetWeightVector(newWeights);
 
-					me.allPerceptronLearnings.push(perceptronLearningPoint);
-				});
+		//			me.allPerceptronLearnings.push(perceptronLearningPoint);
+		//		});
 
-			}
+		//	}
 
-			var vm = new ViewModel();
+		//	var vm = new ViewModel();
 
-			space2dimpercepnorm.appenGlobalAttributes(Vector2Dim.global);
-			space2dimpercepnorm.appenGlobalAttributes(PerceptronResult.global);
-			space2dimpercepnorm.registerHandler(Perceptron.draw, Perceptron.update, function () { return vm.perceptronsToShow; });
-			space2dimpercepnorm.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
-			space2dimpercepnorm.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
-			space2dimpercepnorm.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
-			space2dimpercepnorm.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
-			space2dimpercepnorm.show();
+		//	space2dimpercepnorm.appenGlobalAttributes(Vector2Dim.global);
+		//	space2dimpercepnorm.appenGlobalAttributes(PerceptronResult.global);
+		//	space2dimpercepnorm.registerHandler(Perceptron.draw, Perceptron.update, function () { return vm.perceptronsToShow; });
+		//	space2dimpercepnorm.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
+		//	space2dimpercepnorm.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
+		//	space2dimpercepnorm.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
+		//	space2dimpercepnorm.registerHandler(PerceptronLearningPoint.draw, PerceptronLearningPoint.update, function () { return vm.allPerceptronLearnings(); });
+		//	space2dimpercepnorm.show();
 
-			return vm;
-		}
+		//	return vm;
+		//}
 
 		function ViewModel() {
 			this.LearningAnimation = createPerceptronLearningAnimationSample();
 			this.ANDLearning = createPerceptronANDLearningSample();
 			this.ORLearning = createPerceptronORLearningSample();
 			this.Learning = createPerceptronLearningSample();
-			this.LearningNormalized = createPerceptronLearningNormalizedSample();
+			//this.LearningNormalized = createPerceptronLearningNormalizedSample();
 		}
 
 		var vm = new ViewModel();
