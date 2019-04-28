@@ -157,39 +157,39 @@
 		function projectVectorOnVector(vToProj, vOn) {
 			this.p2onv1x = ko.computed(function () {
 				// vOn as a unit vector
-				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
-				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+				let uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				let uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
 
-				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+				let angle = vToProj.getAngleToX() - vOn.getAngleToX();
 
 				// components of vToProj along this unit vector
-				var dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
+				let dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
 
 				return dv2x;
 			});
 			this.p2onv1y = ko.computed(function () {
 				// vOn as a unit vector
-				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
-				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+				let uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				let uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
 
-				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+				let angle = vToProj.getAngleToX() - vOn.getAngleToX();
 
 				// components of vToProj along this unit vector
-				var dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
+				let dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
 
 				return dv2y;
 			});
 
-			var p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			let p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
 			return p1onv2;
 		}
 
 		function createDotProductSample() {
-			var magnitudeMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("dotproduct", 400, 400, -100, 100, -100, 100);
+			let magnitudeMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("dotproduct", 400, 400, -100, 100, -100, 100);
 
 			function DotProductViewModel() {
-				var me = this;
+				let me = this;
 
 				this.showRule = ko.observable("sumofprod");
 
@@ -203,16 +203,16 @@
 				this.b2 = ko.observable(50);
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var pa = new Point2Dim(this.a1, this.a2);
-				var pb = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pa = new Point2Dim(this.a1, this.a2);
+				let pb = new Point2Dim(this.b1, this.b2);
 
-				var a = new Vector2Dim(
+				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },
 					{ name: "a", dvaluelvl: 1, /*showSize: 1,*/ p1draggable: 0, p2draggable: 1 }
 				);
 
-				var b = new Vector2Dim(
+				let b = new Vector2Dim(
 					{ p1: p0, p2: pb },
 					{ name: "b", dvaluelvl: 1, /*showSize: 1,*/ p1draggable: 0, p2draggable: 1 }
 				);
@@ -221,61 +221,61 @@
 				// calculate the projection of p1 on vector 2
 				this.paonbx = ko.computed(function () {
 					// vector b as a unit vector
-					var ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
-					var ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
+					let ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
+					let ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
 
-					var angle = b.getAngleToX() - a.getAngleToX();
+					let angle = b.getAngleToX() - a.getAngleToX();
 
 					// components of a along this unit vector
-					var da1 = a.getSize() * Math.cos(angle) * ub1;
+					let da1 = a.getSize() * Math.cos(angle) * ub1;
 
 					return da1;
 				});
 				this.paonby = ko.computed(function () {
 					// vector b as a unit vector
-					var ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
-					var ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
+					let ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
+					let ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
 
-					var angle = b.getAngleToX() - a.getAngleToX();
+					let angle = b.getAngleToX() - a.getAngleToX();
 
 					// components of vector a along this unit vector
-					var da2 = a.getSize() * Math.cos(angle) * ub2;
+					let da2 = a.getSize() * Math.cos(angle) * ub2;
 
 					return da2;
 				});
 
-				var paonb = new Point2Dim(this.paonbx, this.paonby);
+				let paonb = new Point2Dim(this.paonbx, this.paonby);
 
-				var aonb = new Vector2Dim(
+				let aonb = new Vector2Dim(
 					{ p1: p0, p2: paonb },
 					{ name: "aonb", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionv1onv2" }
 				)
-				var aonbprojl = new Vector2Dim(
+				let aonbprojl = new Vector2Dim(
 					{ p1: pa, p2: paonb },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
 
 
-				var angle1 = new VectorAngle2Dim(
+				let angle1 = new VectorAngle2Dim(
 					{ vs: a, ve: b },
 					{ showAngle: 1 }
 				);
 
-				var getMathExpression = function () {
-					var a1Formatted = d3.format(".2f")(pa.getX());
-					var a2Formatted = d3.format(".2f")(pa.getY());
-					var b1Formatted = d3.format(".2f")(pb.getX());
-					var b2Formatted = d3.format(".2f")(pb.getY());
+				let getMathExpression = function () {
+					let a1Formatted = d3.format(".2f")(pa.getX());
+					let a2Formatted = d3.format(".2f")(pa.getY());
+					let b1Formatted = d3.format(".2f")(pb.getX());
+					let b2Formatted = d3.format(".2f")(pb.getY());
 
-					var aLengthFormatted = d3.format(".2f")(a.getSize());
-					var bLengthFormatted = d3.format(".2f")(b.getSize());
+					let aLengthFormatted = d3.format(".2f")(a.getSize());
+					let bLengthFormatted = d3.format(".2f")(b.getSize());
 
-					var angleFormatted = d3.format(".2f")(angle1.getAngle());
+					let angleFormatted = d3.format(".2f")(angle1.getAngle());
 
-					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
+					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
 
-					var mathExpression = "\\begin{aligned}"
+					let mathExpression = "\\begin{aligned}"
 						+ "c &= a \\cdot b\\\\"
 						+ ((me.showRule() == "sumofprod") ? ("&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\") : "")
 						+ ((me.showRule() == "cosprod") ? ("&= " + aLengthFormatted + " * " + bLengthFormatted + " * cos(" + angleFormatted + ") \\\\") : "")
@@ -319,7 +319,7 @@
 
 			}
 
-			var vdp = new DotProductViewModel();
+			let vdp = new DotProductViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
@@ -330,8 +330,8 @@
 		}
 
 		function createDotProductCommutativitySample() {
-			var magnitudeMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("dotproductcommutativity", 400, 400, -100, 100, -100, 100);
+			let magnitudeMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("dotproductcommutativity", 400, 400, -100, 100, -100, 100);
 
 			function DotProductCommutativityViewModel() {
 				this.p0x = ko.observable(0);
@@ -344,16 +344,16 @@
 				this.b2 = ko.observable(50);
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var pa = new Point2Dim(this.a1, this.a2);
-				var pb = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pa = new Point2Dim(this.a1, this.a2);
+				let pb = new Point2Dim(this.b1, this.b2);
 
-				var a = new Vector2Dim(
+				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },
 					{ name: "a", dvaluelvl: 1, showSize: 0, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var b = new Vector2Dim(
+				let b = new Vector2Dim(
 					{ p1: p0, p2: pb },
 					{ name: "b", dvaluelvl: 1, showSize: 0, p1draggable: 0, p2draggable: 1 }
 				);
@@ -362,25 +362,25 @@
 				// calculate the projection of pa on b
 				this.paonbx = ko.computed(function () {
 					// b as a unit vector
-					var ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
-					var ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
+					let ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
+					let ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
 
-					var angle = b.getAngleToX() - a.getAngleToX();
+					let angle = b.getAngleToX() - a.getAngleToX();
 
 					// components of a along this unit vector
-					var da1 = a.getSize() * Math.cos(angle) * ub1;
+					let da1 = a.getSize() * Math.cos(angle) * ub1;
 
 					return da1;
 				});
 				this.paonby = ko.computed(function () {
 					// b as a unit vector
-					var ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
-					var ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
+					let ub1 = (b._p2.getX() - b._p1.getX()) / b.getSize();
+					let ub2 = (b._p2.getY() - b._p1.getY()) / b.getSize();
 
-					var angle = b.getAngleToX() - a.getAngleToX();
+					let angle = b.getAngleToX() - a.getAngleToX();
 
 					// components of a along this unit vector
-					var da2 = a.getSize() * Math.cos(angle) * ub2;
+					let da2 = a.getSize() * Math.cos(angle) * ub2;
 
 					return da2;
 				});
@@ -389,47 +389,47 @@
 				// calculate the projection of pb on vector a
 				this.pbonax = ko.computed(function () {
 					// a as a unit vector
-					var ua1 = (a._p2.getX() - a._p1.getX()) / a.getSize();
-					var ua2 = (a._p2.getY() - a._p1.getY()) / a.getSize();
+					let ua1 = (a._p2.getX() - a._p1.getX()) / a.getSize();
+					let ua2 = (a._p2.getY() - a._p1.getY()) / a.getSize();
 
-					var angle = a.getAngleToX() - b.getAngleToX();
+					let angle = a.getAngleToX() - b.getAngleToX();
 
 					// components of vector1 along this unit vector
-					var db1 = b.getSize() * Math.cos(angle) * ua1;
+					let db1 = b.getSize() * Math.cos(angle) * ua1;
 
 					return db1;
 				});
 				this.pbonay = ko.computed(function () {
 					// a as a unit vector
-					var ua1 = (a._p2.getX() - a._p1.getX()) / a.getSize();
-					var ua2 = (a._p2.getY() - a._p1.getY()) / a.getSize();
+					let ua1 = (a._p2.getX() - a._p1.getX()) / a.getSize();
+					let ua2 = (a._p2.getY() - a._p1.getY()) / a.getSize();
 
-					var angle = a.getAngleToX() - b.getAngleToX();
+					let angle = a.getAngleToX() - b.getAngleToX();
 
 					// components of vector1 along this unit vector
-					var db1 = b.getSize() * Math.cos(angle) * ua2;
+					let db1 = b.getSize() * Math.cos(angle) * ua2;
 
 					return db1;
 				});
 
-				var paonb = new Point2Dim(this.paonbx, this.paonby);
+				let paonb = new Point2Dim(this.paonbx, this.paonby);
 
-				var aonb = new Vector2Dim(
+				let aonb = new Vector2Dim(
 					{ p1: p0, p2: paonb },
 					{ name: "aonb", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionaonb" }
 				)
-				var aonbprojl = new Vector2Dim(
+				let aonbprojl = new Vector2Dim(
 					{ p1: pa, p2: paonb },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
-				var pbona = new Point2Dim(this.pbonax, this.pbonay);
+				let pbona = new Point2Dim(this.pbonax, this.pbonay);
 
-				var bona = new Vector2Dim(
+				let bona = new Vector2Dim(
 					{ p1: p0, p2: pbona },
 					{ name: "bona", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionbona" }
 				)
-				var bonaprojl = new Vector2Dim(
+				let bonaprojl = new Vector2Dim(
 					{ p1: pb, p2: pbona },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
@@ -438,26 +438,26 @@
 
 
 
-				var angle1 = new VectorAngle2Dim(
+				let angle1 = new VectorAngle2Dim(
 					{ vs: a, ve: b },
 					{ showAngle: 1 }
 				);
 
 
-				var getMathExpression = function () {
-					var a1Formatted = d3.format(".2f")(pa.getX());
-					var a2Formatted = d3.format(".2f")(pa.getY());
-					var b1Formatted = d3.format(".2f")(pb.getX());
-					var b2Formatted = d3.format(".2f")(pb.getY());
+				let getMathExpression = function () {
+					let a1Formatted = d3.format(".2f")(pa.getX());
+					let a2Formatted = d3.format(".2f")(pa.getY());
+					let b1Formatted = d3.format(".2f")(pb.getX());
+					let b2Formatted = d3.format(".2f")(pb.getY());
 
-					var aLengthFormatted = d3.format(".2f")(a.getSize());
-					var bLengthFormatted = d3.format(".2f")(b.getSize());
+					let aLengthFormatted = d3.format(".2f")(a.getSize());
+					let bLengthFormatted = d3.format(".2f")(b.getSize());
 
-					var angleFormatted = d3.format(".2f")(angle1.getAngle());
+					let angleFormatted = d3.format(".2f")(angle1.getAngle());
 
-					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
+					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
 
-					var mathExpression = "\\begin{aligned}"
+					let mathExpression = "\\begin{aligned}"
 						+ "c &= a \\cdot b\\\\"
 						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\"
 						+ "&= " + b1Formatted + " * " + a1Formatted + " + " + b2Formatted + " * " + a2Formatted + "\\\\"
@@ -485,7 +485,7 @@
 
 			}
 
-			var vdp = new DotProductCommutativityViewModel();
+			let vdp = new DotProductCommutativityViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
@@ -496,8 +496,8 @@
 		}
 
 		function createDotProductDistributivitySample() {
-			var magnitudeMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("dotproductdistributivity", 400, 400, -100, 100, -100, 100);
+			let magnitudeMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("dotproductdistributivity", 400, 400, -100, 100, -100, 100);
 
 			function DotProductCommutativityViewModel() {
 				this.p0x = ko.observable(0);
@@ -516,83 +516,83 @@
 				this.psumy = ko.computed(function () { return Number(this.b2()) + Number(this.c2()); }, this);
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var pa = new Point2Dim(this.a1, this.a2);
-				var pb = new Point2Dim(this.b1, this.b2);
-				var pc = new Point2Dim(this.c1, this.c2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pa = new Point2Dim(this.a1, this.a2);
+				let pb = new Point2Dim(this.b1, this.b2);
+				let pc = new Point2Dim(this.c1, this.c2);
 
-				var psum = new Point2Dim(this.psumx, this.psumy);
+				let psum = new Point2Dim(this.psumx, this.psumy);
 
-				var a = new Vector2Dim(
+				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },
 					{ name: "a", dvaluelvl: 1, showSize: 0, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var b = new Vector2Dim(
+				let b = new Vector2Dim(
 					{ p1: p0, p2: pb },
 					{ name: "b", dvaluelvl: 2, showSize: 0, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var c = new Vector2Dim(
+				let c = new Vector2Dim(
 					{ p1: p0, p2: pc },
 					{ name: "c", dvaluelvl: 3, showSize: 0, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vsum = new Vector2Dim(
+				let vsum = new Vector2Dim(
 					{ p1: p0, p2: psum },
 					{ name: "b+c", dvaluelvl: 4, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
 
-				var paonc = new projectVectorOnVector(a, c);
-				var aonc = new Vector2Dim(
+				let paonc = new projectVectorOnVector(a, c);
+				let aonc = new Vector2Dim(
 					{ p1: p0, p2: paonc },
 					{ name: "ap", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionaonb" }
 				)
-				var aoncprojl = new Vector2Dim(
+				let aoncprojl = new Vector2Dim(
 					{ p1: pa, p2: paonc },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
-				var pbonc = new projectVectorOnVector(b, c);
-				var bonc = new Vector2Dim(
+				let pbonc = new projectVectorOnVector(b, c);
+				let bonc = new Vector2Dim(
 					{ p1: p0, p2: pbonc },
 					{ name: "bp", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionaonb" }
 				)
-				var boncprojl = new Vector2Dim(
+				let boncprojl = new Vector2Dim(
 					{ p1: pb, p2: pbonc },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
-				var psumonc = new projectVectorOnVector(vsum, c);
-				var vsumonc = new Vector2Dim(
+				let psumonc = new projectVectorOnVector(vsum, c);
+				let vsumonc = new Vector2Dim(
 					{ p1: p0, p2: psumonc },
 					{ name: "sump", showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projectionaonb" }
 				)
-				var vsumoncprojl = new Vector2Dim(
+				let vsumoncprojl = new Vector2Dim(
 					{ p1: psum, p2: psumonc },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
 
 
-				var angle1 = new VectorAngle2Dim(
+				let angle1 = new VectorAngle2Dim(
 					{ vs: a, ve: b },
 					{ showAngle: 1 }
 				);
 
 
-				var getMathExpression = function () {
-					var a1Formatted = d3.format(".2f")(pa.getX());
-					var a2Formatted = d3.format(".2f")(pa.getY());
-					var b1Formatted = d3.format(".2f")(pb.getX());
-					var b2Formatted = d3.format(".2f")(pb.getY());
-					var c1Formatted = d3.format(".2f")(pc.getX());
-					var c2Formatted = d3.format(".2f")(pc.getY());
+				let getMathExpression = function () {
+					let a1Formatted = d3.format(".2f")(pa.getX());
+					let a2Formatted = d3.format(".2f")(pa.getY());
+					let b1Formatted = d3.format(".2f")(pb.getX());
+					let b2Formatted = d3.format(".2f")(pb.getY());
+					let c1Formatted = d3.format(".2f")(pc.getX());
+					let c2Formatted = d3.format(".2f")(pc.getY());
 
-					var dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, vsum));
+					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, vsum));
 
-					var mathExpression = "\\begin{aligned}"
+					let mathExpression = "\\begin{aligned}"
 						+ "d &= a \\cdot (b+c)\\\\"
 						+ "&= " + a1Formatted + " * (" + b1Formatted + " + " + c1Formatted + ") + " + a2Formatted + " * (" + b2Formatted + " + " + c2Formatted +") \\\\"
 						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a1Formatted + " * " + c1Formatted + " + " + a2Formatted + " * " + b2Formatted + " + " + a2Formatted + " * " + c2Formatted + "\\\\"
@@ -620,7 +620,7 @@
 
 			}
 
-			var vdp = new DotProductCommutativityViewModel();
+			let vdp = new DotProductCommutativityViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdp.vectorsToShow; });
@@ -636,7 +636,7 @@
 			this.DotProdDistr = createDotProductDistributivitySample();
 		}
 
-		var vm = new ViewModel();
+		let vm = new ViewModel();
 
 		ko.applyBindings(vm);
 

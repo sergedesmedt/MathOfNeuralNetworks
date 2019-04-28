@@ -100,7 +100,7 @@
 		</div>
 	</div>
 	<div style="width:100%">
-		<div class="divmanual">(You can drag the red dot to see how the length changes by changing the vector endpoint)</div>
+		<div class="divmanual">You can drag the red dot to see how the length changes by changing the vector endpoint</div>
 		<div id="vectorpropertiesmagnitude" class="divcentered"></div>
 	</div>
 	<div>
@@ -121,7 +121,7 @@
 		</div>
 	</div>
 	<div style="width:100%">
-		<div class="divmanual">(You can drag the red dot to see how the direction vector changes by changing the vector endpoint)</div>
+		<div class="divmanual">You can drag the red dot to see how the direction vector changes by changing the vector endpoint</div>
 		<div id="vectorpropertiesdirection" class="divcentered"></div>
 	</div>
 	<script type="text/javascript">
@@ -129,36 +129,36 @@
 		function projectVectorOnVector(vToProj, vOn) {
 			this.p2onv1x = ko.computed(function () {
 				// vOn as a unit vector
-				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
-				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+				let uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				let uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
 
-				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+				let angle = vToProj.getAngleToX() - vOn.getAngleToX();
 
 				// components of vToProj along this unit vector
-				var dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
+				let dv2x = vToProj.getSize() * Math.cos(angle) * uv1x;
 
 				return dv2x;
 			});
 			this.p2onv1y = ko.computed(function () {
 				// vOn as a unit vector
-				var uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
-				var uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
+				let uv1x = (vOn._p2.getX() - vOn._p1.getX()) / vOn.getSize();
+				let uv1y = (vOn._p2.getY() - vOn._p1.getY()) / vOn.getSize();
 
-				var angle = vToProj.getAngleToX() - vOn.getAngleToX();
+				let angle = vToProj.getAngleToX() - vOn.getAngleToX();
 
 				// components of vToProj along this unit vector
-				var dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
+				let dv2y = vToProj.getSize() * Math.cos(angle) * uv1y;
 
 				return dv2y;
 			});
 
-			var p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			let p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
 			return p1onv2;
 		}
 
 		function createVectorMagnitudeSample() {
-			var magnitudeMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("vectorpropertiesmagnitude", 300, 300, -50, 50, -50, 50);
+			let magnitudeMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("vectorpropertiesmagnitude", 300, 300, -50, 50, -50, 50);
 
 			function VectorMagnitudeViewModel() {
 				this.p0x = ko.observable(0);
@@ -167,20 +167,20 @@
 				this.a1 = ko.observable(40);
 				this.a2 = ko.observable(30);
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var pa = new Point2Dim(this.a1, this.a2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pa = new Point2Dim(this.a1, this.a2);
 
-				var va = new Vector2Dim(
+				let va = new Vector2Dim(
 					{ p1: p0, p2: pa },
 					{ name: "a", showSize: 1, dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var getMathExpression = function() {
-					var a1Formatted = d3.format(".1f")(pa.getX());
-					var a2Formatted = d3.format(".1f")(pa.getY());
-					var vLengthFormatted = d3.format(".1f")(va.getSize());
+				let getMathExpression = function() {
+					let a1Formatted = d3.format(".1f")(pa.getX());
+					let a2Formatted = d3.format(".1f")(pa.getY());
+					let vLengthFormatted = d3.format(".1f")(va.getSize());
 
-					var mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + a1Formatted + "^2 + " + a2Formatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
+					let mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + a1Formatted + "^2 + " + a2Formatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
 					return mathExpression;
 				}
 
@@ -200,7 +200,7 @@
 				this.vectorsToShow = [va];
 			}
 
-			var vmag = new VectorMagnitudeViewModel();
+			let vmag = new VectorMagnitudeViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmag.vectorsToShow; });
@@ -208,8 +208,8 @@
 		}
 
 		function createVectorDirectionSample() {
-			var directionMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("vectorpropertiesdirection", 300, 300, -2, 2, -2, 2);
+			let directionMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("vectorpropertiesdirection", 300, 300, -2, 2, -2, 2);
 
 			function VectorDirectionViewModel() {
 				this.p0x = ko.observable(0);
@@ -223,10 +223,10 @@
 				this.a1.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
 				this.a2.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var pa = new Point2Dim(this.a1, this.a2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pa = new Point2Dim(this.a1, this.a2);
 
-				var va = new Vector2Dim(
+				let va = new Vector2Dim(
 					{ p1: p0, p2: pa },
 					{ showSize: 1, p1draggable: 0, p2draggable: 1 }
 				);
@@ -237,9 +237,9 @@
 				this.v2 = ko.computed(function () {
 					return va._p2.getY() / va.getSize();
 				});
-				var pv = new Point2Dim(this.v1, this.v2);
+				let pv = new Point2Dim(this.v1, this.v2);
 
-				var vv = new Vector2Dim(
+				let vv = new Vector2Dim(
 					{ p1: p0, p2: pv },
 					{ showSize: 1, p1draggable: 0, p2draggable: 0 }
 				);
@@ -247,67 +247,67 @@
 
 				// following are helper objects for drawing projections, arcs, etc...
 				//	they do not add anything to the math involved
-				var px = new Point2Dim(ko.observable(1), ko.observable(0));
-				var py = new Point2Dim(ko.observable(0), ko.observable(1));
-				var vectorx = new Vector2Dim(
+				let px = new Point2Dim(ko.observable(1), ko.observable(0));
+				let py = new Point2Dim(ko.observable(0), ko.observable(1));
+				let vectorx = new Vector2Dim(
 					{ p1: p0, p2: px },
 					{ showSize: 0, p1draggable: 0, p2draggable: 0 }
 				);
-				var vectory = new Vector2Dim(
+				let vectory = new Vector2Dim(
 					{ p1: p0, p2: py },
 					{ showSize: 0, p1draggable: 0, p2draggable: 0 }
 				);
 
-				var puonx = new projectVectorOnVector(vv, vectorx);
-				var puony = new projectVectorOnVector(vv, vectory);
+				let puonx = new projectVectorOnVector(vv, vectorx);
+				let puony = new projectVectorOnVector(vv, vectory);
 
-				var vectoruonxlineproj = new Vector2Dim(
+				let vectoruonxlineproj = new Vector2Dim(
 					{ p1: pv, p2: puonx },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
-				var vectoruonylineproj = new Vector2Dim(
+				let vectoruonylineproj = new Vector2Dim(
 					{ p1: pv, p2: puony },
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
 
-				var vectoruonxproj = new Vector2Dim(
+				let vectoruonxproj = new Vector2Dim(
 					{ p1: p0, p2: puonx },
 					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projx" }
 				)
-				var vectoruonyproj = new Vector2Dim(
+				let vectoruonyproj = new Vector2Dim(
 					{ p1: p0, p2: puony },
 					{ showEndArrow: 1, showSize: 1, p1draggable: 0, p2draggable: 0, cssclass: "projy" }
 				)
 
 
-				var getMathExpression = function () {
-					var a1Formatted = d3.format(".2f")(pa.getX());
-					var a2Formatted = d3.format(".2f")(pa.getY());
-					var vLengthFormatted = d3.format(".2f")(va.getSize());
+				let getMathExpression = function () {
+					let a1Formatted = d3.format(".2f")(pa.getX());
+					let a2Formatted = d3.format(".2f")(pa.getY());
+					let vLengthFormatted = d3.format(".2f")(va.getSize());
 
-					var vectoruonxprojFormatted = d3.format(".2f")(vectoruonxproj.getSize());
-					var vectoruonyprojFormatted = d3.format(".2f")(vectoruonyproj.getSize());
+					let vectoruonxprojFormatted = d3.format(".2f")(vectoruonxproj.getSize());
+					let vectoruonyprojFormatted = d3.format(".2f")(vectoruonyproj.getSize());
 
-					var mathExpression = "\\begin{aligned} v &= (\\frac{" + a1Formatted + "}{" + vLengthFormatted + "}, \\frac{" + a2Formatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
+					let mathExpression = "\\begin{aligned} v &= (\\frac{" + a1Formatted + "}{" + vLengthFormatted + "}, \\frac{" + a2Formatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
 					return mathExpression;
 				}
 
 				directionMathExpression.RegisterExpression("vectordirection_sample", getMathExpression);
 
 
-				var angle1 = new VectorAngle2Dim(
+				let angle1 = new VectorAngle2Dim(
 					{ vs: va, ve: vectoruonxproj },
 					{ r: 50, ccw: 0}
 				);
-				var angle2 = new VectorAngle2Dim(
+				let angle2 = new VectorAngle2Dim(
 					{ vs: va, ve: vectoruonyproj },
 					{ r: 30, ccw: 1 }
 				);
 
-				var cr = ko.observable(1);
+				let cr = ko.observable(1);
 
-				var circle1 = new Circle(
+				let circle1 = new Circle(
 					{ center: p0, radius: cr },
 					{}
 				);
@@ -317,7 +317,7 @@
 				this.circlesToShow = [circle1];
 			}
 
-			var vdir = new VectorDirectionViewModel();
+			let vdir = new VectorDirectionViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdir.vectorsToShow; });

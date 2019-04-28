@@ -136,8 +136,8 @@
 	<script type="text/javascript">
 
 		function createVectorAdditionSample() {
-			var summationMathExpression = new MathExpressions();
-			var space2dimvsum = new Space2Dim("vectoraddition", 300, 300, 0, 100, 0, 100);
+			let summationMathExpression = new MathExpressions();
+			let space2dimvsum = new Space2Dim("vectoraddition", 300, 300, 0, 100, 0, 100);
 
 			function VectorSumViewModel() {
 				this.p0x = ko.observable(0);
@@ -160,49 +160,49 @@
 				this.b2.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var a = new Point2Dim(this.a1, this.a2);
-				var b = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let a = new Point2Dim(this.a1, this.a2);
+				let b = new Point2Dim(this.b1, this.b2);
 
-				var c = new Point2Dim(this.c1, this.c2);
+				let c = new Point2Dim(this.c1, this.c2);
 
-				//var circle1 = new Circle(p3);
-				//var circle2 = new Circle(p2);
+				//let circle1 = new Circle(p3);
+				//let circle2 = new Circle(p2);
 
-				var vector1 = new Vector2Dim(
+				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: a },
 					{ name: "a", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vector1t = new Vector2Dim(
+				let vector1t = new Vector2Dim(
 					{ p1: a, p2: c },
 					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
-				var vector2 = new Vector2Dim(
+				let vector2 = new Vector2Dim(
 					{ p1: p0, p2: b },
 					{ name: "b", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vector2t = new Vector2Dim(
+				let vector2t = new Vector2Dim(
 					{ p1: b, p2: c },
 					{ p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
-				var vectorsum = new Vector2Dim(
+				let vectorsum = new Vector2Dim(
 					{ p1: p0, p2: c },
 					{ name: "c", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
-				var getMathExpression = function () {
-					var p1XFormatted = d3.format(".1f")(a.getX());
-					var p1YFormatted = d3.format(".1f")(a.getY());
-					var p2XFormatted = d3.format(".1f")(b.getX());
-					var p2YFormatted = d3.format(".1f")(b.getY());
-					var pSumXFormatted = d3.format(".1f")(c.getX());
-					var pSumYFormatted = d3.format(".1f")(c.getY());
+				let getMathExpression = function () {
+					let p1XFormatted = d3.format(".1f")(a.getX());
+					let p1YFormatted = d3.format(".1f")(a.getY());
+					let p2XFormatted = d3.format(".1f")(b.getX());
+					let p2YFormatted = d3.format(".1f")(b.getY());
+					let pSumXFormatted = d3.format(".1f")(c.getX());
+					let pSumYFormatted = d3.format(".1f")(c.getY());
 
-					var mathExpression = "\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
+					let mathExpression = "\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
 						+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
 						+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
 						+ " \\end{aligned}";
@@ -214,7 +214,7 @@
 				this.vectorsToShow = [vector1, vector2, vector1t, vector2t, vectorsum];
 			}
 
-			var vsum = new VectorSumViewModel();
+			let vsum = new VectorSumViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vsum.vectorsToShow; });
@@ -226,8 +226,8 @@
 
 
 		function createVectorDiffSample() {
-			var diffMathExpression = new MathExpressions();
-			var space2dimvdiff = new Space2Dim("vectorsubtraction", 300, 300, -100, 100, -100, 100);
+			let diffMathExpression = new MathExpressions();
+			let space2dimvdiff = new Space2Dim("vectorsubtraction", 300, 300, -100, 100, -100, 100);
 
 			function VectorDiffViewModel() {
 				this.p0x = ko.observable(0);
@@ -250,41 +250,41 @@
 				this.p2y.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
-				var p2 = new Point2Dim(this.p2x, this.p2y);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let p1 = new Point2Dim(this.p1x, this.p1y);
+				let p2 = new Point2Dim(this.p2x, this.p2y);
 
-				var pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
+				let pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
 
-				var vector1 = new Vector2Dim(
+				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
 					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vector2 = new Vector2Dim(
+				let vector2 = new Vector2Dim(
 					{ p1: p0, p2: p2 },
 					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vector2t = new Vector2Dim(
+				let vector2t = new Vector2Dim(
 					{ p1: p1, p2: pdiff },
 					{ name: "-B", p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
-				var vectordiff = new Vector2Dim(
+				let vectordiff = new Vector2Dim(
 					{ p1: p0, p2: pdiff },
 					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
-				var getMathExpression = function () {
-					var p1XFormatted = d3.format(".1f")(p1.getX());
-					var p1YFormatted = d3.format(".1f")(p1.getY());
-					var p2XFormatted = d3.format(".1f")(p2.getX());
-					var p2YFormatted = d3.format(".1f")(p2.getY());
-					var pDiffXFormatted = d3.format(".1f")(pdiff.getX());
-					var pDiffYFormatted = d3.format(".1f")(pdiff.getY());
+				let getMathExpression = function () {
+					let p1XFormatted = d3.format(".1f")(p1.getX());
+					let p1YFormatted = d3.format(".1f")(p1.getY());
+					let p2XFormatted = d3.format(".1f")(p2.getX());
+					let p2YFormatted = d3.format(".1f")(p2.getY());
+					let pDiffXFormatted = d3.format(".1f")(pdiff.getX());
+					let pDiffYFormatted = d3.format(".1f")(pdiff.getY());
 
-					var mathExpression = "\\begin{aligned} c &= (a_1 - b_1, a_2 - b_2) \\\\"
+					let mathExpression = "\\begin{aligned} c &= (a_1 - b_1, a_2 - b_2) \\\\"
 						+ " &= (" + p1XFormatted + " - " + p2XFormatted + ", " + p1YFormatted + " - " + p2YFormatted + ") \\\\"
 						+ " &= (" + pDiffXFormatted + ", " + pDiffYFormatted + ")"
 						+ " \\end{aligned}";
@@ -296,7 +296,7 @@
 				this.vectorsToShow = [vector1, vector2, vector2t, vectordiff];
 			}
 
-			var vdiff = new VectorDiffViewModel();
+			let vdiff = new VectorDiffViewModel();
 
 			space2dimvdiff.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvdiff.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vdiff.vectorsToShow; });
@@ -305,8 +305,8 @@
 
 
 		function createVectorScalarMultiSample() {
-			var multMathExpression = new MathExpressions();
-			var space2dimvmult = new Space2Dim("vectorscalarmulti", 300, 300, -100, 100, -100, 100);
+			let multMathExpression = new MathExpressions();
+			let space2dimvmult = new Space2Dim("vectorscalarmulti", 300, 300, -100, 100, -100, 100);
 
 			function VectorMultViewModel() {
 				this.p0x = ko.observable(0);
@@ -327,30 +327,30 @@
 				this.multiplyer.subscribe(function (newValue) { space2dimvmult.update();; multMathExpression.QueueUpdate(); });
 
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
-				var lambda = this.multiplyer;
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let p1 = new Point2Dim(this.p1x, this.p1y);
+				let lambda = this.multiplyer;
 
-				var pmult = new Point2Dim(this.pmultx, this.pmulty);
+				let pmult = new Point2Dim(this.pmultx, this.pmulty);
 
-				var vector1 = new Vector2Dim(
+				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
 					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vectormult = new Vector2Dim(
+				let vectormult = new Vector2Dim(
 					{ p1: p0, p2: pmult },
 					{ name: "C", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
-				var getMathExpression = function () {
-					var p1XFormatted = d3.format(".1f")(p1.getX());
-					var p1YFormatted = d3.format(".1f")(p1.getY());
-					var pmultXFormatted = d3.format(".1f")(pmult.getX());
-					var pmultYFormatted = d3.format(".1f")(pmult.getY());
-					var lambdaFormatted = d3.format(".1f")(lambda());
+				let getMathExpression = function () {
+					let p1XFormatted = d3.format(".1f")(p1.getX());
+					let p1YFormatted = d3.format(".1f")(p1.getY());
+					let pmultXFormatted = d3.format(".1f")(pmult.getX());
+					let pmultYFormatted = d3.format(".1f")(pmult.getY());
+					let lambdaFormatted = d3.format(".1f")(lambda());
 
-					var mathExpression = "\\begin{aligned}"
+					let mathExpression = "\\begin{aligned}"
 						+ " \\lambda &= " + lambdaFormatted + " \\\\"
 						+ " c &= (\\lambda a_1, \\lambda a_2) \\\\"
 						+ " &= (" + lambdaFormatted + " * " + p1XFormatted + ", " + lambdaFormatted + " * " + p1YFormatted + ") \\\\"
@@ -364,7 +364,7 @@
 				this.vectorsToShow = [vector1, vectormult];
 			}
 
-			var vmult = new VectorMultViewModel();
+			let vmult = new VectorMultViewModel();
 
 			space2dimvmult.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvmult.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmult.vectorsToShow; });

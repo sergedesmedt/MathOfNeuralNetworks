@@ -85,7 +85,7 @@
 	<script type="text/javascript">
 
 		function createLineThroughOriginSample() {
-			var space2dimvsum = new Space2Dim("linethroughorigin", 200, 200, -75, 75, -75, 75);
+			let space2dimvsum = new Space2Dim("linethroughorigin", 200, 200, -75, 75, -75, 75);
 
 			function LineThroughOriginViewModel() {
 				this.p0x = ko.observable(0);
@@ -99,10 +99,10 @@
 				this.a.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.b.subscribe(function (newValue) { space2dimvsum.update(); });
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.a, this.b);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let p1 = new Point2Dim(this.a, this.b);
 
-				var prico = new Vector2Dim(
+				let prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
 					{ name: "p", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
@@ -111,10 +111,10 @@
 				this.vrayx = ko.observable(50);
 				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.vrayy = ko.computed(function () {
-					var a = prico._p2.getX() / prico.getSize();
-					var b = prico._p2.getY() / prico.getSize();
-					var c = this.rayd();
-					var res = 0;
+					let a = prico._p2.getX() / prico.getSize();
+					let b = prico._p2.getY() / prico.getSize();
+					let c = this.rayd();
+					let res = 0;
 					if (a != 0) {
 						py = (c - a * this.vrayx()) / b;
 						res = py;
@@ -124,22 +124,22 @@
 					return res;
 				}, this);
 
-				var pvrayend = new Point2Dim(this.vrayx, this.vrayy);
-				var vrayend = new Circle(
+				let pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				let vrayend = new Circle(
 					{ center: pvrayend, radius: ko.observable(2) },
 					{ cssclass: "vrayendpt" }
 				);
 
-				var vrayendvector = new Vector2Dim(
+				let vrayendvector = new Vector2Dim(
 					{ p1: p0, p2: pvrayend },
 					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
 				);
 
 				this.ricoDX = ko.computed(function () { return this.a() / prico.getSize(); }, this);
 				this.ricoDY = ko.computed(function () { return this.b() / prico.getSize(); }, this);
-				var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+				let rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
 
-				var ray = new Line2Dim(
+				let ray = new Line2Dim(
 					{ d: this.rayd, prico: rayRico },
 					{}
 				);
@@ -149,7 +149,7 @@
 				this.raysToShow = [ray];
 			}
 
-			var vline = new LineThroughOriginViewModel();
+			let vline = new LineThroughOriginViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
@@ -162,7 +162,7 @@
 		}
 
 		function createLineAtDistanceSample() {
-			var space2dimvsum = new Space2Dim("lineatdistance", 200, 200, -75, 75, -75, 75);
+			let space2dimvsum = new Space2Dim("lineatdistance", 200, 200, -75, 75, -75, 75);
 
 			function LineLineAtDistanceViewModel() {
 				this.p0x = ko.observable(0);
@@ -176,10 +176,10 @@
 				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
 
-				var p0 = new Point2Dim(this.p0x, this.p0y);
-				var p1 = new Point2Dim(this.p1x, this.p1y);
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let p1 = new Point2Dim(this.p1x, this.p1y);
 
-				var prico = new Vector2Dim(
+				let prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
 					{ name: "p", p1draggable: 0, p2draggable: 1 }
 				);
@@ -189,10 +189,10 @@
 				this.vrayx = ko.observable(50);
 				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.vrayy = ko.computed(function () {
-					var a = prico._p2.getX() / prico.getSize();
-					var b = prico._p2.getY() / prico.getSize();
-					var c = this.rayd();
-					var res = 0;
+					let a = prico._p2.getX() / prico.getSize();
+					let b = prico._p2.getY() / prico.getSize();
+					let c = this.rayd();
+					let res = 0;
 					if (a != 0) {
 						py = (c - a * this.vrayx()) / b;
 						res = py;
@@ -202,13 +202,13 @@
 					return res;
 				}, this);
 
-				var pvrayend = new Point2Dim(this.vrayx, this.vrayy);
-				var vrayend = new Circle(
+				let pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				let vrayend = new Circle(
 					{ center: pvrayend, radius: ko.observable(2) },
 					{ cssclass: "vrayendpt" }
 				);
 
-				var vrayendvector = new Vector2Dim(
+				let vrayendvector = new Vector2Dim(
 					{ p1: p0, p2: pvrayend },
 					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
 				);
@@ -216,9 +216,9 @@
 
 				this.ricoDX = ko.computed(function () { return this.p1x() / prico.getSize(); }, this);
 				this.ricoDY = ko.computed(function () { return this.p1y() / prico.getSize(); }, this);
-				var rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+				let rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
 
-				var ray = new Line2Dim(
+				let ray = new Line2Dim(
 					{ d: this.rayd, prico: rayRico },
 					{}
 				);
@@ -228,7 +228,7 @@
 				this.raysToShow = [ray];
 			}
 
-			var vline = new LineLineAtDistanceViewModel();
+			let vline = new LineLineAtDistanceViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vline.raysToShow; });
@@ -244,7 +244,7 @@
 			this.LineAtDistance = createLineAtDistanceSample();
 		}
 
-		var vm = new ViewModel();
+		let vm = new ViewModel();
 
 		ko.applyBindings(vm);
 

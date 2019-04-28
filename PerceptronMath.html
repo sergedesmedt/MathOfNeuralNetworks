@@ -92,8 +92,8 @@
 	<script type="text/javascript">
 
 		function createPerceptronSample() {
-			var perceptronMathExpression = new MathExpressions();
-			var space2dimpercep = new Space2Dim("perceptron", 200, 200, -75, 75, -75, 75);
+			let perceptronMathExpression = new MathExpressions();
+			let space2dimpercep = new Space2Dim("perceptron", 200, 200, -75, 75, -75, 75);
 
 			function ViewModel() {
 
@@ -105,16 +105,16 @@
 				this.percw1.subscribe(function (newValue) { space2dimpercep.update(); perceptronMathExpression.QueueUpdate(); });
 				this.percw2.subscribe(function (newValue) { space2dimpercep.update(); perceptronMathExpression.QueueUpdate(); });
 
-				var perceptron1 = new Perceptron(
+				let perceptron1 = new Perceptron(
 					{ w0: this.percw0, w1: this.percw1, w2: this.percw2 },
 					{});
 
-				var getMathExpression = function () {
-					var w0Formatted = d3.format(".1f")(perceptron1._w0());
-					var w1Formatted = d3.format(".1f")(perceptron1._w1());
-					var w2Formatted = d3.format(".1f")(perceptron1._w2());
+				let getMathExpression = function () {
+					let w0Formatted = d3.format(".1f")(perceptron1._w0());
+					let w1Formatted = d3.format(".1f")(perceptron1._w1());
+					let w2Formatted = d3.format(".1f")(perceptron1._w2());
 
-					var mathExpression = "f(x) =" +
+					let mathExpression = "f(x) =" +
 						"\\begin{cases}" +
 						"1 & \\text{ if } " + w0Formatted + " * 1 + " + w1Formatted + " * x_1 + " + w2Formatted+" * x_2 > 0\\\\" +
 						"0 & \\text{ otherwise }" +
@@ -134,7 +134,7 @@
 					space2dimpercep.update();
 				});
 
-				var me = this;
+				let me = this;
 				space2dimpercep.OnClick(function (x, y) {
 					//console.log("space2dim clicked at [" + x + "," + y + "]");
 
@@ -148,7 +148,7 @@
 
 			}
 
-			var vm = new ViewModel();
+			let vm = new ViewModel();
 
 			space2dimpercep.appenGlobalAttributes(Vector2Dim.global);
 			space2dimpercep.appenGlobalAttributes(PerceptronResult.global);

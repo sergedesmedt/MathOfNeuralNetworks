@@ -94,8 +94,8 @@
 	<script>
 
 		function createLineSegmentDefinition() {
-			var summationMathExpression = new MathExpressions();
-			var space2dimlinesegment = new Space2Dim("linesegment", 300, 300, -50, 50, -50, 50);
+			let summationMathExpression = new MathExpressions();
+			let space2dimlinesegment = new Space2Dim("linesegment", 300, 300, -50, 50, -50, 50);
 
 			function LineSegmentViewModel() {
 
@@ -110,51 +110,51 @@
 				this.p2 = space2dimlinesegment.CreatePointAndUpdate(40, 20, function(){ summationMathExpression.QueueUpdate(); });
 
 				this.psx = ko.computed(function () {
-					var x = (1 - this.lambda()) * this.p1.getX() + this.lambda() * this.p2.getX();
+					let x = (1 - this.lambda()) * this.p1.getX() + this.lambda() * this.p2.getX();
 					//console.log("x: " + x)
 					return x;
 				}, this);
 				this.psy = ko.computed(function () {
-					var y = (1 - this.lambda()) * this.p1.getY() + this.lambda() * this.p2.getY();
+					let y = (1 - this.lambda()) * this.p1.getY() + this.lambda() * this.p2.getY();
 					//console.log("y: " + y)
 					return y;
 				}, this);
 
 				this.ps = new Point2Dim(this.psx, this.psy);
 
-				var vector1 = new Vector2Dim(
+				let vector1 = new Vector2Dim(
 					{ p1: this.p0, p2: this.p1 },
 					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vector2 = new Vector2Dim(
+				let vector2 = new Vector2Dim(
 					{ p1: this.p0, p2: this.p2 },
 					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
-				var vsegment = new Vector2Dim(
+				let vsegment = new Vector2Dim(
 					{ p1: this.p0, p2: this.ps },
 					{ name: "V", showEndArrow: 1, dvaluelvl: 3, p1draggable: 0, p2draggable: 0 }
 				);
 
-				var linesegment = new Vector2Dim(
+				let linesegment = new Vector2Dim(
 					{ p1: this.p1, p2: this.ps },
 					{ name: "R", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
 				);
 
-				var me = this;
-				var getMathExpression = function () {
-					var lambdaFormatted = d3.format(".1f")(me.lambda());
-					var a1XFormatted = d3.format(".1f")(me.p1.getX());
-					var a2YFormatted = d3.format(".1f")(me.p1.getY());
-					var b1XFormatted = d3.format(".1f")(me.p2.getX());
-					var b2YFormatted = d3.format(".1f")(me.p2.getY());
-					var r1Formatted = d3.format(".1f")(me.ps.getX());
-					var r2Formatted = d3.format(".1f")(me.ps.getY());
+				let me = this;
+				let getMathExpression = function () {
+					let lambdaFormatted = d3.format(".1f")(me.lambda());
+					let a1XFormatted = d3.format(".1f")(me.p1.getX());
+					let a2YFormatted = d3.format(".1f")(me.p1.getY());
+					let b1XFormatted = d3.format(".1f")(me.p2.getX());
+					let b2YFormatted = d3.format(".1f")(me.p2.getY());
+					let r1Formatted = d3.format(".1f")(me.ps.getX());
+					let r2Formatted = d3.format(".1f")(me.ps.getY());
 
 					//console.log("update linesegment equation");
 
-					var mathExpression = 
+					let mathExpression = 
 						"\\begin{aligned}"
 						+ "r &= a + {\\lambda}(b-a) \\\\"
 						+ "&= (a1 + {\\lambda}(b1-a1), a2 + {\\lambda}(b2-a2)) \\\\"
@@ -162,7 +162,7 @@
 						+ "&= ("+r1Formatted+", "+r2Formatted+")"
 						+ "\\end{aligned}";
 
-					// var mathExpression = 
+					// let mathExpression = 
 					// 	"\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
 					// 	+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
 					// 	+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
@@ -179,7 +179,7 @@
 
 			}
 
-			var lnsgmnt = new LineSegmentViewModel();
+			let lnsgmnt = new LineSegmentViewModel();
 
 			space2dimlinesegment.appenGlobalAttributes(Vector2Dim.global);
 			space2dimlinesegment.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return lnsgmnt.raysToShow; });
@@ -192,52 +192,52 @@
 		}
 
 		function createConvexDefinition() {
-			var space2dimconvex = new Space2Dim("convex", 300, 300, 0, 50, 0, 50);
+			let space2dimconvex = new Space2Dim("convex", 300, 300, 0, 50, 0, 50);
 
 			function ConvexDefinitionViewModel() {
 
-				var p1 = space2dimconvex.CreatePoint(25, 15);
-				var p2 = space2dimconvex.CreatePoint(35, 20);
-				var p3 = space2dimconvex.CreatePoint(40, 25);
-				var p4 = space2dimconvex.CreatePoint(35, 30);
-				var p5 = space2dimconvex.CreatePoint(25, 35);
-				var p6 = space2dimconvex.CreatePoint(15, 30);
-				var p7 = space2dimconvex.CreatePoint(10, 25);
-				var p8 = space2dimconvex.CreatePoint(15, 20);
+				let p1 = space2dimconvex.CreatePoint(25, 15);
+				let p2 = space2dimconvex.CreatePoint(35, 20);
+				let p3 = space2dimconvex.CreatePoint(40, 25);
+				let p4 = space2dimconvex.CreatePoint(35, 30);
+				let p5 = space2dimconvex.CreatePoint(25, 35);
+				let p6 = space2dimconvex.CreatePoint(15, 30);
+				let p7 = space2dimconvex.CreatePoint(10, 25);
+				let p8 = space2dimconvex.CreatePoint(15, 20);
 
-				var regionPts = [p1, p2, p3, p4, p5, p6, p7, p8];
+				let regionPts = [p1, p2, p3, p4, p5, p6, p7, p8];
 
-				var region1 = new Region2Dim({ poly: regionPts }, { draggable: 1 });
+				let region1 = new Region2Dim({ poly: regionPts }, { draggable: 1 });
 
-				var cnvxHandle1 = new Circle(
+				let cnvxHandle1 = new Circle(
 					{ center: p1, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle2 = new Circle(
+				let cnvxHandle2 = new Circle(
 					{ center: p2, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle3 = new Circle(
+				let cnvxHandle3 = new Circle(
 					{ center: p3, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle4 = new Circle(
+				let cnvxHandle4 = new Circle(
 					{ center: p4, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle5 = new Circle(
+				let cnvxHandle5 = new Circle(
 					{ center: p5, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle6 = new Circle(
+				let cnvxHandle6 = new Circle(
 					{ center: p6, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle7 = new Circle(
+				let cnvxHandle7 = new Circle(
 					{ center: p7, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle8 = new Circle(
+				let cnvxHandle8 = new Circle(
 					{ center: p8, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
@@ -245,11 +245,11 @@
 
 				this.sp1 = space2dimconvex.CreatePoint(15, 22);
 				this.sp2 = space2dimconvex.CreatePoint(35, 25);
-				var sp1Handle = new Circle(
+				let sp1Handle = new Circle(
 					{ center: this.sp1, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var sp2Handle = new Circle(
+				let sp2Handle = new Circle(
 					{ center: this.sp2, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
@@ -257,23 +257,23 @@
 				this.lambda = ko.observable(0.5);
 
 				this.psx = ko.computed(function () {
-					var x = (1 - this.lambda()) * this.sp1.getX() + this.lambda() * this.sp2.getX();
+					let x = (1 - this.lambda()) * this.sp1.getX() + this.lambda() * this.sp2.getX();
 					//console.log("x: " + x)
 					return x;
 				}, this);
 				this.psy = ko.computed(function () {
-					var y = (1 - this.lambda()) * this.sp1.getY() + this.lambda() * this.sp2.getY();
+					let y = (1 - this.lambda()) * this.sp1.getY() + this.lambda() * this.sp2.getY();
 					//console.log("y: " + y)
 					return y;
 				}, this);
 
 				this.ps = new Point2Dim(this.psx, this.psy);
-				var psHandle = new Circle(
+				let psHandle = new Circle(
 					{ center: this.ps, radius: ko.observable(0.5) },
 					{ draggable: 0, id: "cnvxsegmentend" }
 				);
 
-				var linesegment = new Vector2Dim(
+				let linesegment = new Vector2Dim(
 					{ p1: this.sp1, p2: this.ps },
 					{ name: "S", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
 				);
@@ -306,7 +306,7 @@
 					}
 				}
 
-				var segmentEndPt = this.ps;
+				let segmentEndPt = this.ps;
 				this.lambda.subscribe(function (newValue) {
 					space2dimconvex.update();
 				});
@@ -322,7 +322,7 @@
 
 			}
 
-			var cnvx = new ConvexDefinitionViewModel();
+			let cnvx = new ConvexDefinitionViewModel();
 
 			space2dimconvex.appenGlobalAttributes(Vector2Dim.global);
 			space2dimconvex.registerHandler(Region2Dim.draw, Region2Dim.update, function () { return cnvx.regionsToShow; });
@@ -341,52 +341,52 @@
 		}
 
 		function createNotConvexDefinition() {
-			var space2dimconvex = new Space2Dim("notconvex", 300, 300, 0, 50, 0, 50);
+			let space2dimconvex = new Space2Dim("notconvex", 300, 300, 0, 50, 0, 50);
 
 			function ConvexDefinitionViewModel() {
 
-				var p1 = space2dimconvex.CreatePoint(25, 30);
-				var p2 = space2dimconvex.CreatePoint(35, 20);
-				var p3 = space2dimconvex.CreatePoint(40, 25);
-				var p4 = space2dimconvex.CreatePoint(35, 30);
-				var p5 = space2dimconvex.CreatePoint(25, 35);
-				var p6 = space2dimconvex.CreatePoint(15, 30);
-				var p7 = space2dimconvex.CreatePoint(10, 25);
-				var p8 = space2dimconvex.CreatePoint(15, 20);
+				let p1 = space2dimconvex.CreatePoint(25, 30);
+				let p2 = space2dimconvex.CreatePoint(35, 20);
+				let p3 = space2dimconvex.CreatePoint(40, 25);
+				let p4 = space2dimconvex.CreatePoint(35, 30);
+				let p5 = space2dimconvex.CreatePoint(25, 35);
+				let p6 = space2dimconvex.CreatePoint(15, 30);
+				let p7 = space2dimconvex.CreatePoint(10, 25);
+				let p8 = space2dimconvex.CreatePoint(15, 20);
 
-				var regionPts = [p1, p2, p3, p4, p5, p6, p7, p8];
+				let regionPts = [p1, p2, p3, p4, p5, p6, p7, p8];
 
-				var region1 = new Region2Dim({ poly: regionPts }, { draggable: 1 });
+				let region1 = new Region2Dim({ poly: regionPts }, { draggable: 1 });
 
-				var cnvxHandle1 = new Circle(
+				let cnvxHandle1 = new Circle(
 					{ center: p1, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle2 = new Circle(
+				let cnvxHandle2 = new Circle(
 					{ center: p2, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle3 = new Circle(
+				let cnvxHandle3 = new Circle(
 					{ center: p3, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle4 = new Circle(
+				let cnvxHandle4 = new Circle(
 					{ center: p4, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle5 = new Circle(
+				let cnvxHandle5 = new Circle(
 					{ center: p5, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle6 = new Circle(
+				let cnvxHandle6 = new Circle(
 					{ center: p6, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle7 = new Circle(
+				let cnvxHandle7 = new Circle(
 					{ center: p7, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var cnvxHandle8 = new Circle(
+				let cnvxHandle8 = new Circle(
 					{ center: p8, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
@@ -394,11 +394,11 @@
 
 				this.sp1 = space2dimconvex.CreatePoint(15, 22);
 				this.sp2 = space2dimconvex.CreatePoint(35, 25);
-				var sp1Handle = new Circle(
+				let sp1Handle = new Circle(
 					{ center: this.sp1, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
-				var sp2Handle = new Circle(
+				let sp2Handle = new Circle(
 					{ center: this.sp2, radius: ko.observable(0.5) },
 					{ draggable: 1 }
 				);
@@ -406,23 +406,23 @@
 				this.lambda = ko.observable(0.5);
 
 				this.psx = ko.computed(function () {
-					var x = (1 - this.lambda()) * this.sp1.getX() + this.lambda() * this.sp2.getX();
+					let x = (1 - this.lambda()) * this.sp1.getX() + this.lambda() * this.sp2.getX();
 					//console.log("x: " + x)
 					return x;
 				}, this);
 				this.psy = ko.computed(function () {
-					var y = (1 - this.lambda()) * this.sp1.getY() + this.lambda() * this.sp2.getY();
+					let y = (1 - this.lambda()) * this.sp1.getY() + this.lambda() * this.sp2.getY();
 					//console.log("y: " + y)
 					return y;
 				}, this);
 
 				this.ps = new Point2Dim(this.psx, this.psy);
-				var psHandle = new Circle(
+				let psHandle = new Circle(
 					{ center: this.ps, radius: ko.observable(0.5) },
 					{ draggable: 0, id: "notcnvxsegmentend" }
 				);
 
-				var linesegment = new Vector2Dim(
+				let linesegment = new Vector2Dim(
 					{ p1: this.sp1, p2: this.ps },
 					{ name: "S", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
 				);
@@ -455,7 +455,7 @@
 					}
 				}
 
-				var segmentEndPt = this.ps;
+				let segmentEndPt = this.ps;
 				this.lambda.subscribe(function (newValue) {
 					space2dimconvex.update();
 				});
@@ -471,7 +471,7 @@
 
 			}
 
-			var cnvx = new ConvexDefinitionViewModel();
+			let cnvx = new ConvexDefinitionViewModel();
 
 			space2dimconvex.appenGlobalAttributes(Vector2Dim.global);
 			space2dimconvex.registerHandler(Region2Dim.draw, Region2Dim.update, function () { return cnvx.regionsToShow; });
@@ -494,7 +494,7 @@
 			this.Concave = createNotConvexDefinition();
 		}
 
-		var vm = new ViewModel();
+		let vm = new ViewModel();
 
 		ko.applyBindings(vm);
 
