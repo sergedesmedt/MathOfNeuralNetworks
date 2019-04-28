@@ -72,9 +72,10 @@
 				$${}$$
 			</div>
 		</div>
-	</div>
-	<div style="width:100%">
-		<div id="vectoraddition" class="divcentered"></div>
+		<div style="width:100%">
+			<div class="divmanual">You can drag the two red dots to change the vectors $a$ and $b$ and see how this affects the result of the sum, that is vector $c$</div>
+			<div id="vectoraddition" class="divcentered"></div>
+		</div>
 	</div>
 	<div>
 		<h1>Difference of Vectors</h1>
@@ -98,9 +99,10 @@
 				$${}$$
 			</div>
 		</div>
-	</div>
-	<div style="width:100%">
-		<div id="vectorsubtraction" class="divcentered"></div>
+		<div style="width:100%">
+				<div class="divmanual">You can drag the two red dots to change the vectors $a$ and $b$ and see how this affects the result of the difference, that is vector $c$</div>
+				<div id="vectorsubtraction" class="divcentered"></div>
+		</div>
 	</div>
 	<div>
 		<h1>Scalar multiplication</h1>
@@ -124,13 +126,16 @@
 				$${}$$
 			</div>
 		</div>
-	</div>
-	<div style="width:100%">
-		<p>Change the value of scalar $\\lambda$ by dragging the slider:</p>
-		<div class="divcentered">
-			<input type="range" min="-5" max="5" step="0.1" data-bind="value: multiplyer, valueUpdate: 'input'" />
+		<div style="width:100%">
+			<div class="divmanual">
+				<p>You can drag the red dot to change the vector $a$ and see how this affects the result of the scalar multiplication, that is vector $c$</p>
+				<p>Change the value of scalar $\lambda$ by dragging the slider.</p>
+			</div>
+			<div class="divcentered">
+				<input type="range" min="-5" max="5" step="0.1" data-bind="value: multiplyer, valueUpdate: 'input'" />
+			</div>
+			<div id="vectorscalarmulti" class="divcentered"></div>
 		</div>
-		<div id="vectorscalarmulti" class="divcentered"></div>
 	</div>
 
 	<script type="text/javascript">
@@ -258,22 +263,22 @@
 
 				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
-					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+					{ name: "a", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				let vector2 = new Vector2Dim(
 					{ p1: p0, p2: p2 },
-					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
+					{ name: "b", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
 				let vector2t = new Vector2Dim(
 					{ p1: p1, p2: pdiff },
-					{ name: "-B", p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
+					{ name: "-b", p1draggable: 0, p2draggable: 0, cssclass: "vtranslated" }
 				);
 
 				let vectordiff = new Vector2Dim(
 					{ p1: p0, p2: pdiff },
-					{ name: "C", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+					{ name: "c", dvaluelvl: 3, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
 				let getMathExpression = function () {
@@ -335,12 +340,12 @@
 
 				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
-					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+					{ name: "a", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				let vectormult = new Vector2Dim(
 					{ p1: p0, p2: pmult },
-					{ name: "C", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
+					{ name: "c", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "calcresult" }
 				);
 
 				let getMathExpression = function () {
@@ -376,7 +381,6 @@
 		createVectorAdditionSample();
 		createVectorDiffSample();
 		createVectorScalarMultiSample();
-
 
 	</script>
 </body>

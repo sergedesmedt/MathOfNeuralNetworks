@@ -65,11 +65,11 @@
 		<h1>A line at a distance from the origin</h1>
 		<p>The equation of a line through the origin:</p>
 		<p>
-			$$ax + by = 0$$
+			$$ax + by = c$$
 		</p>
 		<p>A sample:</p>
 		<div class="sample_container_height100">
-			<div id="linethroughorigin_sample">
+			<div id="lineatdistance_sample">
 				$${}$$
 			</div>
 		</div>
@@ -85,6 +85,7 @@
 	<script type="text/javascript">
 
 		function createLineThroughOriginSample() {
+			let lineThroughOriginExpression = new MathExpressions();
 			let space2dimvsum = new Space2Dim("linethroughorigin", 200, 200, -75, 75, -75, 75);
 
 			function LineThroughOriginViewModel() {
@@ -96,8 +97,9 @@
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.a.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.b.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				this.a.subscribe(function (newValue) { space2dimvsum.update(); lineThroughOriginExpression.QueueUpdate(); });
+				this.b.subscribe(function (newValue) { space2dimvsum.update(); lineThroughOriginExpression.QueueUpdate(); });
 
 				let p0 = new Point2Dim(this.p0x, this.p0y);
 				let p1 = new Point2Dim(this.a, this.b);
@@ -107,9 +109,10 @@
 					{ name: "p", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
+
 				this.rayd = ko.observable(0);
 				this.vrayx = ko.observable(50);
-				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); lineThroughOriginExpression.QueueUpdate(); });
 				this.vrayy = ko.computed(function () {
 					let a = prico._p2.getX() / prico.getSize();
 					let b = prico._p2.getY() / prico.getSize();
@@ -134,6 +137,21 @@
 					{ p1: p0, p2: pvrayend },
 					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
 				);
+
+
+				let getMathExpression = function() {
+					let aFormatted = d3.format(".1f")(prico._p2.getX());
+					let bFormatted = d3.format(".1f")(prico._p2.getY());
+
+					let xFormatted = d3.format(".1f")(vrayendvector._p2.getX());
+					let yFormatted = d3.format(".1f")(vrayendvector._p2.getY());
+
+					let mathExpression = aFormatted + "*" + xFormatted + " + " + bFormatted + "*" + yFormatted + " = 0";
+					return mathExpression;
+				}
+
+				lineThroughOriginExpression.RegisterExpression("linethroughorigin_sample", getMathExpression);
+
 
 				this.ricoDX = ko.computed(function () { return this.a() / prico.getSize(); }, this);
 				this.ricoDY = ko.computed(function () { return this.b() / prico.getSize(); }, this);
@@ -162,6 +180,7 @@
 		}
 
 		function createLineAtDistanceSample() {
+			let lineAtDistanceExpression = new MathExpressions();
 			let space2dimvsum = new Space2Dim("lineatdistance", 200, 200, -75, 75, -75, 75);
 
 			function LineLineAtDistanceViewModel() {
@@ -173,8 +192,8 @@
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); lineAtDistanceExpression.QueueUpdate(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); lineAtDistanceExpression.QueueUpdate(); });
 
 				let p0 = new Point2Dim(this.p0x, this.p0y);
 				let p1 = new Point2Dim(this.p1x, this.p1y);
@@ -187,7 +206,7 @@
 				this.rayd = ko.computed(function () { return prico.getSize(); }, this);
 
 				this.vrayx = ko.observable(50);
-				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.vrayx.subscribe(function (newValue) { space2dimvsum.update(); lineAtDistanceExpression.QueueUpdate(); });
 				this.vrayy = ko.computed(function () {
 					let a = prico._p2.getX() / prico.getSize();
 					let b = prico._p2.getY() / prico.getSize();
@@ -198,7 +217,6 @@
 						res = py;
 					}
 
-					//console.log("AtDistance vrayy: " + res);
 					return res;
 				}, this);
 
@@ -212,6 +230,21 @@
 					{ p1: p0, p2: pvrayend },
 					{ name: "", dvaluelvl: 2, p1draggable: 0, p2draggable: 0, cssclass: "vrayendv" }
 				);
+
+
+				let getMathExpression = function() {
+					let aFormatted = d3.format(".1f")(prico._p2.getX());
+					let bFormatted = d3.format(".1f")(prico._p2.getY());
+					let cFormatted = d3.format(".1f")(prico.getSize() * prico.getSize());
+
+					let xFormatted = d3.format(".1f")(vrayendvector._p2.getX());
+					let yFormatted = d3.format(".1f")(vrayendvector._p2.getY());
+
+					let mathExpression = aFormatted + "*" + xFormatted + " + " + bFormatted + "*" + yFormatted + " = " + cFormatted;
+					return mathExpression;
+				}
+
+				lineAtDistanceExpression.RegisterExpression("lineatdistance_sample", getMathExpression);
 
 
 				this.ricoDX = ko.computed(function () { return this.p1x() / prico.getSize(); }, this);
