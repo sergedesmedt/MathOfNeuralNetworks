@@ -54,6 +54,7 @@
 		</div>
 	</div>
 	<div style="width:100%">
+		<p>You can drag the red dot to change the slope of the line, that is, influence $a$ and $b$. The vector pointing to the red dot represents the direction vector.</p>
 		<p>Change the value of $x$ by dragging the slider:</p>
 		<div class="divcentered">
 			<input type="range" min="-75" max="75" step="1" data-bind="value: LineThroughOrigin.vrayx, valueUpdate: 'input'" />
@@ -75,7 +76,8 @@
 		</div>
 	</div>
 	<div style="width:100%">
-		<p>Change the value of $x$ by dragging the slider:</p>
+			<p>You can drag the red dot to change the slope of the line, that is, influence $a$ and $b$. The vector pointing to the red dot represents the direction vector. The length of this vector influences $c$.</p>
+			<p>Change the value of $x$ by dragging the slider:</p>
 		<div class="divcentered">
 			<input type="range" min="-75" max="75" step="1" data-bind="value: LineAtDistance.vrayx, valueUpdate: 'input'" />
 		</div>
@@ -187,8 +189,8 @@
 				this.p0x = ko.observable(0);
 				this.p0y = ko.observable(0);
 
-				this.p1x = ko.observable(-40);
-				this.p1y = ko.observable(30);
+				this.p1x = ko.observable(-10);
+				this.p1y = ko.observable(40);
 
 				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });

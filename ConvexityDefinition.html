@@ -64,7 +64,9 @@
 		</div>
 	</div>
 	<div style="width:100%">
-		<div class="divcentered">
+			<p>You can drag the two red dots to change the endpoints $A$ and $B$ of the lnesegment.</p>
+			<p>Change the value of $\lambda$ by dragging the slider:</p>
+			<div class="divcentered">
 			<input type="range" min="0" max="1" step="0.01" data-bind="value: LineSegment.lambda, valueUpdate: 'input'" />
 		</div>
 		<div id="linesegment" class="divcentered"></div>
@@ -74,7 +76,7 @@
 		<p>In a Euclidean space, a convex region is a region where, for every pair of points within the region, every point on the straight line segment that joins the pair of points is also within the region</p>
 	</div>
 	<div style="width:100%">
-		<div class="divmanual">(You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave)</div>
+		<div>You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave</div>
 		<div class="divcentered">
 			<input type="range" min="0" max="1" step="0.01" data-bind="value: Convex.lambda, valueUpdate: 'input'" />
 		</div>
@@ -85,7 +87,7 @@
 		<p>If the region is not convext (see above for the definition) then it is concave.</p>
 	</div>
 	<div style="width:100%">
-		<div class="divmanual">(You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave)</div>
+		<div>You can drag the red dots to change the shape of the region. The black dots can be dragged to change the line segemnt. The slider can be dragged to change the point on the line segment. If the point on the linesegment is green, it is inside the region, else if it is red it is outside the region: then the region is not concave</div>
 		<div class="divcentered">
 			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
 		</div>
@@ -106,8 +108,8 @@
 				});
 
 				this.p0 = space2dimlinesegment.CreatePointAndUpdate(0, 0, function(){ summationMathExpression.QueueUpdate(); });
-				this.p1 = space2dimlinesegment.CreatePointAndUpdate(-10, -20, function(){ summationMathExpression.QueueUpdate(); });
-				this.p2 = space2dimlinesegment.CreatePointAndUpdate(40, 20, function(){ summationMathExpression.QueueUpdate(); });
+				this.p1 = space2dimlinesegment.CreatePointAndUpdate(-40, 10, function(){ summationMathExpression.QueueUpdate(); });
+				this.p2 = space2dimlinesegment.CreatePointAndUpdate(40, 40, function(){ summationMathExpression.QueueUpdate(); });
 
 				this.psx = ko.computed(function () {
 					let x = (1 - this.lambda()) * this.p1.getX() + this.lambda() * this.p2.getX();
