@@ -84,12 +84,12 @@
 		<h1>Magnitude of a Vector</h1>
 		<p>A vector in 2-dimensional space:</p>
 		<p>
-			$$a = (a_1, a_2), \text{ in }\mathbb{R}^2$$
+			$$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$$
 		</p>
 		<p>It's magnitude is defined by the root of the sum of the squares of it's components:</p>
 		<p>
 			$$ \begin{aligned}
-			\lvert\lvert{a}\lvert\lvert &= \sqrt{(a_1)^2 + (a_2)^2}\\
+			\lvert\lvert{\mathbf{a}}\lvert\lvert &= \sqrt{(a_1)^2 + (a_2)^2}\\
 			\end{aligned} $$
 		</p>
 		<p>A sample:</p>
@@ -107,11 +107,11 @@
 		<h1>Direction of a Vector</h1>
 		<p>A vector in 2-dimensional space:</p>
 		<p>
-			$$a = (a_1, a_2), \text{ in }\mathbb{R}^2$$
+			$$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$$
 		</p>
 		<p>It's direction cosine is defined by the vector of lenght 1 in the same direction is the original vector:</p>
 		<p>
-			$$v = (\frac{a_1}{\lvert\lvert{a}\lvert\lvert}, \frac{a_2}{\lvert\lvert{a}\lvert\lvert})$$
+			$$\mathbf{v} = (\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, \frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert})$$
 		</p>
 		<p>A sample:</p>
 		<div class="sample_container_height100">
@@ -180,7 +180,7 @@
 					let a2Formatted = d3.format(".1f")(pa.getY());
 					let vLengthFormatted = d3.format(".1f")(va.getSize());
 
-					let mathExpression = "\\begin{aligned} \\lvert\\lvert{a}\\lvert\\lvert &= \\sqrt{" + a1Formatted + "^2 + " + a2Formatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
+					let mathExpression = "\\begin{aligned} \\lvert\\lvert{\\mathbf{a}}\\lvert\\lvert &= \\sqrt{" + a1Formatted + "^2 + " + a2Formatted + "^2}\\\\ &= " + vLengthFormatted + " \\end{aligned}";
 					return mathExpression;
 				}
 
@@ -289,7 +289,7 @@
 					let vectoruonxprojFormatted = d3.format(".2f")(vectoruonxproj.getSize());
 					let vectoruonyprojFormatted = d3.format(".2f")(vectoruonyproj.getSize());
 
-					let mathExpression = "\\begin{aligned} v &= (\\frac{" + a1Formatted + "}{" + vLengthFormatted + "}, \\frac{" + a2Formatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
+					let mathExpression = "\\begin{aligned} \\mathbf{v} &= (\\frac{" + a1Formatted + "}{" + vLengthFormatted + "}, \\frac{" + a2Formatted + "}{" + vLengthFormatted + "})\\\\ &=(" + vectoruonxprojFormatted + "," + vectoruonyprojFormatted + ")  \\end{aligned}";
 					return mathExpression;
 				}
 

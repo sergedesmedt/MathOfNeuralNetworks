@@ -55,14 +55,14 @@
 		<p>Two vector in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>The sum of two vectors is the vector resulting from the addition of the components of the original vectors:</p>
 		<p>
 			$$\begin{aligned}
-			c &= a + b\\
+			\mathbf{c} &= \mathbf{a} + \mathbf{b}\\
 			&= (a_1 + b_1, a_2 + b_2)
 			\end{aligned}$$
 		</p>
@@ -73,7 +73,7 @@
 			</div>
 		</div>
 		<div style="width:100%">
-			<div>You can drag the two red dots to change the vectors $a$ and $b$ and see how this affects the result of the sum, that is vector $c$</div>
+			<div>You can drag the two red dots to change the vectors $\mathbf{a}$ and $\mathbf{b}$ and see how this affects the result of the sum, that is vector $\mathbf{c}</div>
 			<div id="vectoraddition" class="divcentered"></div>
 		</div>
 	</div>
@@ -82,14 +82,14 @@
 		<p>Two vectors in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>The difference of two vectors is the vector resulting from the differences of the components of the original vectors:</p>
 		<p>
 			$$\begin{aligned}
-			c &= a - b\\
+			\mathbf{c} &= \mathbf{a} - \mathbf{b}\\
 			&= (a_1 - b_1, a_2 - b_2)
 			\end{aligned}$$
 		</p>
@@ -100,7 +100,7 @@
 			</div>
 		</div>
 		<div style="width:100%">
-				<div>You can drag the two red dots to change the vectors $a$ and $b$ and see how this affects the result of the difference, that is vector $c$</div>
+				<div>You can drag the two red dots to change the vectors $\mathbf{a}$ and $\mathbf{b}$ and see how this affects the result of the difference, that is vector $\mathbf{c}$</div>
 				<div id="vectorsubtraction" class="divcentered"></div>
 		</div>
 	</div>
@@ -109,14 +109,14 @@
 		<p>A vector $a$ in 2-dimensional space and a scalar $\\lambda$ (a number):</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
 			\lambda
 			\end{aligned}$$
 		</p>
 		<p>A vector multiplied by a scalar is the vector resulting of the multiplication of each component of the original vector by the scalar:</p>
 		<p>
 			$$\begin{aligned}
-			c &= \lambda a\\
+			\mathbf{c} &= \lambda \mathbf{a}\\
 			&= (\lambda a_1, \lambda a_2)
 			\end{aligned}$$
 		</p>
@@ -128,7 +128,7 @@
 		</div>
 		<div style="width:100%">
 			<div>
-				<p>You can drag the red dot to change the vector $a$ and see how this affects the result of the scalar multiplication, that is vector $c$</p>
+				<p>You can drag the red dot to change the vector $\mathbf{a}$ and see how this affects the result of the scalar multiplication, that is vector $\mathbf{c}$</p>
 				<p>Change the value of scalar $\lambda$ by dragging the slider.</p>
 			</div>
 			<div class="divcentered">
@@ -207,7 +207,7 @@
 					let pSumXFormatted = d3.format(".1f")(c.getX());
 					let pSumYFormatted = d3.format(".1f")(c.getY());
 
-					let mathExpression = "\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
+					let mathExpression = "\\begin{aligned} \\mathbf{c} &= (a_1 + b_1, a_2 + b_2) \\\\"
 						+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
 						+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
 						+ " \\end{aligned}";
@@ -289,7 +289,7 @@
 					let pDiffXFormatted = d3.format(".1f")(pdiff.getX());
 					let pDiffYFormatted = d3.format(".1f")(pdiff.getY());
 
-					let mathExpression = "\\begin{aligned} c &= (a_1 - b_1, a_2 - b_2) \\\\"
+					let mathExpression = "\\begin{aligned} \\mathbf{c} &= (a_1 - b_1, a_2 - b_2) \\\\"
 						+ " &= (" + p1XFormatted + " - " + p2XFormatted + ", " + p1YFormatted + " - " + p2YFormatted + ") \\\\"
 						+ " &= (" + pDiffXFormatted + ", " + pDiffYFormatted + ")"
 						+ " \\end{aligned}";
@@ -357,7 +357,7 @@
 
 					let mathExpression = "\\begin{aligned}"
 						+ " \\lambda &= " + lambdaFormatted + " \\\\"
-						+ " c &= (\\lambda a_1, \\lambda a_2) \\\\"
+						+ " \\mathbf{c} &= (\\lambda a_1, \\lambda a_2) \\\\"
 						+ " &= (" + lambdaFormatted + " * " + p1XFormatted + ", " + lambdaFormatted + " * " + p1YFormatted + ") \\\\"
 						+ " &= (" + pmultXFormatted + ", " + pmultYFormatted + ")"
 						+ " \\end{aligned}";

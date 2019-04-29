@@ -37,8 +37,8 @@
 		<p>Two vector in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			A &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			B &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>Then a line segment going from A to B can be defined as:</p>
@@ -49,10 +49,10 @@
 		<p>We know from the section on vector math that the vector going from $a$ to $b$ is equal to $b-a$ and thus we can write:</p>
 		<p>
 			$$\begin{aligned}
-			r &= \vec{oa} + \lambda \vec{ab}\\
-			&= A + {\lambda}(B-A) \\
-			&= A + {\lambda}B-{\lambda}A \\
-			&= (1-{\lambda})A + {\lambda}B \\
+			r &= \vec{OA} + \lambda \vec{AB}\\
+			&= \mathbf{a} + {\lambda}(\mathbf{b}-\mathbf{a}) \\
+			&= \mathbf{a} + {\lambda}\mathbf{b}-{\lambda}\mathbf{a} \\
+			&= (1-{\lambda})\mathbf{a} + {\lambda}\mathbf{b} \\
 			&= ((1-{\lambda})a1 + {\lambda}b1, (1-{\lambda})a2 + {\lambda}b2) \\
 			\end{aligned}$$
 		</p>
@@ -126,22 +126,22 @@
 
 				let vector1 = new Vector2Dim(
 					{ p1: this.p0, p2: this.p1 },
-					{ name: "A", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
+					{ name: "a", dvaluelvl: 1, p1draggable: 0, p2draggable: 1 }
 				);
 
 				let vector2 = new Vector2Dim(
 					{ p1: this.p0, p2: this.p2 },
-					{ name: "B", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
+					{ name: "b", dvaluelvl: 2, p1draggable: 0, p2draggable: 1 }
 				);
 
 				let vsegment = new Vector2Dim(
 					{ p1: this.p0, p2: this.ps },
-					{ name: "V", showEndArrow: 1, dvaluelvl: 3, p1draggable: 0, p2draggable: 0 }
+					{ name: "v", showEndArrow: 1, dvaluelvl: 3, p1draggable: 0, p2draggable: 0 }
 				);
 
 				let linesegment = new Vector2Dim(
 					{ p1: this.p1, p2: this.ps },
-					{ name: "R", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
+					{ name: "r", showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
 				);
 
 				let me = this;
@@ -154,21 +154,14 @@
 					let r1Formatted = d3.format(".1f")(me.ps.getX());
 					let r2Formatted = d3.format(".1f")(me.ps.getY());
 
-					//console.log("update linesegment equation");
-
 					let mathExpression = 
 						"\\begin{aligned}"
-						+ "r &= a + {\\lambda}(b-a) \\\\"
+						+ "\\mathbf{r} &= \\mathbf{a} + {\\lambda}(\\mathbf{b}-\\mathbf{a}) \\\\"
 						+ "&= (a1 + {\\lambda}(b1-a1), a2 + {\\lambda}(b2-a2)) \\\\"
 						+ "&= ("+a1XFormatted+" + {" + lambdaFormatted + "}("+b1XFormatted+"-"+a1XFormatted+"), "+a2YFormatted+" + {" + lambdaFormatted + "}("+b2YFormatted+"-"+a2YFormatted+")) \\\\"
 						+ "&= ("+r1Formatted+", "+r2Formatted+")"
 						+ "\\end{aligned}";
 
-					// let mathExpression = 
-					// 	"\\begin{aligned} c &= (a_1 + b_1, a_2 + b_2) \\\\"
-					// 	+ " &= (" + p1XFormatted + " + " + p2XFormatted + ", " + p1YFormatted + " + " + p2YFormatted + ") \\\\"
-					// 	+ " &= (" + pSumXFormatted + ", " + pSumYFormatted + ")"
-					// 	+ " \\end{aligned}";
 					return mathExpression;
 				}
 
@@ -285,11 +278,9 @@
 						return;
 
 					if (region1.Contains(segmentEndPt)) {
-						//console.log("inside");
 						document.getElementById("cnvxsegmentend").style.fill = "green";
 					}
 					else {
-						//console.log("outside");
 						document.getElementById("cnvxsegmentend").style.fill = "red";
 					}
 				}
@@ -299,11 +290,9 @@
 						return;
 
 					if (region1.Contains(segmentEndPt)) {
-						//console.log("inside");
 						document.getElementById("cnvxsegmentend").style.fill = "green";
 					}
 					else {
-						//console.log("outside");
 						document.getElementById("cnvxsegmentend").style.fill = "red";
 					}
 				}
@@ -315,7 +304,6 @@
 
 
 				this.circlesToShow = [
-					//cnvxHandle1, cnvxHandle2, cnvxHandle3, cnvxHandle4, cnvxHandle5, cnvxHandle6, cnvxHandle7, cnvxHandle8
 					sp1Handle, sp2Handle
 					, psHandle];
 				this.vectorsToShow = [linesegment];
@@ -409,12 +397,10 @@
 
 				this.psx = ko.computed(function () {
 					let x = (1 - this.lambda()) * this.sp1.getX() + this.lambda() * this.sp2.getX();
-					//console.log("x: " + x)
 					return x;
 				}, this);
 				this.psy = ko.computed(function () {
 					let y = (1 - this.lambda()) * this.sp1.getY() + this.lambda() * this.sp2.getY();
-					//console.log("y: " + y)
 					return y;
 				}, this);
 
@@ -434,11 +420,9 @@
 						return;
 
 					if (region1.Contains(segmentEndPt)) {
-						//console.log("inside");
 						document.getElementById("notcnvxsegmentend").style.fill = "green";
 					}
 					else {
-						//console.log("outside");
 						document.getElementById("notcnvxsegmentend").style.fill = "red";
 					}
 				}
@@ -448,11 +432,9 @@
 						return;
 
 					if (region1.Contains(segmentEndPt)) {
-						//console.log("inside");
 						document.getElementById("notcnvxsegmentend").style.fill = "green";
 					}
 					else {
-						//console.log("outside");
 						document.getElementById("notcnvxsegmentend").style.fill = "red";
 					}
 				}
@@ -464,7 +446,6 @@
 
 
 				this.circlesToShow = [
-					//cnvxHandle1, cnvxHandle2, cnvxHandle3, cnvxHandle4, cnvxHandle5, cnvxHandle6, cnvxHandle7, cnvxHandle8
 					sp1Handle, sp2Handle
 					, psHandle];
 				this.vectorsToShow = [linesegment];

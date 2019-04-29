@@ -61,14 +61,14 @@
 		<p>Two vectors in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>The dot-product is the scalar (a real number) resulting of taking the sum of the products of the corresponding components of the two vectors:</p>
 		<p>
 			$$ \begin{aligned}
-			c &= a \cdot b\\
+			c &= \mathbf{a} \cdot \mathbf{b}\\
 			&= a_1 b_1 + a_2 b_2\\
 			&= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
 			\end{aligned}$$
@@ -95,17 +95,17 @@
 		<p>Two vectors in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>The dot-product is commutative:</p>
 		<p>
 			$$ \begin{aligned}
-			c &= a \cdot b\\
+			c &= \mathbf{a} \cdot \mathbf{b}\\
 			&= a_1 b_1 + a_2 b_2\\
 			&= b_1 a_1 + b_2 a_2\\
-			&= b \cdot a\\
+			&= \mathbf{b} \cdot \mathbf{a}\\
 			\end{aligned}$$
 		</p>
 		<div>
@@ -127,19 +127,19 @@
 		<p>Three vectors in 2-dimensional space:</p>
 		<p>
 			$$ \begin{aligned}
-			a &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
-			b &= (b_1, b_2), \text{ in }\mathbb{R}^2\\
-			c &= (c_1, c_2), \text{ in }\mathbb{R}^2
+			\mathbf{a} &= (a_1, a_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{b} &= (b_1, b_2), \text{ in }\mathbb{R}^2\\
+			\mathbf{c} &= (c_1, c_2), \text{ in }\mathbb{R}^2
 			\end{aligned}$$
 		</p>
 		<p>The dot-product is distributive:</p>
 		<p>
 			$$ \begin{aligned}
-			d &= a \cdot (b+c)\\
+			d &= \mathbf{a} \cdot (\mathbf{b}+\mathbf{c})\\
 			&= a_1 (b_1 + c_1) + a_2 (b_2 + c_2)\\
 			&= a_1 b_1 + a_1 c_1 + a_2 b_2 + a_2 c_2\\
 			&= a_1 b_1 + a_2 b_2 + a_1 c_1 + a_2 c_2\\
-			&= a \cdot b + a \cdot c\\
+			&= \mathbf{a} \cdot \mathbf{b} + \mathbf{a} \cdot \mathbf{c}\\
 			\end{aligned}$$
 		</p>
 		<p>A sample:</p>
@@ -277,7 +277,7 @@
 					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
 
 					let mathExpression = "\\begin{aligned}"
-						+ "c &= a \\cdot b\\\\"
+						+ "c &= \\mathbf{a} \\cdot \\mathbf{b}\\\\"
 						+ ((me.showRule() == "sumofprod") ? ("&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\") : "")
 						+ ((me.showRule() == "cosprod") ? ("&= " + aLengthFormatted + " * " + bLengthFormatted + " * cos(" + angleFormatted + ") \\\\") : "")
 						+ "&= " + dotProductFormatted
@@ -459,10 +459,10 @@
 					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, b));
 
 					let mathExpression = "\\begin{aligned}"
-						+ "c &= a \\cdot b\\\\"
+						+ "c &= \\mathbf{a} \\cdot \\mathbf{b}\\\\"
 						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a2Formatted + " * " + b2Formatted + "\\\\"
 						+ "&= " + b1Formatted + " * " + a1Formatted + " + " + b2Formatted + " * " + a2Formatted + "\\\\"
-						+ "&= b \\cdot a\\\\"
+						+ "&= \\mathbf{b} \\cdot \\mathbf{a}\\\\"
 						+ "&= " + dotProductFormatted
 						+ "\\end{aligned}";
 
@@ -594,7 +594,7 @@
 					let dotProductFormatted = d3.format(".2f")(Vector2Dim.dotProduct(a, vsum));
 
 					let mathExpression = "\\begin{aligned}"
-						+ "d &= a \\cdot (b+c)\\\\"
+						+ "d &= \\mathbf{a} \\cdot (\\mathbf{b}+\\mathbf{c})\\\\"
 						+ "&= " + a1Formatted + " * (" + b1Formatted + " + " + c1Formatted + ") + " + a2Formatted + " * (" + b2Formatted + " + " + c2Formatted +") \\\\"
 						+ "&= " + a1Formatted + " * " + b1Formatted + " + " + a1Formatted + " * " + c1Formatted + " + " + a2Formatted + " * " + b2Formatted + " + " + a2Formatted + " * " + c2Formatted + "\\\\"
 						+ "&= " + dotProductFormatted
