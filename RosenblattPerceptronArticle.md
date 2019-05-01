@@ -1,3 +1,4 @@
+
 # The Math behind the Perceptron: Part 1 - The Rosenblatt Perceptron
 
 ## Introduction
@@ -96,7 +97,7 @@ Ok, I may have gone a little too fast there by introducing vectors and not expla
 
 To make things more visual (which can help but isn't always a good thing), I will start with a graphical representation of a 2-dimensional vector:
 
-![A vector in 2-dim space](url_naar_afbeelding)
+![A vector in 2-dim space](Vector.PNG)
 
 The above point in the coordinate space $\mathbb{R}^2$ can be represented by a vector going from the origin to that point:
 $$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$$
@@ -115,7 +116,7 @@ Extended to n-dimensional space, we talk about the Euclidean norm:
 $$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{a_1^2 + a_2^2 + ... + a_i^2 + ... + a_n^2} = \sqrt{\sum_{i=1}^{n} a_i^2}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Vector Magnitude interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_magnitude)
 
 #### The Direction of a Vector
 The direction of a 2-dimensional vector is defined by its angle to the positive horizontal axis:
@@ -125,9 +126,6 @@ $$(\cos(\alpha_1), \cos(\alpha_2), ..., \cos(\alpha_i), ..., \cos(\alpha_n))$$
 
 We know from geometry that the cosine of an angle is defined by:
 $$\cos(\alpha) = \frac{\text{adjacent}}{\text{hypothenuse}}$$
-
-Try it yourself:
-==interactieve versie van deze regel==
 
 So, the definition of the direction cosine becomes
 $$(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, \frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_n}{\lvert\lvert{\mathbf{a}}\lvert\lvert})$$
@@ -147,7 +145,7 @@ $$
 This vector with length 1 is also called the *unit vector*.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Vector Direction interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_direction)
 
 ### Operations with Vectors 
 #### Sum and difference of two Vectors
@@ -166,7 +164,7 @@ $$\begin{aligned}
 \end{aligned}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Sum of vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_sum)
 
 The difference of two vectors is the vector resulting from the differences of the components of the original vectors:
 
@@ -176,7 +174,7 @@ $$\begin{aligned}
 \end{aligned}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Difference of vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_diff)
 
 
 #### Scalar multiplication 
@@ -194,7 +192,7 @@ $$\begin{aligned}
 \end{aligned}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Scalar Multiplication for vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_scalarmult)
 
 #### Dot product 
 
@@ -228,25 +226,22 @@ c &= a \cdot b\\
 \end{aligned}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Dot Product interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct)
 
 The dot product is **commutative**:
 $$\mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot \mathbf{a}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Dot Product commutativity interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct_commutative)
 
 The dot product is **distributive**:
 $$\mathbf{a} \cdot (\mathbf{b}+\mathbf{c}) = \mathbf{a} \cdot \mathbf{b} + \mathbf{a} \cdot \mathbf{c}$$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Dot Product distributivity interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct_distributive)
 
 The **scalar multiplication** property:
 $$(\lambda\mathbf{a}) \cdot \mathbf{b} = \mathbf{a} \cdot (\lambda\mathbf{b}) = \lambda(\mathbf{a} \cdot \mathbf{b})$$
-
-Try it yourself:
-==interactieve versie van deze regel==
 
 Okay, now you know what a Vector is. Let us continue our journey.
 
@@ -308,7 +303,7 @@ Remember that when we discussed the dot product, we came to the conclusion that 
 So, vector $\mathbf{l}$ determines the direction of the line: the vector is perpendicular to the direction of the line.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[A line through the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_throughorigin)
 
 #### A line at some distance from the origin
 
@@ -352,7 +347,7 @@ And as seen above when discussing the dot product, this equals the magnitude of 
 This equals all vectors to points on the line perpendicular to $\mathbf{m}$ and at a distance $d/{\lvert\lvert{\mathbf{m}}\lvert\lvert}$ from the origin.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[A line at some distance from the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_atdistancefromorigin)
 
 ### Extending to 3-dimensional space: equation of a plane
 
@@ -495,7 +490,7 @@ with $\vec{OA}$ being the vector going from the origin $O$ to point $A$ and $\ve
 This is simply the adition of the vector $\mathbf{a}$ with a part of the vector going from point $A$ to point $B$
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Line segment interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_linesegment)
 
 We know from the section on vector math above that the vector going from  $A$ to $B$ is equal to $\mathbf{b}-\mathbf{a}$ and thus we can write:
 $$\begin{aligned}
@@ -526,7 +521,9 @@ $$\begin{aligned}
 Since we now that $0 < {\lambda} < 1$ and $\mathbf{w} \cdot \mathbf{x} > d$ and also $\mathbf{w} \cdot \mathbf{y} > d$ then the above inequality must also hold true. And thus we have proven that the half space is indeed convex.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Convex interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_convex)
+[Not Convex interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_concave)
+
 
 ## As I was saying: Linearily seperable ...
 
@@ -542,7 +539,7 @@ $$
 
 We can now see how this formula divides our feature-space in two *convex* half spaces. Mind the word *convex* here: it does not just divide the feature space in two subspaces, but in two convex subspaces.
 
-This means that we cannot seperate feature points into classes that are not convex. Visually in two-dimensional space, we cannot seperate featues like this:
+This means that we cannot seperate feature points into classes that are not convex. Visually in two-dimensional space, we cannot seperate features like this:
 ==hier prentje van een niet lineair verdeelbare punten==
 
 If you've been reading about the perceptron allready, you may have read about the fact that it cannot solve the XOR problem: it cannot seperate the inputs according to the XOR function. That is exactly because of the above: the outcome is not convex, hence is not linearily seperable.
@@ -805,16 +802,5 @@ An animated gif of the perceptron learning rule: [Perceptron training without bi
 This YouTube video presents a very understandable proof: [Lec-16 Perceptron Convergence Theorem](https://www.youtube.com/watch?v=tRG-OnnQ9g4)
 
 A written version of the same proof can be found in this pdf: [CHAPTER 1 Rosenblatt’s Perceptron](https://www.pearsonhighered.com/assets/samplechapter/0/1/3/1/0131471392.pdf) By the way, there is much more inside that pdf then just the proof.
-
-== dit nog ergens te behandelen ==
-
-
-linear binary classifier. They both compute a linear (actually affine) function of the input using a set of adaptive weight ww and a bias > wat is een “affine function”
-
-[http://mathworld.wolfram.com/AffineFunction.html](http://mathworld.wolfram.com/AffineFunction.html)
-
-[https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function](https://math.stackexchange.com/questions/275310/what-is-the-difference-between-linear-and-affine-function)
-
-
 
 
