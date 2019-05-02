@@ -540,10 +540,12 @@ $$
 We can now see how this formula divides our feature-space in two *convex* half spaces. Mind the word *convex* here: it does not just divide the feature space in two subspaces, but in two convex subspaces.
 
 This means that we cannot seperate feature points into classes that are not convex. Visually in two-dimensional space, we cannot seperate features like this:
-==hier prentje van een niet lineair verdeelbare punten==
+
+![Not linariliy seperable points](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_NotSeperable.PNG)
 
 If you've been reading about the perceptron allready, you may have read about the fact that it cannot solve the XOR problem: it cannot seperate the inputs according to the XOR function. That is exactly because of the above: the outcome is not convex, hence is not linearily seperable.
-==hier prentje van de xor functie==
+
+![XOR function](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_XORFunction.PNG)
 
 If you search the internet for the formula of the Rosenblatt perceptron, you will also find some in which the factor $b$ is no longer present. What happened to it? Some re-arrangement of the components of the addition make it end up in the dot product:
 
