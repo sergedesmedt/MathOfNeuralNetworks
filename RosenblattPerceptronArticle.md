@@ -9,7 +9,7 @@ And surely it is possible to use the perceptron without really understanding the
 
 I also got inspired for this article by a series of articles on [Support Vector Machines](https://www.svm-tutorial.com/svm-tutorial/math-svm-tutorial/), explaining the basic mathematical concepts involved, and slowly building up to the more complex mathematics involved. So that is my intention with this article and the accompaning code: show you the math envolved in the preceptron. And, if time permits, I will write articles all the way up to convolutional neural networks.
 
-Of course, when explaining the math, the question is: when do you stop explaining? There is some math involved that is rather basic, like for example *what is a vector?*, *what is a cosine?*, etc... I will assume some basic knowledge of mathematics like you have some idea a what *a vector* is, you know the basics of geometry, etc... My assumptions will be arbitraty, so if you think i'm going too fast in some explanations just leave a comment.
+Of course, when explaining the math, the question is: where do you start and when do you stop explaining? There is some math involved that is rather basic, like for example *what is a vector?*, *what is a cosine?*, etc... I will assume some basic knowledge of mathematics like you have some idea of what *a vector* is, you know the basics of geometry, etc... My assumptions will be arbitraty, so if you think i'm going too fast in some explanations just leave a comment and I will try to expand on the subject.
 
 So, let us get started.
 
@@ -97,7 +97,7 @@ Ok, I may have gone a little too fast there by introducing vectors and not expla
 
 To make things more visual (which can help but isn't always a good thing), I will start with a graphical representation of a 2-dimensional vector:
 
-![A vector in 2-dim space](Vector.PNG)
+![A vector in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/Vector.PNG)
 
 The above point in the coordinate space $\mathbb{R}^2$ can be represented by a vector going from the origin to that point:
 $$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$$
@@ -582,7 +582,7 @@ So we have a function which classifies our features into two classes by multiply
 Further in the article I will leave the accent of the vectors and just write $\mathbf{w}$ and $\mathbf{x}$ which have the $w_0$ and $x_0$ included.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Perceptron math interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/PerceptronMath.html#learn_perceptron)
 
 This *assigning them a label "1" and "0" otherwise* is the definition of the Heaviside Step Function.
 
@@ -647,9 +647,6 @@ $$\mathbf{w}_{i+1} = \mathbf{w}_{i} - \mathbf{x}$$
 
 Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.
 
-Try it yourself:
-==interactieve versie van deze regel==
-
 #### Case 2: Desired result is 1 but 0 was predicted
 
 The error $e$ is 1, so we need to add the new feature vector to the current weight vector to get the new weight vector:
@@ -658,7 +655,7 @@ $$\mathbf{w}_{i+1} = \mathbf{w}_{i} + \mathbf{x}$$
 The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.
 
 Try it yourself:
-==interactieve versie van deze regel==
+[Perceptron Learning interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/PerceptronLearningMath.html#learn_perceptron_learningrule_animation)
 
 ## Convergence of the learning rule.
 
@@ -717,7 +714,7 @@ The calculation we make with the weight vector $W$ and the feature vector $X$ is
 The offset $b$ with which we compare the result of the integration function is called *the bias*.
   
 **Activation function (transfer function)**
-The output we receive from the perceptron based on the calculation of the integration function is determined by the *activation function*. The activation function for the Rosenblatt percpetron is the Heaviside step function.
+The output we receive from the perceptron based on the calculation of the integration function is determined by the *activation function*. The activation function for the Rosenblatt perceptron is the Heaviside step function.
     
 **Supervised learning**
 Supervised learning is a type of learning in which we feed samples into our algorithm and tell it the result we expect. By doing this the neural network learns how to classify the examples. After giving it enough samples we expect to be able to give it new data which it will automatically classify correctly.
