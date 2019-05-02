@@ -1,5 +1,5 @@
 
-# The Math behind the Perceptron: Part 1 - The Rosenblatt Perceptron
+# The Math behind Neural Networks: Part 1 - The Rosenblatt Perceptron
 
 ## Introduction
 
@@ -703,7 +703,7 @@ A neural network is a group of nodes which are connected to each other. Thus, th
 
 *Single Layer*
 In a neural network, we can define multiple layers simply by using the output of preceptrons as the input for other perceptrons. If we make a diagram of this we can view the perceptrons as being organised in layers in which the output of a layer serves as the input for the next layer. 
-==afbeelding van een neuraal netwerk==
+![Layers in Neural Network](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/NeuralNetwork.PNG)
 In this article we also have a *single layer*.
 
 *Feed Forward*
@@ -734,12 +734,11 @@ The opposite of this is *batch learning* in which we only update the weight vect
 
 The main problem of the Rosenblatt preceptron is its learning algorithm. Allthough it works, it only works for linear seperable data. If the data we want to classify is not linearily seperable, then we do not really have any idea on when to stop the learning and neither do we know if the found hyperplane somehow minimizes the wrongly classified data.
 
-Let's say we have some data which is not linearily seperable:
-==afbeelding van niet linear scheidbare data==
+Also, let's say we have some data which is linearily seperable. There are several lines which can seperate this data:
+![Candidate lines](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_SeperableCandidateSolutions.PNG)
 
-We would like to find the hyperplane which minimizes the number of wrongly classified samples. That is, we would like to find a line similar to the following:
-
-==afbeelding van de oplossing die we graag zouden vinden==
+We would like to find the hyperplane which fits the samples best. That is, we would like to find a line similar to the following:
+![Best line](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_SeperableBestSolution.PNG)
 
 There are of course mathematical tools which allow us to find this hyperplane. They basically all define some kind of error function and then try to minimize this error. The error function is typically defined as a function of the desired output and the effective output just like we did above. The minimization is done by calculating the derivative of this error function. And herein is the problem for the Rosenblatt preceptron. Because the output is defined by the Heaviside Step function and this function does not have a derivative, because it is not continuous, we cannot have a matematically rigourous learning method.
 
