@@ -658,6 +658,7 @@ Why does this work? First, let us analyse the error function:
 <div align="center">
 <img src="https://latex.codecogs.com/gif.latex?e&space;=&space;d-o" title="e = d-o" />
 </div>
+
 As stated before, in this ![](https://latex.codecogs.com/gif.latex?d) and ![](https://latex.codecogs.com/gif.latex?o) are resp. the desired output and the effective output of the perceptron. We know from the definition of the preceptron that its output can take two values: either 1 or 0. Thus the error function can take following values:
 
 
