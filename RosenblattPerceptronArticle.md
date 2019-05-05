@@ -343,8 +343,8 @@ $$\begin{aligned}
 &= {\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
 \end{aligned}$$
 
-And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $\mathbf{p}$ onto the unit vector in the direction of $\mathbf{m}$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $\mathbf{m}$ equals $d/{\lvert\lvert{\mathbf{m}}\lvert\lvert}$
-This equals all vectors to points on the line perpendicular to $\mathbf{m}$ and at a distance $d/{\lvert\lvert{\mathbf{m}}\lvert\lvert}$ from the origin.
+And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $\mathbf{p}$ onto the unit vector in the direction of $\mathbf{l}$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $\mathbf{l}$ equals $d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}$
+This equals all vectors to points on the line perpendicular to $\mathbf{l}$ and at a distance $d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}$ from the origin.
 
 Try it yourself:
 [A line at some distance from the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_atdistancefromorigin)

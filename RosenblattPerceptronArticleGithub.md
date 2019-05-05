@@ -61,7 +61,7 @@ Remember the introduction. In it we said the perceptron takes some input value !
 
 This is the definition of a *Linear Combination*: it is the sum of some terms multiplied by constant values. In our case the terms are the features and the constants are the weights.
 
-If we substitute the subscript by a variable![](https://latex.codecogs.com/gif.latex?i), then we can write the sum as
+If we substitute the subscript by a variable ![](https://latex.codecogs.com/gif.latex?i), then we can write the sum as
 
 <div align="center">
 <img src="https://latex.codecogs.com/gif.latex?\sum_{i=1}^{n}&space;w_ix_i" title="\sum_{i=1}^{n} w_ix_i" />
@@ -92,7 +92,9 @@ Ok, I may have gone a little too fast there by introducing vectors and not expla
 
 To make things more visual (which can help but isn't always a good thing), I will start with a graphical representation of a 2-dimensional vector:
 
+<div align"center">
 ![A vector in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/Vector.PNG)
+</div>
 
 The above point in the coordinate space ![](https://latex.codecogs.com/gif.latex?%5Cmathbb%7BR%7D%5E2) can be represented by a vector going from the origin to that point:
 <div align="center">
@@ -354,8 +356,8 @@ We can "normalize" this equation by dividing it through the length of ![](https:
 </div>
 
 
-And as seen above when discussing the dot product, this equals the magnitude of the projection of vector ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bp%7D) onto the unit vector in the direction of ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bm%7D). So, the above equation gives all vectors whose projection on the unit vector in the direction of ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bm%7D) equals ![](https://latex.codecogs.com/gif.latex?d/%7B%5Clvert%5Clvert%7B%5Cmathbf%7Bm%7D%7D%5Clvert%5Clvert%7D)
-This equals all vectors to points on the line perpendicular to ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bm%7D) and at a distance ![](https://latex.codecogs.com/gif.latex?d/%7B%5Clvert%5Clvert%7B%5Cmathbf%7Bm%7D%7D%5Clvert%5Clvert%7D) from the origin.
+And as seen above when discussing the dot product, this equals the magnitude of the projection of vector ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bp%7D) onto the unit vector in the direction of ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bl%7D). So, the above equation gives all vectors whose projection on the unit vector in the direction of ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bl%7D) equals ![](https://latex.codecogs.com/gif.latex?d/%7B%5Clvert%5Clvert%7B%5Cmathbf%7Bl%7D%7D%5Clvert%5Clvert%7D)
+This equals all vectors to points on the line perpendicular to ![](https://latex.codecogs.com/gif.latex?%5Cmathbf%7Bl%7D) and at a distance ![](https://latex.codecogs.com/gif.latex?d/%7B%5Clvert%5Clvert%7B%5Cmathbf%7Bl%7D%7D%5Clvert%5Clvert%7D) from the origin.
 
 Try it yourself:
 [A line at some distance from the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_atdistancefromorigin)
