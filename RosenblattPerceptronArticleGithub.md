@@ -92,9 +92,7 @@ Ok, I may have gone a little too fast there by introducing vectors and not expla
 
 To make things more visual (which can help but isn't always a good thing), I will start with a graphical representation of a 2-dimensional vector:
 
-<div align"center">
 ![A vector in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/Vector.PNG)
-</div>
 
 The above point in the coordinate space ![](https://latex.codecogs.com/gif.latex?%5Cmathbb%7BR%7D%5E2) can be represented by a vector going from the origin to that point:
 <div align="center">
@@ -583,7 +581,7 @@ If you've been reading about the perceptron allready, you may have read about th
 
 ![XOR function](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_XORFunction.PNG)
 
-If you search the internet for the formula of the Rosenblatt perceptron, you will also find some in which the factor $b$ is no longer present. What happened to it? Some re-arrangement of the components of the addition make it end up in the dot product:
+If you search the internet for the formula of the Rosenblatt perceptron, you will also find some in which the factor ![](https://latex.codecogs.com/gif.latex?b) is no longer present. What happened to it? Some re-arrangement of the components of the addition make it end up in the dot product:
 
 <div align="center">
 <img src="https://latex.codecogs.com/gif.latex?\begin{aligned}&space;\mathbf{w}&space;\cdot&space;\mathbf{x}&space;&>&space;b\\&space;w_1x_1&space;&plus;&space;w_2x_2&space;&plus;&space;w_ix_i&space;&plus;&space;...&space;&plus;&space;w_nx_n&space;&>&space;b\\&space;w_1x_1&space;&plus;&space;w_2x_2&space;&plus;&space;w_ix_i&space;&plus;&space;...&space;&plus;&space;w_nx_n&space;-&space;b&space;&>&space;0\\&space;w_1x_1&space;&plus;&space;w_2x_2&space;&plus;&space;w_ix_i&space;&plus;&space;...&space;&plus;&space;w_nx_n&space;&plus;&space;(-b)1&space;&>&space;0\\&space;\end{aligned}" title="\begin{aligned} \mathbf{w} \cdot \mathbf{x} &> b\\ w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &> b\\ w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n - b &> 0\\ w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (-b)1 &> 0\\ \end{aligned}" />
