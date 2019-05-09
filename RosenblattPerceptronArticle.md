@@ -115,6 +115,8 @@ $$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{(a_1)^2 + (x_2)^2}$$
 Extended to n-dimensional space, we talk about the Euclidean norm:
 $$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{a_1^2 + a_2^2 + ... + a_i^2 + ... + a_n^2} = \sqrt{\sum_{i=1}^{n} a_i^2}$$
 
+![Vector magnitude in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorMagnitude.PNG)
+
 Try it yourself:
 [Vector Magnitude interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_magnitude)
 
@@ -144,6 +146,8 @@ $$
 
 This vector with length 1 is also called the *unit vector*.
 
+![Vector direction in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorDirection.PNG)
+
 Try it yourself:
 [Vector Direction interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_direction)
 
@@ -163,6 +167,8 @@ $$\begin{aligned}
   &= (a_1 + b_1, a_2 + b_2, ..., a_n + b_n)
 \end{aligned}$$
 
+![Vector sum in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorSum.PNG)
+
 Try it yourself:
 [Sum of vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_sum)
 
@@ -172,6 +178,8 @@ $$\begin{aligned}
 \mathbf{c} &= \mathbf{a} - \mathbf{b}\\
   &= (a_1 - b_1, a_2 - b_2, ..., a_n - b_n)
 \end{aligned}$$
+
+![Vector difference in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorDifference.PNG)
 
 Try it yourself:
 [Difference of vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_diff)
@@ -186,10 +194,13 @@ $$\begin{aligned}
 \end{aligned}$$
 
 A vector multiplied by a scalar is the vector resulting of the multiplication of each component of the original vector by the scalar:
+
 $$\begin{aligned}
 \mathbf{c} &= \lambda \mathbf{a}\\
   &= (\lambda a_1, \lambda a_2, ..., \lambda a_n)
 \end{aligned}$$
+
+![Vector scalar multiplication in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorScalarMultiplication.PNG)
 
 Try it yourself:
 [Scalar Multiplication for vectors interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_scalarmult)
@@ -224,6 +235,8 @@ c &= a \cdot b\\
 &= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
 &= {\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
 \end{aligned}$$
+
+![Dot product in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/DotProduct.PNG)
 
 Try it yourself:
 [Dot Product interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct)
@@ -302,6 +315,8 @@ Remember that when we discussed the dot product, we came to the conclusion that 
 
 So, vector $\mathbf{l}$ determines the direction of the line: the vector is perpendicular to the direction of the line.
 
+![A line through the origin](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineThroughOrigin.PNG)
+
 Try it yourself:
 [A line through the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_throughorigin)
 
@@ -345,6 +360,8 @@ $$\begin{aligned}
 
 And as seen above when discussing the dot product, this equals the magnitude of the projection of vector $\mathbf{p}$ onto the unit vector in the direction of $\mathbf{l}$. So, the above equation gives all vectors whose projection on the unit vector in the direction of $\mathbf{l}$ equals $d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}$
 This equals all vectors to points on the line perpendicular to $\mathbf{l}$ and at a distance $d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}$ from the origin.
+
+![A line at some distance from the origin](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineAtDistanceFromOrigin.PNG)
 
 Try it yourself:
 [A line at some distance from the origin interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_atdistancefromorigin)
@@ -489,6 +506,8 @@ $$r = \vec{OA} + \lambda \vec{AB}$$
 with $\vec{OA}$ being the vector going from the origin $O$ to point $A$ and $\vec{AB}$ the vector going from point $A$ to point $B$. $\lambda$ is in the interval $(0, 1)$
 This is simply the adition of the vector $\mathbf{a}$ with a part of the vector going from point $A$ to point $B$
 
+![A line segment in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineSegment.PNG)
+
 Try it yourself:
 [Line segment interactive](https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_linesegment)
 
@@ -510,7 +529,11 @@ $$\begin{aligned}
 
 If the half space is convex, then each point resulting from the equation
 $$(1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}$$
-must belong to the half space, which is equal to saying that every point on the line segment between the endpoints $X$ and $Y$ of the vectors must belong to the half space. Substituation in the equation of the half space gives:
+must belong to the half space, which is equal to saying that every point on the line segment between the endpoints $X$ and $Y$ of the vectors must belong to the half space. 
+
+![Convexity in 2-dim space](https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/Convex.PNG)
+
+Substituation in the equation of the half space gives:
 $$\mathbf{w} \cdot ((1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}) > d$$
 Then, by the distributive and scalar multiplication properties of the dot product we can re-arrange to:
 $$\begin{aligned}

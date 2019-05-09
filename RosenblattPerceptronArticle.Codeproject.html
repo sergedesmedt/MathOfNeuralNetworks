@@ -1,0 +1,1171 @@
+<h2>Content</h2>
+
+<ul>
+	<li>
+		<a href="#introduction">Introduction</a>
+
+		<ul>
+			<li><a href="#disclaimer">Disclaimer</a></li>
+			<li><a href="#setting-some-bounds">Setting some bounds</a></li>
+		</ul>
+	</li>
+	<li><a href="#the-basic-math-formula-for-the-rosenblatt-perceptron">The basic math formula for the Rosenblatt Perceptron</a></li>
+	<li><a href="#take-a-linear-combination-of-input-values">Take a linear combination of input values</a></li>
+	<li>
+		<a href="#oooh-hold-your-horses-you-say-what-a-vector-">Oooh, hold your horses! You say what? A &lsquo;Vector&rsquo; ?</a>
+		<ul>
+			<li>
+				<a href="#definition-of-a-vector">Definition of a Vector</a>
+				<ul>
+					<li><a href="#the-magnitude-of-a-vector">The Magnitude of a Vector</a></li>
+					<li><a href="#the-direction-of-a-vector">The Direction of a Vector</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#operations-with-vectors">Operations with Vectors</a>
+				<ul>
+					<li><a href="#sum-and-difference-of-two-vectors">Sum and difference of two Vectors</a></li>
+					<li><a href="#scalar-multiplication">Scalar multiplication</a></li>
+					<li><a href="#dot-product">Dot product</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li><a href="#linearely-seperable-features">Linearely seperable features</a></li>
+	<li>
+		<a href="#a-hyper-what">A Hyper-what?</a>
+		<ul>
+			<li>
+				<a href="#hyperplanes-in-one-dimension-the-equation-of-a-line">Hyperplanes in one dimension: the equation of a line</a>
+				<ul>
+					<li><a href="#a-line-through-the-origin">A line through the origin</a></li>
+					<li><a href="#a-line-at-some-distance-from-the-origin">A line at some distance from the origin</a></li>
+				</ul>
+			</li>
+			<li><a href="#extending-to-3-dimensional-space-equation-of-a-plane">Extending to 3-dimensional space: equation of a plane</a></li>
+			<li><a href="#extending-to-n-dimensional-space-equation-of-a-hyper-plane">Extending to n-dimensional space: equation of a hyper-plane</a></li>
+		</ul>
+	</li>
+	<li>
+		<a href="#linear-sepera-what-ility-">Linear Sepera-what-ility ?</a>
+		<ul>
+			<li><a href="#linear-separability-and-half-spaces">Linear separability and half-spaces</a></li>
+		</ul>
+	</li>
+	<li><a href="#as-i-was-saying-linearily-seperable-...">As I was saying: Linearily seperable &hellip;</a></li>
+	<li><a href="#the-heaviside-step-function">The Heaviside Step Function</a></li>
+	<li>
+		<a href="#learning-the-weights">Learning the weights</a>
+		<ul>
+			<li>
+				<a href="#the-perceptron-learning-rule">The perceptron learning rule</a>
+				<ul>
+					<li><a href="#case-1-desired-result-is-0-but-1-was-predicted">Case 1: Desired result is 0 but 1 was predicted</a></li>
+					<li><a href="#case-2-desired-result-is-1-but-0-was-predicted">Case 2: Desired result is 1 but 0 was predicted</a></li>
+				</ul>
+			</li>
+		</ul>
+	</li>
+	<li><a href="#convergence-of-the-learning-rule.">Convergence of the learning rule.</a></li>
+	<li>
+		<a href="#wrap-up">Wrap up</a>
+		<ul>
+			<li><a href="#basic-formula-of-the-rosenblatt-perceptron">Basic formula of the Rosenblatt Perceptron</a></li>
+			<li><a href="#behaviour-of-the-rosenblat-perceptron">Behaviour of the Rosenblat Perceptron</a></li>
+			<li><a href="#formalising-some-things-a-few-definitions">Formalising some things: a few definitions</a></li>
+		</ul>
+	</li>
+	<li><a href="#what-is-wrong-with-the-rosenblatt-perceptron">What is wrong with the Rosenblatt perceptron?</a></li>
+	<li>
+		<a href="#references">References</a>
+		<ul>
+			<li><a href="#javascript-libraries-used-in-the-try-it-yourself-pages">Javascript libraries used in the <em>Try it yourself</em> pages</a></li>
+			<li><a href="#vector-math">Vector Math</a></li>
+			<li><a href="#hyperplanes-and-linear-seperability">Hyperplanes and Linear Seperability</a></li>
+			<li><a href="#convexity">Convexity</a></li>
+			<li><a href="#perceptron">Perceptron</a></li>
+			<li><a href="#perceptron-learning">Perceptron Learning</a></li>
+			<li><a href="#convergence-of-the-learning-algorithm">Convergence of the learning algorithm</a></li>
+		</ul>
+	</li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>A lot of articles introduce the perceptron showing the basic mathematical formulas that define it, but without offering much of an explanation on what exactly makes it work.</p>
+
+<p>And surely it is possible to use the perceptron without really understanding the basic math involved with it, but is it not also fun to see how all this math you learned in school can help you understand the perceptron, and in extension, neural networks?</p>
+
+<p>I also got inspired for this article by a series of articles on <a href="https://www.svm-tutorial.com/svm-tutorial/math-svm-tutorial/">Support Vector Machines</a>, explaining the basic mathematical concepts involved, and slowly building up to the more complex mathematics involved. So that is my intention with this article and the accompaning code: show you the math envolved in the preceptron. And, if time permits, I will write articles all the way up to convolutional neural networks.</p>
+
+<p>Of course, when explaining the math, the question is: where do you start and when do you stop explaining? There is some math involved that is rather basic, like for example <em>what is a vector?</em>, <em>what is a cosine?</em>, etc&hellip; I will assume some basic knowledge of mathematics like you have some idea of what <em>a vector</em> is, you know the basics of geometry, etc&hellip; My assumptions will be arbitraty, so if you think i&rsquo;m going too fast in some explanations just leave a comment and I will try to expand on the subject.</p>
+
+<p>So, let us get started.</p>
+
+<h3 id="disclaimer">Disclaimer</h3>
+
+<p>This article is about the math involved in the perceptron and NOT about the code used and written to illustrate these mathematical concepts. Although it is not my intention to write such an article, never say never&hellip;</p>
+
+<h3 id="setting-some-bounds">Setting some bounds</h3>
+
+<p>A perceptron basically takes some input values, called &ldquo;features&rdquo; and represented by the values <span class="math">\(x_1, x_2, ... x_n\)</span> in the following formula, multiplies them by some factors called &ldquo;weights&rdquo;, represented by <span class="math">\(w_1, w_2, ... w_n\)</span>, takes the sum of these multiplications and depending on the value of this sum outputs another value <span class="math">\(o\)</span>:</p>
+
+<div class="math">$o = f(w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n)$</div>
+
+<p>There are a few types of perceptrons, differing in the way the sum results in the output, thus the function <span class="math">\(f()\)</span> in the above formula.</p>
+
+<p>In this article we will build on the Rosenblatt Perceptron. It was one of the first perceptrons, if not the first. During this article I will simply be using the name &ldquo;Perceptron&rdquo; when referring to the Rosenblatt Perceptron</p>
+
+<p>We will investigate the math envolved and discuss its limitations, thereby setting the ground for the future articles.</p>
+
+<h2 id="the-basic-math-formula-for-the-rosenblatt-perceptron">The basic math formula for the Rosenblatt Perceptron</h2>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>So, what the perceptron basically does is take some <em>linear combination</em> of <em>input values</em> or <em>features</em>, compare it to a <em>threshold</em> value <span class="math">\(b\)</span>, and <em>return 1 if the threshold is exceeded and zero if not</em>.</p>
+
+<p>The feature vector is a group of characteristics describing the objects we want to classify.</p>
+
+<p>In other words, we classify our objects into two classes: a set of objects with characteristics (and thus a feature vector) resulting in in output of 1, and a set of objects with characteristics resulting in an output of 0.</p>
+
+<p>If you search the internet on information about the perceptron you will find alternative definitions which define the formula as follows:</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	+1 & \text{if } w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b\\
+	-1 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>We will see further this does not affect the workings of the perceptron</p>
+
+<p>Lets digg a little deeper:</p>
+
+<h2 id="take-a-linear-combination-of-input-values">Take a linear combination of input values</h2>
+
+<p>Remember the introduction. In it we said the perceptron takes some input value <span class="math">\([x_1, x_2, ..., x_i, ..., x_n]\)</span>, also called features, some weights <span class="math">\([w_1, w_2, ..., w_i, ..., w_n]\)</span>, multiplies them with each other and takes the sum of these multiplications:</p>
+
+<div class="math">$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n$</div>
+
+<p>This is the definition of a <em>Linear Combination</em>: it is the sum of some terms multiplied by constant values. In our case the terms are the features and the constants are the weights.</p>
+
+<p>If we substitute the subscript by a variable <span class="math">\(i\)</span>, then we can write the sum as</p>
+
+<div class="math">$\sum_{i=1}^{n} w_ix_i$</div>
+
+
+<p>This is called the <a href="https://en.wikipedia.org/wiki/Summation#Capital-sigma_notation">Capital-sigma notation</a>, the <span class="math">\(\sum\)</span> represents the summation, the subscript <span class="math">\(_{i=1}\)</span> and the superscript <span class="math">\(^{n}\)</span> represent the range over which we take the sum and finally <span class="math">\(w_ix_i\)</span> represents the &ldquo;things&rdquo; we take the sum of.</p>
+
+<p>Also, we can see all <span class="math">\(x_i\)</span> and all <span class="math">\(w_i\)</span> as so-called <em>vectors</em>:</p>
+
+<div class="math">
+	$
+	\begin{aligned}
+	\mathbf{x}&=[x_1, x_2, ..., x_i, ..., x_n]\\
+	\mathbf{w}&=[w_1, w_2, ..., w_i, ..., w_n]
+	\end{aligned}
+	$
+</div>
+
+<p>
+	In this, <span class="math">\(n\)</span> represents the dimension of the vector: it is the number of scalar elements in the vector. For our discussion, it is the number of characteristics used to describe the objects we want to classify.<br />
+	In this case, the summation is the so-called <em>dot-product</em> of the vectors:
+</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x}$</div>
+
+<blockquote>
+	<p>About the notation: we write simple scalars (thus simple numbers) as small letters, and vectors as bold letters. So in the above <span class="math">\(x\)</span> and <span class="math">\(w\)</span> are vectors and <span class="math">\(x_i\)</span> and <span class="math">\(w_i\)</span> are scalars: they are simple numbers representing the components of the vector.</p>
+</blockquote>
+
+<h2 id="oooh-hold-your-horses-you-say-what-a-vector-">Oooh, hold your horses! You say what? A &lsquo;Vector&rsquo; ?</h2>
+
+<p>Ok, I may have gone a little too fast there by introducing vectors and not explaining them.</p>
+
+<h3 id="definition-of-a-vector">Definition of a Vector</h3>
+
+<p>To make things more visual (which can help but isn&rsquo;t always a good thing), I will start with a graphical representation of a 2-dimensional vector:</p>
+
+<p><img alt="A vector in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/Vector.PNG" /></p>
+
+<p>The above point in the coordinate space <span class="math">\(\mathbb{R}^2\)</span> can be represented by a vector going from the origin to that point:</p>
+
+<div class="math">$\mathbf{a} = (a_1, a_2), \text{ in }\mathbb{R}^2$</div>
+
+<p>We can further extend this to 3-dimensional coordinate space and generalize it to n-dimensional space:</p>
+
+<div class="math">$\mathbf{a} = (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n$</div>
+
+<p>In text (from Wikipedia):</p>
+
+<blockquote>
+	<p>A (Euclidean) Vector is a geometric object that has a magnitude and a direction</p>
+</blockquote>
+
+<h4 id="the-magnitude-of-a-vector">The Magnitude of a Vector</h4>
+
+<p>
+	The magnitude of a vector, also called its norm, is defined by the root of the sum of the squares of it&rsquo;s components and is written as <span class="math">\(\lvert\lvert{\mathbf{a}}\lvert\lvert\)</span><br />
+	In 2-dimensions, the definition comes from Pythagoras&rsquo; Theorem:
+</p>
+
+<div class="math">$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{(a_1)^2 + (x_2)^2}$</div>
+
+<p>Extended to n-dimensional space, we talk about the Euclidean norm:</p>
+
+<div class="math">$\lvert\lvert{\mathbf{a}}\lvert\lvert = \sqrt{a_1^2 + a_2^2 + ... + a_i^2 + ... + a_n^2} = \sqrt{\sum_{i=1}^{n} a_i^2}$</div>
+
+<p><img alt="Vector magnitude in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorMagnitude.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_magnitude">Vector Magnitude interactive</a>
+</p>
+
+<h4 id="the-direction-of-a-vector">The Direction of a Vector</h4>
+
+<p>The direction of a 2-dimensional vector is defined by its angle to the positive horizontal axis:</p>
+
+<div class="math">$\theta =\tan^{-1}(\frac{a_2}{a_1})$</div>
+
+<p>This works well in 2 dimensions but it doesn&#39;t scale to multiple dimensions: for example in 3 dimensions, in what plane do we measure the angle? Which is why the direction cosines where invented: this is a new vector taking the cosine of the original vector to each axis of the space.</p>
+
+<div class="math">$(\cos(\alpha_1), \cos(\alpha_2), ..., \cos(\alpha_i), ..., \cos(\alpha_n))$</div>
+
+<p>We know from geometry that the cosine of an angle is defined by:</p>
+
+<div class="math">$\cos(\alpha) = \frac{\text{adjacent}}{\text{hypothenuse}}$</div>
+
+<p>So, the definition of the direction cosine becomes</p>
+
+<div class="math">$(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, \frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert}, ..., \frac{a_n}{\lvert\lvert{\mathbf{a}}\lvert\lvert})$</div>
+
+<p>This direction cosine is a vector <span class="math">\(\mathbf{v}\)</span> with length 1 in the same direction as the original vector. This can be simply determined from the definition of the magnitude of a vector:</p>
+
+<div class="math">
+	$
+	\begin{aligned}
+	\lvert\lvert{\mathbf{v}}\lvert\lvert&=\sqrt{(\frac{a_1}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 +  (\frac{a_2}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 + ... + (\frac{a_i}{\lvert\lvert{\mathbf{a}}\lvert\lvert})^2 + ... + (\frac{a_n}{\lvert\lvert{\mathbf{\mathbf{a}}}\lvert\lvert})^2}\\
+	&=\sqrt{\frac{(a_1)^2+(a_2)^2+...+(a_i)^2+...+(a_n)^2}{\lvert\lvert{\mathbf{a}}\lvert\lvert^2}}\\
+	&=\frac{\sqrt{(a_1)^2+(a_2)^2+...+(a_i)^2+...+(a_n)^2}}{\lvert\lvert{\mathbf{a}}\lvert\lvert}\\
+	&=\frac{\lvert\lvert{\mathbf{a}}\lvert\lvert}{\lvert\lvert{\mathbf{a}}\lvert\lvert}\\
+	&=1\\
+	\end{aligned}
+	$
+</div>
+
+<p>This vector with length 1 is also called the *unit vector*.</p>
+
+<p><img alt="Vector direction in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorDirection.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorProperties.html#learn_vector_prop_direction">Vector Direction interactive</a>
+</p>
+
+<h3 id="operations-with-vectors">Operations with Vectors</h3>
+
+<h4 id="sum-and-difference-of-two-vectors">Sum and difference of two Vectors</h4>
+
+<p>Say we have two vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{a} &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
+	\mathbf{b} &= (b_1, b_2, ..., b_n), \text{ in }\mathbb{R}^n
+	\end{aligned}$
+</div>
+
+<p>The sum of two vectors is the vector resulting from the addition of the components of the orignal vectors.</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{c} &= \mathbf{a} + \mathbf{b}\\
+	&= (a_1 + b_1, a_2 + b_2, ..., a_n + b_n)
+	\end{aligned}$
+</div>
+
+<p><img alt="Vector sum in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorSum.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_sum">Sum of vectors interactive</a>
+</p>
+
+<p>The difference of two vectors is the vector resulting from the differences of the components of the original vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{c} &= \mathbf{a} - \mathbf{b}\\
+	&= (a_1 - b_1, a_2 - b_2, ..., a_n - b_n)
+	\end{aligned}$
+</div>
+
+<p><img alt="Vector difference in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorDifference.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_diff">Difference of vectors interactive</a>
+</p>
+
+<h4 id="scalar-multiplication">Scalar multiplication</h4>
+
+<p>Say we have a vector <span class="math">\(\mathbf{a}\)</span> and a scalar <span class="math">\(\lambda\)</span> (a number):</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{a} &= (a_1, a_2, ..., a_n), \text{ in }\mathbb{R}^n\\
+	\lambda
+	\end{aligned}$
+</div>
+<p>A vector multiplied by a scalar is the vector resulting of the multiplication of each component of the original vector by the scalar:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{c} &= \lambda \mathbf{a}\\
+	&= (\lambda a_1, \lambda a_2, ..., \lambda a_n)
+	\end{aligned}$
+</div>
+
+<p><img alt="Vector scalar multiplication in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/VectorScalarMultiplication.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/VectorMath.html#learn_vector_math_scalarmult">Scalar Multiplication for vectors interactive</a>
+</p>
+
+<h4 id="dot-product">Dot product</h4>
+
+<p>The dot-product is the scalar (a real number) resulting of taking the sum of the products of the corresponding components of two vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{c} &= \mathbf{a} \cdot \mathbf{b}\\
+	&= a_1 b_1 + a_2 b_2 + ... + a_n b_n\\
+	&= \sum_{i=1}^{n} a_ib_i
+	\end{aligned}$$
+</div>
+<p>Geometrically, this is equal to the multiplication of the magnitude of the vectors with the cosine of the angle between the vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{c} &= \mathbf{a} \cdot \mathbf{b}\\
+	&= {\lvert\lvert{\mathbf{a}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{b}}\lvert\lvert}\text{ }cos(\alpha)\\
+	\end{aligned}$
+</div>
+
+<p>There are several proofs for this, which I will not repeat here. The article on <a href="https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/">SVM&rsquo;s</a> has one, and <a href="http://tutorial.math.lamar.edu/Classes/CalcII/DotProduct.aspx">this article on the dot-product</a> also contains a very understadable proof.</p>
+
+<p>From this last definition we can make two important assertions.</p>
+
+<p>First, if, for two vectors with a magnitude not zero, the dot product is zero, then those vectors are perpendicular. Because the magnitude of the vectors is not zero, the dot product can only be zero if the <span class="math">\(cos(\alpha)\)</span> is zero. And thus if the angle <span class="math">\(\alpha\)</span> between the vectors is either 90 or -90 degrees. And thus only if the two vectors are perpendicular. (Try it out in the interactive example below!)</p>
+
+<p>Second, if one of the two vectors has a magnitude of 1, then the dot product equals <a href="http://www.math.ryerson.ca/~danziger/professor/MTH141/Handouts/projections.pdf">the projection of the second vector on this unit vector</a>. (Try it out in the interactive example below!). This can also easily be seen:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\text{if }{\lvert\lvert{a}\lvert\lvert} = 1\text{ then }\\
+	c &= a \cdot b\\
+	&= {\lvert\lvert{a}\lvert\lvert}\text{ }{\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
+	&= {\lvert\lvert{b}\lvert\lvert}\text{ }cos(\alpha)\\
+	\end{aligned}$
+</div>
+
+<p><img alt="Dot product in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/DotProduct.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct">Dot Product interactive</a>
+</p>
+
+<p>The dot product is <strong>commutative</strong>:</p>
+
+<div class="math">$\mathbf{a} \cdot \mathbf{b} = \mathbf{b} \cdot \mathbf{a}$</div>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct_commutative">Dot Product commutativity interactive</a>
+</p>
+
+<p>The dot product is <strong>distributive</strong>:</p>
+
+<div class="math">$\mathbf{a} \cdot (\mathbf{b}+\mathbf{c}) = \mathbf{a} \cdot \mathbf{b} + \mathbf{a} \cdot \mathbf{c}$</div>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/DotProduct.html#learn_dotproduct_distributive">Dot Product distributivity interactive</a>
+</p>
+
+<p>The <strong>scalar multiplication</strong> property:</p>
+
+<div class="math">$(\lambda\mathbf{a}) \cdot \mathbf{b} = \mathbf{a} \cdot (\lambda\mathbf{b}) = \lambda(\mathbf{a} \cdot \mathbf{b})$</div>
+
+<p>Okay, now you know what a Vector is. Let us continue our journey.</p>
+
+<h2 id="linearely-seperable-features">Linearely seperable features</h2>
+
+<p>So, we where saying: The sum of the products of the components of the feature and weight vector is equal to the Dot-product.</p>
+
+<p>The perceptron formula now becomes:</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>Remember what we did originally: we took a linear combination of the input values <span class="math">\([x_1, x_2, ..., x_i, ..., x_n]\)</span> which resulted in the formula:</p>
+
+<div class="math">$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b$</div>
+
+<p>You may remember a similar formula from your mathematics class: the equation of a hyperplane:</p>
+
+<div class="math">$w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n = b$</div>
+
+<p>Or, with dot product notation:</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x} = b$</div>
+
+<p>So, the equation <span class="math">\(\mathbf{w} \cdot \mathbf{x} > b\)</span> defines all the points on one side of the hyperplane, and <span class="math">\(\mathbf{w} \cdot \mathbf{x} <= b\)</span> all the points on the other side of the hyperplane and on the hyperplane itself. This happens to be the very definition of <a href="https://en.wikipedia.org/wiki/Linear_separability">&ldquo;linear seperability&rdquo;</a></p>
+
+<p>Thus, the perceptron allows us to seperate our feature space in two convex half spaces.</p>
+
+<h2 id="a-hyper-what">A Hyper-what?</h2>
+
+<p>Let us step back for a while: what is this hyperplane and convex half spaces stuff?</p>
+
+<h3 id="hyperplanes-in-one-dimension-the-equation-of-a-line">Hyperplanes in one dimension: the equation of a line</h3>
+
+<h4 id="a-line-through-the-origin">A line through the origin</h4>
+
+<p>Never mind this hyperplane stuff. Let&rsquo;s get back to 2-dimensional space and write the equation of a line as most people know it:</p>
+
+<div class="math">$ax + by + c = 0$</div>
+
+<p>Let us even simplify this more and consider just:</p>
+
+<div class="math">$ax + by = 0$</div>
+
+<p>Now, if we fix the values for <span class="math">\(a\)</span> and <span class="math">\(b\)</span> and solve the equation for various <span class="math">\(x\)</span> and <span class="math">\(y\)</span> and plot these values we see that the resulting points are all on a line.</p>
+
+<p>If we consider <span class="math">\(a\)</span> and <span class="math">\(b\)</span> as the components of a vector <span class="math">\(\mathbf{l}\)</span>, and <span class="math">\(x\)</span> en <span class="math">\(y\)</span> as the components of a vector <span class="math">\(\mathbf{p}\)</span>, then the above is the dot product:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{l} &= (a, b), \text{ in }\mathbb{R}^2\\
+	\mathbf{p} &= (x, y), \text{ in }\mathbb{R}^2\\
+	\end{aligned}$
+</div>
+
+<p>Then:</p>
+
+<div class="math">
+	$\begin{aligned}
+	ax + by &= 0\\
+	\mathbf{l} \cdot \mathbf{p} &= 0\\
+	\end{aligned}$
+</div>
+
+<p>So, how come that setting our dot product to zero in two dimensions appears to be a line through the origin?</p>
+
+<p>Remember that when we discussed the dot product, we came to the conclusion that if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector <span class="math">\(\mathbf{l}\)</span>, thus fix the values <span class="math">\(a\)</span> and <span class="math">\(b\)</span>, then the above equation resolves to all vectors perpendicular to the vector <span class="math">\(\mathbf{l}\)</span>, which equals to all points on the line perpendicular to the vector <span class="math">\(\mathbf{l}\)</span> and going through the origin.</p>
+
+<p>So, vector <span class="math">\(\mathbf{l}\)</span> determines the direction of the line: the vector is perpendicular to the direction of the line.</p>
+
+<p><img src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineThroughOrigin.PNG" alt="A line through the origin" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_throughorigin">A line through the origin interactive</a>
+</p>
+
+<h4 id="a-line-at-some-distance-from-the-origin">A line at some distance from the origin</h4>
+
+<p>Above, we simplified our equation resulting in the equation of a line through the origin. Let us consider the full equation again:</p>
+
+<div class="math">$ax + by + c = 0$</div>
+
+<p>Rearranging a bit:</p>
+
+<div class="math">$ax + by = -c$</div>
+
+<p>And replacing <span class="math">\(-c\)</span> with <span class="math">\(d\)</span>:</p>
+
+<div class="math">$ax + by = d$</div>
+
+<p>Here also, we can consider replacing this with the dot product of vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{l} &= (a, b), \text{ in }\mathbb{R}^2\\
+	\mathbf{p} &= (x, y), \text{ in }\mathbb{R}^2\\
+	\end{aligned}$
+</div>
+
+<p>Then:</p>
+
+<div class="math">
+	$\begin{aligned}
+	ax + by &= d\\
+	\mathbf{l} \cdot \mathbf{p} &= d\\
+	&= {\lvert\lvert{\mathbf{l}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
+	\end{aligned}$
+</div>
+
+<p>We can &ldquo;normalize&rdquo; this equation by dividing it through the length of <span class="math">\(\mathbf{l}\)</span>, resulting in the dot product of the unit vector in the direction of <span class="math">\(\mathbf{l}\)</span>: <span class="math">\(\mathbf{u}\)</span> and the vector <span class="math">\(\mathbf{p}\)</span>:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\frac{\mathbf{l} \cdot \mathbf{p}}{\lvert\lvert{\mathbf{l}}\lvert\lvert} &= \frac{d}{\lvert\lvert{\mathbf{l}}\lvert\lvert}\\
+	\mathbf{u} \cdot \mathbf{p} &= \frac{d}{\lvert\lvert{\mathbf{l}}\lvert\lvert}\\
+	&= {\lvert\lvert{\mathbf{u}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)\\
+	&= {\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
+	\end{aligned}$
+</div>
+
+<p>
+	And as seen above when discussing the dot product, this equals the magnitude of the projection of vector <span class="math">\(\mathbf{p}\)</span> onto the unit vector in the direction of <span class="math">\(\mathbf{l}\)</span>. So, the above equation gives all vectors whose projection on the unit vector in the direction of <span class="math">\(\mathbf{l}\)</span> equals <span class="math">\(d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}\)</span><br />
+	This equals all vectors to points on the line perpendicular to <span class="math">\(\mathbf{l}\)</span> and at a distance <span class="math">\(d/{\lvert\lvert{\mathbf{l}}\lvert\lvert}\)</span> from the origin.
+</p>
+
+<p><img alt="A line at some distance from the origin" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineAtDistanceFromOrigin.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/LineMath.html#learn_linemath_atdistancefromorigin">A line at some distance from the origin interactive</a>
+</p>
+
+<h3 id="extending-to-3-dimensional-space-equation-of-a-plane">Extending to 3-dimensional space: equation of a plane</h3>
+
+<div class="math">$ax + by + cz= 0$</div>
+
+<p>
+	Again, through vectors:<br />
+	If we consider the components <span class="math">\(a\)</span>, <span class="math">\(b\)</span> and <span class="math">\(c\)</span> as a vector <span class="math">\(\mathbf{m}\)</span>, and <span class="math">\(x\)</span>, <span class="math">\(y\)</span> and <span class="math">\(z\)</span> as a vector <span class="math">\(\mathbf{p}\)</span>, then the above is the dot product:
+</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{m} &= (a, b, c), \text{ in }\mathbb{R}^3\\
+	\mathbf{p} &= (x, y, z), \text{ in }\mathbb{R}^3\\
+	\end{aligned}$
+</div>
+
+<p>Then:</p>
+
+<div class="math">
+	$\begin{aligned}
+	ax + by + cz &= 0\\
+	\mathbf{m} \cdot \mathbf{p} &= 0\\
+	\end{aligned}$
+</div>
+
+<p>Again, if the dot product is zero for two vectors with magnitude not zero, then those vectors need to be perpendicular. So, if we fix the coordinates of the vector <span class="math">\(\mathbf{m}\)</span>, thus fix the values <span class="math">\(a\)</span>, <span class="math">\(b\)</span> and <span class="math">\(c\)</span>, then the above equation resolves to all vectors perpendicular to the vector <span class="math">\(\mathbf{m}\)</span>, which equals to all points in the plane perpendicular to the vector <span class="math">\(\mathbf{m}\)</span> and going through the origin.</p>
+
+<p>A similar line of thought can be followed for the equation:</p>
+
+<div class="math">$ax + by + cz= d$</div>
+
+<p>Here also, we can consider replacing this with the dot product of vectors:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{m} &= (a, b, c), \text{ in }\mathbb{R}^3\\
+	\mathbf{p} &= (x, y, z), \text{ in }\mathbb{R}^3\\
+	\end{aligned}$
+</div>
+
+<div class="math">
+	$\begin{aligned}
+	ax + by + cz &= d\\
+	\mathbf{m} \cdot \mathbf{p} &= d\\
+	&= {\lvert\lvert{\mathbf{m}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
+	\end{aligned}$
+</div>
+
+<p>Normalizing by dividing through the length of <span class="math">\(\mathbf{m}\)</span>, with <span class="math">\(\mathbf{u}\)</span> being the unit vector in the direction of <span class="math">\(\mathbf{m}\)</span>:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\frac{\mathbf{m} \cdot \mathbf{p}}{\lvert\lvert{\mathbf{m}}\lvert\lvert} &= \frac{d}{\lvert\lvert{\mathbf{m}}\lvert\lvert}\\
+	\mathbf{u} \cdot \mathbf{p} &= \frac{d}{\lvert\lvert{\mathbf{m}}\lvert\lvert}\\
+	&= {\lvert\lvert{\mathbf{u}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)\\
+	&= {\lvert\lvert{\mathbf{p}}\lvert\lvert}\text{ }cos(\alpha)
+	\end{aligned}$
+</div>
+
+<p>
+	And as seen above when discussing the dot product, this equals the magnitude of the projection of vector <span class="math">\(\mathbf{p}\)</span> onto the unit vector in the direction of <span class="math">\(\mathbf{m}\)</span>. So, the above equation gives all vectors whose projection on the unit vector in the direction of <span class="math">\(\mathbf{m}\)</span> equals <span class="math">\(d/\lvert\lvert{\mathbf{m}}\lvert\lvert\)</span><br />
+	This equals all vectors to points in the plane perpendicular to <span class="math">\(\mathbf{m}\)</span> and at a distance <span class="math">\(d/\lvert\lvert{\mathbf{m}}\lvert\lvert\)</span> from the origin.
+</p>
+
+<h3 id="extending-to-n-dimensional-space-equation-of-a-hyper-plane">Extending to n-dimensional space: equation of a hyper-plane</h3>
+
+<p>In 3-dimensional space, we defined the equation of a plane as:</p>
+
+<div class="math">$ax + by + cz= d$</div>
+
+<p>If we use the symbols we are customed to in our discussion of the percpetron rule, we can write:</p>
+
+<div class="math">$w_1x_1 + w_2x_2 + w_3x_3= b$</div>
+
+<p><em>This may be a bit confusing, but the <span class="math">\(b\)</span> in this last equation has nothing to do with the <span class="math">\(b\)</span> in the first equation</em></p>
+
+<p>If we extend this to multiple dimensions, we get:</p>
+
+<div class="math">
+	$\begin{aligned}
+	w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
+	&= \sum_{i=1}^{n} w_ix_i
+	\end{aligned}$
+</div>
+
+<p>In multi-dimensional space we talk about hyper-planes: like a plane is a line in 3-dimensional space, a hyper-plane is a plane n multi-dimensional space.</p>
+
+<h2 id="linear-sepera-what-ility-">Linear Sepera-what-ility ?</h2>
+
+<p>Ok, lets go back to the definition of the perceptron:</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>
+	So, we output 1 if the dot product of the feature vector <span class="math">\(\mathbf{x}\)</span> and weight vector <span class="math">\(\mathbf{w}\)</span> is larger then <span class="math">\(b\)</span>, and zero <span class="math">\(\text{otherwise}\)</span>. But what is <span class="math">\(\text{otherwise}\)</span> ?<br />
+	Well <span class="math">\(\text{otherwise}\)</span> is:
+</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x} <= b$</div>
+
+<p>Ah, equal to or less then <span class="math">\(b\)</span>. We know the <em>equal to</em> part, that is our above hyper-plane.</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x} = b$</div>
+
+<p>So what remains is the <em>less than</em> part</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x} < b$</div>
+
+<p>It just so happens the inequality equations define two so called half-spaces: one half space above the hyper-plane and one half-space below the hyper-plane.</p>
+
+<h3 id="linear-separability-and-half-spaces">Linear separability and half-spaces</h3>
+
+<p>Let us again take the equation of a hyperplane:</p>
+
+<div class="math">
+	$\begin{aligned}
+	w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &= b\\
+	\sum_{i=1}^{n} w_ix_i &= b\\
+	\mathbf{w} \cdot \mathbf{x} &= b
+	\end{aligned}$
+</div>
+
+<p>This hyperplane seperates the space <span class="math">\(\mathbb{R}^n\)</span> in two convex sets of points, hence the name half-space.</p>
+
+<p>One half-space is represented by the equation</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x} > b$</div>
+
+<p>The other by</p>
+
+<div class="math">$\mathbf{w} \cdot \mathbf{x}  < b$</div>
+
+<p>Let us analize the first equation. First, convert it to a vector representation:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{w} \cdot \mathbf{x}  &> b\\
+	{\lvert\lvert{\mathbf{w}}\lvert\lvert}\text{ }{\lvert\lvert{\mathbf{x}}\lvert\lvert}\text{ }cos(\alpha) &> b
+	\end{aligned}$
+</div>
+
+<p>Normalizing:</p>
+
+<div class="math">${\lvert\lvert{\mathbf{x}}\lvert\lvert}\text{ }cos(\alpha) > \frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}$</div>
+
+<p>So, the geometric interpretation is the set of all vectors to points with a projection on the unit vector in the direction of the weight vector <span class="math">\(\mathbf{w}\)</span> <em>larger</em> then some constant value <span class="math">\(\frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}\)</span>.</p>
+
+<p>A similar reasoning can be made for the equation <span class="math">\(\mathbf{w} \cdot \mathbf{x} < b\)</span> : it results in the set of vectors to points with a projection on the unit vector in the direction of the weight vector <span class="math">\(w\)</span> <em>smaller</em> then some constant value <span class="math">\(\frac{b}{\lvert\lvert{\mathbf{w}}\lvert\lvert}\)</span>.</p>
+
+<p>We can imagine these two sets as being the set of all points on either one side or the other side of the hyper-plane.</p>
+
+<p>These half spaces are also convex.</p>
+
+<p>The definition of convex goes as follows (from Wikipedia):</p>
+
+<blockquote>
+	<p>in a Euclidean space, a convex region is a region where, for every pair of points within the region, every point on the straight line segment that joins the pair of points is also within the region.</p>
+</blockquote>
+
+<p>Mathematically this can be more rigourously be described as:</p>
+
+<blockquote>
+	<p>A set <span class="math">\(\mathbf{C}\)</span> in <span class="math">\(\mathbf{S}\)</span> is said to be convex if, for all points <span class="math">\(A\)</span> and <span class="math">\(B\)</span> in <span class="math">\(\mathbf{C}\)</span> and all <span class="math">\(\lambda\)</span> in the interval <span class="math">\((0, 1)\)</span>, the point <span class="math">\((1 −  {\lambda})A  +  {\lambda}B\)</span> also belongs to <span class="math">\(C\)</span>.</p>
+</blockquote>
+
+<p>The equation <span class="math">\((1 −  {\lambda})A  +  {\lambda}B\)</span> is actually the equation of a line segment between points <span class="math">\(A\)</span> and <span class="math">\(B\)</span>. We can see this from following:</p>
+
+<p>Let us define two points in the multi-dimensional space:</p>
+
+<div class="math">
+	$\begin{aligned}
+	A &= (a_1, a_2, ..., a_i, ..., a_n), \text{ in }\mathbb{R}^n\\
+	B &= (b_1, b_2, ..., b_i, ..., b_n), \text{ in }\mathbb{R}^n\\
+	\end{aligned}$
+</div>
+
+<p>Then a line segment going from point <span class="math">\(A\)</span> to point <span class="math">\(B\)</span> can be defined as:</p>
+
+<div class="math">$r = \vec{OA} + \lambda \vec{AB}$</div>
+
+<p>
+	with <span class="math">\(\vec{OA}\)</span> being the vector going from the origin <span class="math">\(O\)</span> to point <span class="math">\(A\)</span> and <span class="math">\(\vec{AB}\)</span> the vector going from point <span class="math">\(A\)</span> to point <span class="math">\(B\)</span>. <span class="math">\(\lambda\)</span> is in the interval (0, 1)<br />
+	This is simply the addition of the vector <span class="math">\(\mathbf{a}\)</span> with a part of the vector going from point <span class="math">\(A\)</span> to point <span class="math">\(B\)</span>
+</p>
+
+<p><img alt="A line segment in 2-dim space" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LineSegment.PNG" /></p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_linesegment">Line segment interactive</a>
+</p>
+
+<p>We know from the section on vector math above that the vector going from <span class="math">\(A\)</span> to <span class="math">\(B\)</span> is equal to <span class="math">\(\mathbf{b}-\mathbf{a}\)</span> and thus we can write:</p>
+
+<div class="math">
+	$\begin{aligned}
+	r &= \vec{OA} + \lambda \vec{AB}\\
+	&= \mathbf{a} + {\lambda}(\mathbf{b}-\mathbf{a}) \\
+	&= \mathbf{a} + {\lambda}\mathbf{b}-{\lambda}\mathbf{a} \\
+	&= (1-{\lambda})\mathbf{a} + {\lambda}\mathbf{b} \\
+	\end{aligned}$
+</div>
+
+<p>Now we can proof the half spaces separated by the hyper-plane are convex:</p>
+
+<p>Let us consider the upper half plane. For any two vectors <span class="math">\(\mathbf{x}\)</span>, <span class="math">\(\mathbf{y}\)</span> in that half space we have:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{w} \cdot \mathbf{x} > d\\
+	\mathbf{w} \cdot \mathbf{y} > d
+	\end{aligned}$
+</div>
+
+<p>If the half space is convex, then each point resulting from the equation</p>
+
+<div class="math">$(1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}$</div>
+
+<p>must belong to the half space, which is equal to saying that every point on the line segment between the endpoints <span class="math">\(X\)</span> and <span class="math">\(Y\)</span> of the vectors must belong to the half space. Substituation in the equation of the half space gives:</p>
+
+<div class="math">$\mathbf{w} \cdot ((1-{\lambda})\mathbf{x} + {\lambda}\mathbf{y}) > d$</div>
+
+<p>Then, by the distributive and scalar multiplication properties of the dot product we can re-arrange to:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w}\cdot {\lambda}\mathbf{y}  &> d\\
+	\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w} \cdot {\lambda}\mathbf{y}  - d &> 0\\
+	\mathbf{w} \cdot (1-{\lambda})\mathbf{x} + \mathbf{w} \cdot {\lambda}\mathbf{y} &> d\\
+	\end{aligned}$
+</div>
+
+<p>Since we now that <span class="math">\(0 < {\lambda} < 1\)</span> and <span class="math">\(\mathbf{w} \cdot \mathbf{x} > d\)</span> and also <span class="math">\(\mathbf{w} \cdot \mathbf{y} > d\)</span> then the above inequality must also hold true. And thus we have proven that the half space is indeed convex.</p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_convex">Convex interactive</a><br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/ConvexityDefinition.html#learn_convexity_concave">Not Convex interactive</a>
+</p>
+
+<h2 id="as-i-was-saying-linearily-seperable-...">As I was saying: Linearily seperable &hellip;</h2>
+
+<p>Thus, getting back at our formula for the preceptron:</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } \mathbf{w} \cdot \mathbf{x} > b\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>We can now see how this formula divides our feature-space in two <em>convex</em> half spaces. Mind the word <em>convex</em> here: it does not just divide the feature space in two subspaces, but in two convex subspaces.</p>
+
+<p>This means that we cannot seperate feature points into classes that are not convex. Visually in two-dimensional space, we cannot seperate features like this:</p>
+
+<p><img alt="Not linariliy seperable points" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_NotSeperable.PNG" /></p>
+
+<p>If you&rsquo;ve been reading about the perceptron allready, you may have read about the fact that it cannot solve the XOR problem: it cannot seperate the inputs according to the XOR function. That is exactly because of the above: the outcome is not convex, hence is not linearily seperable.</p>
+
+<p><img alt="XOR function" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_XORFunction.PNG" /></p>
+
+<p>If you search the internet for the formula of the Rosenblatt perceptron, you will also find some in which the factor <span class="math">\(b\)</span> is no longer present. What happened to it? Some re-arrangement of the components of the addition make it end up in the dot product:</p>
+
+<div class="math">
+	$\begin{aligned}
+	\mathbf{w} \cdot \mathbf{x}  &> b\\
+	w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n &> b\\
+	w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n - b &> 0\\
+	w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (-b)1 &> 0\\
+	\end{aligned}$
+</div>
+
+<p>Now, we can define <span class="math">\(b' = -b\)</span></p>
+
+<div class="math">$w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n + (b')1 > 0$</div>
+
+<p>Finally, we can take the factor 1 inside the feature vector by defining <span class="math">\(x_0 = 1\)</span> and <span class="math">\(b'\)</span> inside the weight vector by defining <span class="math">\(w_0 = b'\)</span>. This lets us write:</p>
+
+<div class="math">$w_0x_0 + w_1x_1 + w_2x_2 + w_ix_i + ... + w_nx_n > 0$</div>
+
+<p>And by taking <span class="math">\(w_0\)</span> and <span class="math">\(x_0\)</span> inside the vector:</p>
+
+<div class="math">
+	$
+	\begin{aligned}
+	\mathbf{x'}&=[x_0, x_1, x_2, ..., x_i, ..., x_n]\\
+	\mathbf{w'}&=[w_0, w_1, w_2, ..., w_i, ..., w_n]
+	\end{aligned}
+	$
+</div>
+
+<p>We can now write:</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } \mathbf{w'} \cdot \mathbf{x'} > 0\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<p>So we have a function which classifies our features into two classes by multiplying them with a weight and if the result is positive assigns them a label &ldquo;1&rdquo; and &ldquo;0&rdquo; otherwise.</p>
+
+<p>Further in the article I will leave the accent of the vectors and just write <span class="math">\(\mathbf{w}\)</span> and <span class="math">\(\mathbf{x}\)</span> which have the <span class="math">\(w_0\)</span> and <span class="math">\(x_0\)</span> included.</p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/PerceptronMath.html#learn_perceptron">Perceptron math interactive</a>
+</p>
+
+<p>This <em>assigning them a label &ldquo;1&rdquo; and &ldquo;0&rdquo; otherwise</em> is the definition of the Heaviside Step Function.</p>
+
+<h2 id="the-heaviside-step-function">The Heaviside Step Function</h2>
+
+<p>The Heaviside step function is also called the unit step function and is given by:</p>
+
+<div class="math">
+	$
+	H(n)  =
+	\begin{cases}
+	1 \text{, } n >= 0\\
+	0 \text{, } n < 0\\
+	\end{cases}
+	$
+</div>
+
+<p>If you search the internet for the definition of the Heaviside step function, you may find alternative definitions which differ from the above on how the result of the function is defined when <span class="math">\(x=0\)</span></p>
+
+<p>The Heaviside step function is discontinuous. A function <span class="math">\(f(x)\)</span> is continuous if a small change of <span class="math">\(x\)</span> results in a small change in the outcome of the function. This is clearly not the case for the Heaviyside step function: if at 0 and moving to the negative side then the function outcome changes suddenly from 1 to 0.</p>
+
+<p>I will not elaborate much more on this function not being continuous because it is not important for the discussion at hand. In a next article, when we discuss the ADALINE perceptron, I will get back to this.</p>
+
+<h2 id="learning-the-weights">Learning the weights</h2>
+
+<p>We&rsquo;ve covered a lot about how the perceptron classifies the features in two linearily seperable classes using the weight vector. But the big question is: if we have some samples of features for which we know the resulting class, how can we find the weights so that we can also classify unknown values of the feature vector? Or, how can we find the hyperplane sepeating the features?</p>
+
+<p>This is where the perceptron learning rule comes in.</p>
+
+<h3 id="the-perceptron-learning-rule">The perceptron learning rule</h3>
+
+<p>First, we define the error <span class="math">\(e\)</span> as being the difference between the desired output <span class="math">\(d\)</span> and the effective output <span class="math">\(o\)</span> for an input vector <span class="math">\(\mathbf{x}\)</span> and a weight vector <span class="math">\(\mathbf{w}\)</span>:</p>
+
+<div class="math">$e = d-o$</div>
+
+<p>Then we can write the learning rule as:</p>
+
+<div class="math">$\mathbf{w}_{i+1} = \mathbf{w}_{i} + e\mathbf{x}$</div>
+
+<p>In this <span class="math">\(\mathbf{w}_{i+1}\)</span> is the new weight vector, <span class="math">\(\mathbf{w}_{i}\)</span> is the current weight vector and <span class="math">\(e\)</span> is the current error. We initialize the weight vector with some random values, thus <span class="math">\(\mathbf{w}_0\)</span> has some random values. You will find similar definitions of the learning rule which also use a learning rate factor. As we will show later when we proof the convergence of the learning rule this factor is not really necessary. That is why we leave it out here.</p>
+
+<p>Why does this work? First, let us analyse the error function:</p>
+
+<div class="math">$e = d-o$</div>
+
+<p>As stated before, in this <span class="math">\(d\)</span> and <span class="math">\(o\)</span> are resp. the desired output and the effective output of the perceptron. We know from the definition of the preceptron that its output can take two values: either 1 or 0. Thus the error function can take following values:</p>
+
+<table>
+	<thead>
+		<tr>
+			<th align="left">prediction</th>
+			<th align="center">desired (d)</th>
+			<th align="center">effective (o)</th>
+			<th align="center">e</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td align="left">correct</td>
+			<td align="center">1</td>
+			<td align="center">1</td>
+			<td align="center">0</td>
+		</tr>
+		<tr>
+			<td align="left">correct</td>
+			<td align="center">0</td>
+			<td align="center">0</td>
+			<td align="center">0</td>
+		</tr>
+		<tr>
+			<td align="left">wrong</td>
+			<td align="center">0</td>
+			<td align="center">1</td>
+			<td align="center">-1</td>
+		</tr>
+		<tr>
+			<td align="left">wrong</td>
+			<td align="center">1</td>
+			<td align="center">0</td>
+			<td align="center">1</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>From the above we can see that</p>
+
+<ol>
+	<li>We only change the weight vector <span class="math">\(\mathbf{w}\)</span> if the prediction made by the perceptron is wrong, because if it is correct the error amounts to zero.</li>
+	<li>If we incorrectly predict a feature to be above the hyperplane then the error is -1 and we subtract the feature vector from the weight vector.</li>
+	<li>If we incorrectly predict a feature to be below the hyperplane then the error is 1 and we add the feature vector to the weight vector.</li>
+</ol>
+
+<p>Let&rsquo;s see what this gives geometrically. The following discussion gives an intuitive feel of what the learning algorithm does, but is by no means a mathematically rigourous discussion. We start with ignoring the threshold factor of the vectors: that is, we ignore <span class="math">\(w_0\)</span> and <span class="math">\(x_0\)</span>.</p>
+
+<p>So, we are left with the factors determining the direction of the seperating hyperplane. Let us now plot some examples and see what happens.</p>
+
+<h4 id="case-1-desired-result-is-0-but-1-was-predicted">Case 1: Desired result is 0 but 1 was predicted</h4>
+
+<p>The error <span class="math">\(e\)</span> is -1, so we need to subtract the new feature vector from the current weight vector to get the new weight vector:</p>
+
+<div class="math">$\mathbf{w}_{i+1} = \mathbf{w}_{i} - \mathbf{x}$</div>
+
+<p>Remember that the weight vector is actually perpendicular to the hyperplane. The result of subtracting the incorrectly classified vector from the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.</p>
+
+<h4 id="case-2-desired-result-is-1-but-0-was-predicted">Case 2: Desired result is 1 but 0 was predicted</h4>
+
+<p>The error <span class="math">\(e\)</span> is 1, so we need to add the new feature vector to the current weight vector to get the new weight vector:</p>
+
+<div class="math">$\mathbf{w}_{i+1} = \mathbf{w}_{i} - \mathbf{x}$</div>
+
+<p>The result of adding the vector to the weight vector is a rotation of the separating hyperplane in the direction of the incorrectly classified point. In other words, we rotate the separating hyperplane in such a way that our newly learned point is closer to the half-space it belongs in.</p>
+
+<p>
+	Try it yourself:<br />
+	<a href="https://sergedesmedt.github.io/MathOfNeuralNetworks/PerceptronLearningMath.html#learn_perceptron_learningrule_animation">Perceptron Learning interactive</a>
+</p>
+
+<h2 id="convergence-of-the-learning-rule.">Convergence of the learning rule.</h2>
+
+<p>The above gives an intu&iuml;tive feel of what makes the learning rule work, but is not a mathematical prove. It can be proven mathematically that the perceptron rule will converge to a solution in a finite number of steps if the samples given are linearily seperable.</p>
+
+<p>Read that sentence again please. First, we talk about a finite number of steps but we don&rsquo;t now what that number is up front. Second, this is only true if the samples given are linearly seperable. Thus, if they are <em>not</em> linearly seperable we can keep on learning and have no idea when to stop !!!</p>
+
+<p>I will not repeat the proof here because it would just be repeating some information you can find on the web. Second, the Rosenblatt perceptron has some problems which make it only interesting for historical reasons. If you are interested, look in the references section for some very understandable proofs go this convergence. Of course, if anyone wants to see it here just leave a comment.</p>
+
+<h2 id="wrap-up">Wrap up</h2>
+
+<h3 id="basic-formula-of-the-rosenblatt-perceptron">Basic formula of the Rosenblatt Perceptron</h3>
+
+<p>
+	The basic formula classifies the features by weighting them into two seperate classes.<br />
+	We have seen that the way this is done, is by comparing the dot product of the feature vector <span class="math">\(\mathbf{x}\)</span> and the weight vector <span class="math">\(\mathbf{w}\)</span> with some fixed value <span class="math">\(b\)</span>. If the dot product is larger then this fixed value, then we classisify them info one class by assigning them a label 1, otherwise we put them into the other class by assigning them a label 0.
+</p>
+
+<div class="math">
+	$
+	f(x)  =
+	\begin{cases}
+	1 & \text{if } (\mathbf{w} \cdot \mathbf{x} - b) > 0\\
+	0 & \text{otherwise}
+	\end{cases}
+	$
+</div>
+
+<h3 id="behaviour-of-the-rosenblat-perceptron">Behaviour of the Rosenblat Perceptron</h3>
+
+<p>Because the formula of the perceptron is basically a hyperplane, we can only classify things into two classes which are lineary seperable. A first class with things above the hyper-plane and a second class with things below the hyper-plane.</p>
+
+<h3 id="formalising-some-things-a-few-definitions">Formalising some things: a few definitions</h3>
+
+<p>We&rsquo;ve covered a lot of ground here, but without using a lot of the lingo surrounding perceptrons, neural networks and machine learning in general. There was already enough lingo with the mathematics that I didn&rsquo;t want to bother you with even more definitions.</p>
+
+<p>However, once we start diving deeper we&rsquo;ll start uncovering some pattern / structure in the way we work. At that point, it will be interesting to have some definitions which allow us to define steps in this pattern.</p>
+
+<p>So, here are some definitions:</p>
+
+<p><strong>Feed forward single layer neural network</strong></p>
+
+<p>What we have now is a <em>feed forward single layer neural network</em>:</p>
+
+<p>
+	<em>Neural Network</em><br />
+	A neural network is a group of nodes which are connected to each other. Thus, the output of certain nodes serves as input for other nodes: we have a <em>network</em> of nodes. The nodes in this network are modelled on the working of <em>neurons</em> in our brain, thus we speak of a <em>neural network</em>. In this article our neural network had one node: the perceptron.
+</p>
+
+<p>
+	<em>Single Layer</em><br />
+	In a neural network, we can define multiple layers simply by using the output of preceptrons as the input for other perceptrons. If we make a diagram of this we can view the perceptrons as being organised in layers in which the output of a layer serves as the input for the next layer.<br />
+	<img alt="Layers in Neural Network" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/NeuralNetwork.PNG" /><br />
+	In this article we also have a <em>single layer</em>.
+</p>
+
+<p>
+	<em>Feed Forward</em><br />
+	This stacking of layers on top of each other and the output of previous layers serving as the input for next layers results in <em>feed forward</em> networks. There is no feedback of upper layers to lower layers. There are no loops. For our single perceptron we also have no loops and thus we have a <em>feed forward</em> network.
+</p>
+
+<p>
+	<strong>Integration function</strong><br />
+	The calculation we make with the weight vector <strong>w</strong> and the feature vector <strong>x</strong> is called <em>the integration function</em>. In the Rosenblatt perceptron the integration function is the dot-product.
+</p>
+
+<p>
+	<strong>Bias</strong><br />
+	The offset b with which we compare the result of the integration function is called <em>the bias</em>.
+</p>
+
+<p>
+	<strong>Activation function (transfer function)</strong><br />
+	The output we receive from the perceptron based on the calculation of the integration function is determined by the <em>activation function</em>. The activation function for the Rosenblatt perceptron is the Heaviside step function.
+</p>
+
+<p>
+	<strong>Supervised learning</strong><br />
+	Supervised learning is a type of learning in which we feed samples into our algorithm and tell it the result we expect. By doing this the neural network learns how to classify the examples. After giving it enough samples we expect to be able to give it new data which it will automatically classify correctly.
+</p>
+
+<p>The opposite of this is <em>Unsupervised learning</em> in which we give some samples but without the expected result. The algorithm is then able to classify these examples correctly based on some common properties of the samples.</p>
+
+<p>There are other types of learning like <em>re&iuml;nforcement learning</em> which we will not cover here.</p>
+
+<p>
+	<strong>Online learning</strong><br />
+	The learning algorithm of the Rosenblatt preceptron is an example of an <em>online learning</em> algorithm: with each new sample given the weight vector is updated;
+</p>
+
+<p>The opposite of this is <em>batch learning</em> in which we only update the weight vector after having fed all samples to the learning algorithm. This may be a bit abstract here but we&rsquo;ll clarify this in later articles.</p>
+
+<h2 id="what-is-wrong-with-the-rosenblatt-perceptron">What is wrong with the Rosenblatt perceptron?</h2>
+
+<p>The main problem of the Rosenblatt preceptron is its learning algorithm. Allthough it works, it only works for linear seperable data. If the data we want to classify is not linearily seperable, then we do not really have any idea on when to stop the learning and neither do we know if the found hyperplane somehow minimizes the wrongly classified data.</p>
+
+<p>
+	Also, let&rsquo;s say we have some data which is linearily seperable. There are several lines which can seperate this data:<br />
+	<img alt="Candidate lines" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_SeperableCandidateSolutions.PNG" />
+</p>
+
+<p>
+	We would like to find the hyperplane which fits the samples best. That is, we would like to find a line similar to the following:<br />
+	<img alt="Best line" src="https://sergedesmedt.github.io/MathOfNeuralNetworks/Resources/LinearSeperability_SeperableBestSolution.PNG" />
+</p>
+
+<p>There are of course mathematical tools which allow us to find this hyperplane. They basically all define some kind of error function and then try to minimize this error. The error function is typically defined as a function of the desired output and the effective output just like we did above. The minimization is done by calculating the derivative of this error function. And herein is the problem for the Rosenblatt preceptron. Because the output is defined by the Heaviside Step function and this function does not have a derivative, because it is not continuous, we cannot have a matematically rigourous learning method.</p>
+
+<p>If the above is gong a little to fast, don&rsquo;t panic. In the next article about the ADALINE perceptron we&rsquo;ll dig deeper into error functions and derivation.</p>
+
+<h2 id="references">References</h2>
+
+<h3 id="javascript-libraries-used-in-the-try-it-yourself-pages">Javascript libraries used in the <em>Try it yourself</em> pages</h3>
+
+<p>
+	For the SVG illustrations I use the well known <a href="https://d3js.org">D3.js</a> library<br />
+	For databinding <a href="https://knockoutjs.com">Knockout.js</a> is used<br />
+	Mathematical formulas are displayed using <a href="https://www.mathjax.org">MathJax</a>
+</p>
+
+<h3 id="vector-math">Vector Math</h3>
+
+<p>The inspiration for writing this article and a good introduction to vector math: <a href="https://www.svm-tutorial.com/2014/11/svm-understanding-math-part-2/">SVM - Understanding the math - Part 2</a></p>
+
+<p>
+	Some wikipedia articles on the basics of vectors and vector math:<br />
+	<a href="https://en.wikipedia.org/wiki/Euclidean_vector">Euclidean vector</a><br />
+	<a href="https://en.wikipedia.org/wiki/Magnitude_(mathematics)">Magnitude</a><br />
+	<a href="https://en.wikipedia.org/wiki/Direction_cosine">Direction cosine</a>
+</p>
+
+<p>
+	An understandable proof of why the dot-product is also equal to he product of the length of the vectors with the cosine of the angle between the vectors:<br />
+	<a href="http://tutorial.math.lamar.edu/Classes/CalcII/DotProduct.aspx">Proof of dot-product</a>
+</p>
+
+<h3 id="hyperplanes-and-linear-seperability">Hyperplanes and Linear Seperability</h3>
+
+<p>
+	<a href="https://en.wikipedia.org/wiki/Hyperplane">Hyperplane</a><br />
+	<a href="https://en.wikipedia.org/wiki/Linear_separability">Linear separability</a>
+</p>
+
+<p>
+	Two math stackexchange Q&amp;A&rsquo;s on the equation of a hyperplane:<br />
+	<a href="https://math.stackexchange.com/questions/2175925/hyperplane-equation-intuition-geometric-interpretation">Hyperplane equation intuition / geometric interpretation</a><br />
+	<a href="https://math.stackexchange.com/questions/1629491/why-is-the-product-of-a-normal-vector-and-a-vector-on-the-plane-equal-to-the-equ">Why is the product of a normal vector and a vector on the plane equal to the equation of the plane?</a>
+</p>
+
+<h3 id="convexity">Convexity</h3>
+
+<p>
+	Definition of convexity: <a href="https://en.wikipedia.org/wiki/Convex_set">Convex set</a><br />
+	Discussing convexity, we also discussed Line segments: <a href="https://en.wikipedia.org/wiki/Line_segment">Line segment</a>
+</p>
+
+<p>Proving a half-plane is convex: <a href="https://www.quora.com/How-do-I-prove-that-half-a-plane-is-convex">How do I prove that half a plane is convex?</a></p>
+
+<p>A more in depth discussion of convexity: <a href="https://ljk.imag.fr/membres/Anatoli.Iouditski/cours/convex/chapitre_1.pdf">Lecture 1 Convex Sets</a></p>
+
+<h3 id="perceptron">Perceptron</h3>
+
+<p>
+	Wikipedia on the perceptron: <a href="https://en.m.wikipedia.org/wiki/Perceptron">Perceptron</a><br />
+	Another explanation of the perceptron: <a href="http://aass.oru.se/~lilien/ml/seminars/2007_02_01b-Janecek-Perceptron.pdf">The Simple Perceptron</a><br />
+	A Peceptron is a special kind of <a href="https://en.wikipedia.org/wiki/Linear_classifier">linear classifier</a><br />
+	Following article as an interesting view on what they call the duality of input and weight-space: <a href="http://page.mi.fu-berlin.de/rojas/neural/chapter/K3.pdf">3. Weighted Networks &ndash; The Perceptron</a>
+</p>
+
+<h3 id="perceptron-learning">Perceptron Learning</h3>
+
+<p>Following article gives another intuitive explanation on why the learning algorithm works: <a href="https://towardsdatascience.com/perceptron-learning-algorithm-d5db0deab975">Perceptron Learning Algorithm: A Graphical Explanation Of Why It Works</a></p>
+
+<p>An animated gif of the perceptron learning rule: <a href="https://commons.m.wikimedia.org/wiki/File:Perceptron_training_without_bias.gif">Perceptron training without bias</a></p>
+
+<h3 id="convergence-of-the-learning-algorithm">Convergence of the learning algorithm</h3>
+
+<p>This YouTube video presents a very understandable proof: <a href="https://www.youtube.com/watch?v=tRG-OnnQ9g4">Lec-16 Perceptron Convergence Theorem</a></p>
+
+<p>A written version of the same proof can be found in this pdf: <a href="https://www.pearsonhighered.com/assets/samplechapter/0/1/3/1/0131471392.pdf">CHAPTER 1 Rosenblatt&rsquo;s Perceptron</a> By the way, there is much more inside that pdf then just the proof.</p>
+
