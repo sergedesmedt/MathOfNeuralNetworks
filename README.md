@@ -2,7 +2,7 @@
 
 A deep dive into the mathematics of deep learning with a focus on Image Processing.
 
-## Article 1: [The Rosenblatt perceptron](https://github.com/sergedesmedt/MathOfNeuralNetworks/blob/master/RosenblattPerceptronArticleGithub.md)
+## Article 1: [The Rosenblatt perceptron](https://sergedesmedt.github.io/MathOfNeuralNetworks/RosenblattPerceptronArticle.html)
 
 The first article discusses the basic math involved in the Rosenblatt perceptron. This is albeit relative simple math: mostly basic vector operations. The article discusses what a vector is, the main calculations used in the Rosenblatt perceptron and finishes by discussing the main drawbacks of this type of perceptron, thus laying ground for the next article on the ADALIN perceptron
 
