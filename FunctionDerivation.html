@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Function Derivation</title>
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+
+	<style>
+		.funcplot {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: none;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<h1>Derivative of a function</h1>
+		<div id="functionderivative_sample">
+
+		</div>
+		<div style="width:100%">
+			<div id="functionderivationanimation"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		let generateRandomCurve = function () {
+			let amplitude = 1;
+
+			let n = 1; //Math.floor(Math.random() * 4 + 1);
+
+			let spectrRange = d3.range(0, 1);
+			for (i = 0; i < spectrRange.length; i++) {
+				console.log("range[" + i + "] = " + spectrRange[i]);
+			}
+
+			let params = spectrRange.map(function () {
+				return [
+					0.01 /*Math.random()*/ * (2 * Math.PI),		// frequency
+					0 /*Math.random()*/ * Math.PI - Math.PI	// shift
+				]; // [ FREQUENCY , SHIFT ]
+				});
+			for (i = 0; i < params.length; i++) {
+				console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
+			}
+
+			let f = function (x) {
+				let spectrSin = params.map(function (d) { return Math.sin(d[0] * x + d[1]); });
+				for (i = 0; i < spectrSin.length; i++) {
+					console.log("spectrSin[" + i + "] = " + spectrSin[i]);
+				}
+
+				var result = amplitude * (d3.sum(spectrSin) /*/ (3 * n) + 0.5*/);
+				console.log("result = " + result);
+				return result;
+			};
+
+			return f;
+		};
+
+		function createFunctionDerivationAnimationSample() {
+			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -1, 1);
+
+			function ViewModel() {
+				let func = new Function2Dim({ func: generateRandomCurve() }, {});
+
+				this.funcsToShow = [func];
+			}
+
+			let vmfunc = new ViewModel();
+
+			space2dimvsum.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
+			space2dimvsum.show();
+
+		}
+
+		createFunctionDerivationAnimationSample();
+
+	</script>
+</body>
+</html>

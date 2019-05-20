@@ -88,6 +88,13 @@ Space2Dim.prototype.getValueSpacingY = function (lvl) {
     return this._xscale(this._domainXMin) - (20 + lvl * this._valuedspacingy);
 }
 
+Space2Dim.prototype.getDomain = function(){
+    return [
+        [this._domainXMin, this._domainXMax],
+        [this._domainYMin, this._domainYMax]
+    ];
+}
+
 Space2Dim.prototype.convertXToCanvas = function (x) {
     return this._xscale(x);
 }
