@@ -1,28 +1,37 @@
 ﻿function Line2Dim(props, config) {
 
     this._deftype = "unknown";
-    //if (props.hasOwnProperty("p1")) {
-    //    if (props.hasOwnProperty("p2")) {
-    //        this._deftype = "p1p2";
+    if (props.hasOwnProperty("p1")) {
+        if (props.hasOwnProperty("p2")) {
+            this._deftype = "p1p2";
 
-    //        this._p1 = props["p1"];
-    //        this._p2 = props["p2"];
-    //    }
-    //    else if (props.hasOwnProperty("rico")) {
-    //        this._deftype = "p1rico";
+            this._p1 = props["p1"];
+            this._p2 = props["p2"];
 
-    //        this._p1 = props["p1"];
-    //        this._rico = props["rico"];
-    //    }
-    //    else {
-    //        console.log("contains p1 but not p2 or rico")
-    //    }
-    //} else
-    if (props.hasOwnProperty("d")) {
+            let drico = getDRicoFromP1P1(this._p1, this._p2);
+
+            this._d = drico[0];
+            //this._d.subscribe(function (newValue) { console.log("d from p1,p2: " + newValue); })
+
+            this._prico = drico[1];
+
+        }
+        //else if (props.hasOwnProperty("rico")) {
+        //    this._deftype = "p1rico";
+
+        //    this._p1 = props["p1"];
+        //    this._rico = props["rico"];
+        //}
+        else {
+            console.log("contains p1 but not p2 or rico")
+        }
+    } else if (props.hasOwnProperty("d")) {
         if (props.hasOwnProperty("prico")) {
             this._deftype = "drico";
 
             this._d = props["d"];
+            //this._d.subscribe(function (newValue) { console.log("d from d,rico: " + newValue); })
+
             this._prico = props["prico"];
         }
         else {
@@ -75,6 +84,33 @@ Line2Dim.update = function (space2Dim, lines) {
         .attr("y2", function (d) { return calcRayDRicoY2(space, d);} )
     ;
 
+}
+
+var getDRicoFromP1P1 = function (p1, p2) {
+    let p = p1;
+
+    // get unit vector perpendicular to rico
+    let ricoDX = ko.computed(function () {
+        let dx = p2.getX() - p1.getX();
+        let dy = p2.getY() - p1.getY();
+        let len = Math.sqrt((dx * dx) + (dy * dy))
+
+        return dy / len;
+    }, this);
+    let ricoDY = ko.computed(function () {
+        let dx = p2.getX() - p1.getX();
+        let dy = p2.getY() - p1.getY();
+        let len = Math.sqrt((dx * dx) + (dy * dy))
+
+        return -1 * dx / len;
+    }, this);
+    let rayRico = new Rico2Dim(ricoDX, ricoDY);
+
+    let d = ko.computed(function () {
+        return ricoDX() * p.getX() + ricoDY() * p.getY();
+    });
+
+    return [d, rayRico];
 }
 
 var rayGetYFromDRico = function (space2dim, xc, r) {

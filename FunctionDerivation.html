@@ -2,14 +2,26 @@
 <html>
 <head>
 	<title>Learn Function Derivation</title>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
 	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
 	<script type="text/javascript" src="./js/mathfunction.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
 
 	<style>
 		.funcplot {
@@ -33,13 +45,13 @@
 	<script type="text/javascript">
 
 		let generateRandomCurve = function () {
-			let amplitude = 1;
+			let amplitude =30;
 
 			let n = 1; //Math.floor(Math.random() * 4 + 1);
 
 			let spectrRange = d3.range(0, 1);
 			for (i = 0; i < spectrRange.length; i++) {
-				console.log("range[" + i + "] = " + spectrRange[i]);
+				//console.log("range[" + i + "] = " + spectrRange[i]);
 			}
 
 			let params = spectrRange.map(function () {
@@ -49,17 +61,17 @@
 				]; // [ FREQUENCY , SHIFT ]
 				});
 			for (i = 0; i < params.length; i++) {
-				console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
+				//console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
 			}
 
 			let f = function (x) {
 				let spectrSin = params.map(function (d) { return Math.sin(d[0] * x + d[1]); });
 				for (i = 0; i < spectrSin.length; i++) {
-					console.log("spectrSin[" + i + "] = " + spectrSin[i]);
+					//console.log("spectrSin[" + i + "] = " + spectrSin[i]);
 				}
 
 				var result = amplitude * (d3.sum(spectrSin) /*/ (3 * n) + 0.5*/);
-				console.log("result = " + result);
+				//console.log("result = " + result);
 				return result;
 			};
 
@@ -67,17 +79,83 @@
 		};
 
 		function createFunctionDerivationAnimationSample() {
-			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -1, 1);
+			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -50, 50);
 
 			function ViewModel() {
+
+				this.p0x = ko.observable(0);
+				this.p0y = ko.observable(0);
+				this.p1x = ko.observable(-30);
+				this.p1y = ko.observable(-6);
+				this.p2x = ko.observable(30);
+				this.p2y = ko.observable(6);
+
+				//this.p3x = ko.observable(20);
+				//this.p3y = ko.observable(5);
+
+
+				this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.p3x.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.p3y.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				let p0 = new Point2Dim(this.p0x, this.p0y);
+				let pl1 = new Point2Dim(this.p1x, this.p1y);
+				let pl2 = new Point2Dim(this.p2x, this.p2y);
+
+				//let pref3 = new Point2Dim(this.p3x, this.p3y);
+
+				let vector1 = new Vector2Dim(
+					{ p1: p0, p2: pl1 },
+					{ name: "1", p1draggable: 0, p2draggable: 1 }
+				);
+
+				let vector2 = new Vector2Dim(
+					{ p1: p0, p2: pl2 },
+					{ name: "2", p1draggable: 0, p2draggable: 1 }
+				);
+
+				//let prico = new Vector2Dim(
+				//	{ p1: p0, p2: pref3 },
+				//	{ name: "p", p1draggable: 0, p2draggable: 1 }
+				//);
+				//this.rayd = ko.computed(function () { return prico.getSize(); }, this);
+
+
+
+				let ray = new Line2Dim(
+					{ p1: pl1, p2: pl2 },
+					{}
+				);
+
+
+				//this.ricoDX = ko.computed(function () { return this.p3x() / prico.getSize(); }, this);
+				//this.ricoDY = ko.computed(function () { return this.p3y() / prico.getSize(); }, this);
+				//let rayRico = new Rico2Dim(this.ricoDX, this.ricoDY);
+
+				//let rayref = new Line2Dim(
+				//	{ d: this.rayd, prico: rayRico },
+				//	{}
+				//);
+
+
 				let func = new Function2Dim({ func: generateRandomCurve() }, {});
 
 				this.funcsToShow = [func];
+				this.vectorsToShow = [vector1, vector2/*, prico*/];
+				this.raysToShow = [ray/*, rayref*/];
 			}
 
 			let vmfunc = new ViewModel();
 
+			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.raysToShow; });
 			space2dimvsum.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
+			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.vectorsToShow; });
 			space2dimvsum.show();
 
 		}
