@@ -1,3 +1,9 @@
+https://en.wikibooks.org/wiki/LaTeX/Advanced_Mathematics
+https://www.overleaf.com/learn/latex/Integrals,_sums_and_limits
+http://web.ift.uib.no/Teori/KURS/WRK/TeX/symALL.html
+https://latex.org/forum/viewtopic.php?t=8863
+
+
 # The Math behind the Perceptron: Part 1 - The ADALINE Perceptron
 
 ## Introduction
@@ -24,6 +30,81 @@ $$o = f(w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n)$$
 
 There are  a few types of perceptrons, differing in the way the sum results in the output, thus the function $f()$ in the above formula.
 
-In this article we will build on the Rosenblatt Perceptron. It was one of the first perceptrons, if not the first. During this article I will simply be using the name "Perceptron" when referring to the Rosenblatt Perceptron
+In this article we will build on the Adaline Perceptron. During this article I will simply be using the name "Perceptron" when referring to the Adaline Perceptron. I asume you have read the article about the Rosenblatt Perceptron and thus are allready familiar with the basic vector math necessary to understand ghe basic formulas of a general perceptron.
 
-We will investigate the math envolved and discuss its limitations, thereby setting the ground for the future articles. 
+We will investigate the math envolved and discuss its limitations, thereby setting the ground for the future articles.
+
+### The basic math formula for the ADALINE Perceptron
+
+There's not a big difference between the math formula for the Rosenblatt perceptron and for the ADALINE perceptron:
+
+$$
+f(x)  =  
+  \begin{cases}
+ 1 & \text{if } w_1x_1 + w_2x_2 + ... + w_ix_i + ... + w_nx_n > b\\
+ -1 & \text{otherwise} 
+  \end{cases}
+$$
+
+The main difference is that the $otherwise$ case returns $-1$ instead of $0$ which is important here.
+
+But we still calculate the dot-product and compare it with a value, so we still only have two possible outcomes and we still can only classify linearily seperable data. So, basically we can do nothing more then what we could do with the Rosenblatt perceptron.
+
+So then why do we need a new perceptron?
+
+### Why do we need another perceptron?
+
+In the previous article about the Rosenblatt perceptron we where eventually able to divide "things" into two different classes through a linear combination of its features. What can we want more?
+
+Well, a better estimate of the linear boundary would be nice. With the Rosenblatt preceptron we do not have any control over the boundary which the learning will eventually give us: like demonstrated in the previous article it could be any line which seperates our two classes:
+
+==afbeelding van alle mogelijke lijnen die onze twee klassen scheiden, zie artikel over rosenblatt==
+
+Remember the learning procedure of the Rosenblatt perceptron. We defined the error $e$ as being the difference between the desired output $d$ and the effective output $o$ for an input vector $\mathbf{x}$ and a weight vector $\mathbf{w}$:
+
+$$\begin{aligned}
+e &= d-o\\
+&= d-H(\mathbf{w} \cdot \mathbf{x})
+\end{aligned}$$
+
+*(If the above formulas look like chinese to you, you should have a look at [the article about the Rosenblatt perceptron](linknaardatartikel))*
+The effective output $o$ is determined by the Heaviside step function. We could define the total error as being the sum of all these errors and then try to minimize this total error. But herein is the problem: minimization of a function is typicaly done through differentiating the function.
+
+For differentiation the function has to be continuous and the Heaviside step function is not continuous and thus neither is the error function.(==is dit zo?==
+
+https://math.stackexchange.com/questions/13898/how-to-prove-that-the-derivative-of-heavisides-unit-step-function-is-the-dirac
+
+Differentiation of a function is equal to finding the slope (gradient) of a function, and if the slope of a function is zero, w typically have a maximum or minimum value for this function, unless it is a deflection point:
+
+==hier aan afbeelding van een functie met een minimum, maximum en een buigpunt (deflection point)==
+
+The ADALINE perceptron however defines the error as being the difference between the desired outcome $d$ and the value of the dot-product, thus the value before applying the activation function:
+
+$$e = d-\mathbf{w} \cdot \mathbf{x}$$
+
+And this is continuous and thus differentiatable.
+
+### Differentiatable, Continuous? What are you talking about?
+
+The mathematical definition of differentiation of a function is:
+
+==de wiskundige definitie van de afgeleide==
+
+Put simply: it is the change in result of a function divided by the change in argument of that function, for a change in argument going to $0$.
+
+
+==waarom moet een differentieerbare functie continu zijn?==
+
+
+
+
+
+
+==volgende is geen deel van het artikel==
+
+The heaviside step function is discontinuous. A function $f(x)$ is continuous if a small change of $x$ results in a small change in the outcome of the function. This is clearly not the case for the He heaviyside step function: if at 0 and moving to the negative side then the function outcome changes suddenly from 1 to 0.
+
+https://proofwiki.org/wiki/Continuity_of_Heaviside_Step_Function
+https://math.stackexchange.com/questions/497798/proving-discontinuity-by-epsilon-delta
+https://www.intmath.com/functions-and-graphs/7-continuous-discontinuous-functions.php
+https://math.stackexchange.com/questions/828508/why-can-a-discontinuous-function-not-be-differentiablettps://stackedit.io/).

@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Gradients</title>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/space3dim.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/space3dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+
+</head>
+<body>
+	<div>
+		<div style="width:100%">
+			<div id="space2dimdiv"></div>
+		</div>
+		<div style="width:100%">
+			<div id="space3dimdiv"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		function createSpace2Dim() {
+			let space2dimvsum = new Space2Dim("space2dimdiv", 100, 100, -50, 50, -50, 50);
+			space2dimvsum.show();
+		}
+
+		createSpace2Dim();
+
+	</script>
+</body >
+</html >
