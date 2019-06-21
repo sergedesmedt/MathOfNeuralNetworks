@@ -147,6 +147,7 @@
 
 				this.funcsToShow = [func];
 				this.vectorsToShow = [vector1, vector2/*, prico*/];
+				this.pointsToShow = [pl1, pl2];
 				this.raysToShow = [ray/*, rayref*/];
 			}
 
@@ -155,7 +156,8 @@
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
 			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.raysToShow; });
 			space2dimvsum.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
-			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.vectorsToShow; });
+//			space2dimvsum.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.vectorsToShow; });
+			space2dimvsum.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
 			space2dimvsum.show();
 
 		}
