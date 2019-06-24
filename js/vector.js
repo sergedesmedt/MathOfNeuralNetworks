@@ -178,7 +178,8 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 }
 
 Vector2Dim.update = function (space2Dim, vectors) {
-    
+    console.log("Vector2Dim.update");
+
     var space = space2Dim;
 
     var svg = space2Dim.getCanvas();

@@ -13,6 +13,10 @@ Function2Dim.draw = function (space2Dim, funcs) {
         .data(funcs)
         .enter();
 
+    var gfunc = newFuncs
+        .append("g")
+        .attr("class", "func");
+
     var lineFunction = d3.line()
         .curve(d3.curveBasis)
         .x(function (d) {
@@ -29,7 +33,7 @@ Function2Dim.draw = function (space2Dim, funcs) {
         ;
 
     var domainX = space.getDomain()[0];
-    var line = newFuncs.append('path')
+    gfunc.append('path')
         .attr('class', 'funcplot')
         .attr('d', function (d) {
             let me = d;

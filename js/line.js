@@ -53,7 +53,8 @@ Line2Dim.draw = function (space2Dim, lines) {
 
     var svg = space2Dim.getCanvas();
     var allSvgRays = svg.selectAll(".ray")
-        .data(lines).enter();
+        .data(lines)
+        .enter();
 
     var gray = allSvgRays
         .append("g")
