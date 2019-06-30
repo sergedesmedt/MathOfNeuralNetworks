@@ -12,6 +12,7 @@
 	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/space3dim.js"></script>
+	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
@@ -32,6 +33,17 @@
 
 	<script type="text/javascript">
 
+		let generateRandomCurve = function () {
+
+			let f = function (x, y) {
+				//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
+				//return Math.sqrt(x * x + y * y);
+				return 0.005 * (x * x + y * y);
+			}
+
+			return f;
+		};
+
 		function createSpace2Dim() {
 			let space2dimvsum = new Space2Dim("space2dimdiv", 100, 100, -50, 50, -50, 50);
 			space2dimvsum.show();
@@ -39,6 +51,18 @@
 
 		function createSpace3Dim() {
 			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, -50, 50, -50, 50);
+
+			function ViewModel() {
+				let func = new Function3Dim(
+					{ func: generateRandomCurve() },
+					{ sampleFreq: 20, xrange: [-100, 100], yrange: [-100, 100] });
+
+				this.funcsToShow = [func];
+			}
+
+			let vmfunc = new ViewModel();
+
+			space3dimvsum.registerHandler(Function3Dim.draw, Function3Dim.update, function () { return vmfunc.funcsToShow; });
 			space3dimvsum.show();
 		}
 

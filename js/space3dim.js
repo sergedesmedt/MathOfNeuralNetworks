@@ -36,28 +36,31 @@
     var yaxtranf = this.convertPointToCanvas([0, 100, 0]);
     var zaxtranf = this.convertPointToCanvas([0, 0, 100]);
 
-    var xaxis = transform.append("g")
+    this._xaxis = transform.append("g")
         .attr("class", "x axis");
 
-    xaxis.append("line")
+    this._xaxisline = this._xaxis.append("line");
+    this._xaxisline
         .attr("x1", origtransf[0])
         .attr("y1", origtransf[1])
         .attr("x2", xaxtranf[0])
         .attr("y2", xaxtranf[1])
 
-    var yaxis = transform.append("g")
+    this._yaxis = transform.append("g")
         .attr("class", "x axis");
 
-    yaxis.append("line")
+    this._yaxisline = this._yaxis.append("line");
+    this._yaxisline
         .attr("x1", origtransf[0])
         .attr("y1", origtransf[1])
         .attr("x2", yaxtranf[0])
         .attr("y2", yaxtranf[1])
 
-    var zaxis = transform.append("g")
+    this._zaxis = transform.append("g")
         .attr("class", "x axis");
 
-    zaxis.append("line")
+    this._zaxisline = this._zaxis.append("line");
+    this._zaxisline
         .attr("x1", origtransf[0])
         .attr("y1", origtransf[1])
         .attr("x2", zaxtranf[0])
@@ -77,6 +80,7 @@
             me._pitch = me._drag[2] + (mouse[1] - me._drag[0][1]) / 50;
             me._pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, me._pitch));
             //md.turntable(yaw, pitch);
+            me._viewpointTransformation = calcViewPointTransformation(me._yaw, me._pitch);
 
             me.update();
 
@@ -85,8 +89,59 @@
     });
 }
 
+Space3Dim.prototype.getId = function () {
+    return this._canvasId;
+}
+
+Space3Dim.prototype.getParentId = function () {
+    return this._parentId;
+}
+
+Space3Dim.prototype.getSvg = function () {
+    let svg = d3.select("#" + this._svgId);
+    return svg;
+}
+
+Space3Dim.prototype.getCanvas = function () {
+    return d3.select("#" + this.getId());
+}
+
+Space3Dim.prototype.getParent = function () {
+    return d3.select("#" + this.getParentId());
+}
+
 Space3Dim.prototype.convertPointToCanvas = function (point) {
     return transformPoint(point, this._viewpointTransformation);
+}
+
+Space3Dim.prototype.registerHandler = function (drawMethod, updateMethod, itemFactory) {
+    this._handlers.push({ drawMethod: drawMethod, updateMethod: updateMethod, itemFactory: itemFactory });
+}
+
+Space3Dim.prototype.convertToPath = function (points) {
+    var mesh = [];
+    for (var x = 0; x < points.length - 1; x++) {
+        for (var y = 0; y < points[0].length - 1; y++) {
+            var p0 = this.convertPointToCanvas(points[x][y]);
+            var p1 = this.convertPointToCanvas(points[x+1][y]);
+            var p2 = this.convertPointToCanvas(points[x+1][y+1]);
+            var p3 = this.convertPointToCanvas(points[x][y + 1]);
+
+            var depth = p0[2] + p1[2] + p2[2] + p3[2];
+
+            mesh.push({
+                path: 'M' + (p0[0]).toFixed(10) + ',' + (p0[1]).toFixed(10) +
+                    'L' + (p1[0]).toFixed(10) + ',' + (p1[1]).toFixed(10) +
+                    'L' + (p2[0]).toFixed(10) + ',' + (p2[1]).toFixed(10) +
+                    'L' + (p3[0]).toFixed(10) + ',' + (p3[1]).toFixed(10) +
+                    'Z',
+                depth: depth
+            });
+        }
+    }
+
+    mesh.sort(function (a, b) { return b.depth - a.depth });
+    return mesh;
 }
 
 Space3Dim.prototype.show = function () {
@@ -97,11 +152,40 @@ Space3Dim.prototype.show = function () {
 } 
 
 Space3Dim.prototype.update = function () {
+    console.log("space3dim - updating");
+
     var space3dim = this;
+
+    var svg = space3dim.getCanvas();
+
+    var origtransf = this.convertPointToCanvas([0, 0, 0]);
+    var xaxtranf = this.convertPointToCanvas([100, 0, 0]);
+    var yaxtranf = this.convertPointToCanvas([0, 100, 0]);
+    var zaxtranf = this.convertPointToCanvas([0, 0, 100]);
+
+    this._xaxisline
+        .attr("x1", origtransf[0])
+        .attr("y1", origtransf[1])
+        .attr("x2", xaxtranf[0])
+        .attr("y2", xaxtranf[1])
+
+    this._yaxisline
+        .attr("x1", origtransf[0])
+        .attr("y1", origtransf[1])
+        .attr("x2", yaxtranf[0])
+        .attr("y2", yaxtranf[1])
+
+    this._zaxisline
+        .attr("x1", origtransf[0])
+        .attr("y1", origtransf[1])
+        .attr("x2", zaxtranf[0])
+        .attr("y2", zaxtranf[1])
+
     this._handlers.forEach(function (item, index, arr) {
         item.updateMethod(space3dim, item.itemFactory());
     });
 }
+
 
 var calcViewPointTransformation = function (yaw, pitch) {
     var cosA = Math.cos(pitch);
