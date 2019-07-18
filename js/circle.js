@@ -24,7 +24,8 @@ Circle.draw = function (space2Dim, circles) {
 
     var svg = space.getCanvas();
     var allSvgCircles = svg.selectAll(".circle2dim")
-        .data(circles).enter();
+        .data(circles)
+        .enter();
 
     allSvgCircles.append("circle")
         .attr("id", function (d) {
