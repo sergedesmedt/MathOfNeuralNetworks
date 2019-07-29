@@ -41,6 +41,12 @@
 		<div style="width:100%">
 			<div id="space2dimdiv"></div>
 		</div>
+		<div>
+			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
+		</div>
+		<div>
+			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
+		</div>
 		<div style="width:100%">
 			<div id="space3dimdiv"></div>
 		</div>
@@ -88,27 +94,44 @@
 
 		function createSpace3Dim() {
 			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, -50, 50, -50, 50);
-			let lineWidth = 1;
+			let lineWidth = 2;
 			let partialDerivYAt = 25;
+			let partialDerivXAt = 10;
 
 			function ViewModel() {
+				this.funcsToShow = [];
+
 				let partialDerivY = new Function3Dim(
 					{ func: redCurve() },
 					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYAt + -1 * lineWidth, partialDerivYAt + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
+				this.funcsToShow.push(partialDerivY);
 
 				let partialDerivX = new Function3Dim(
 					{ func: redCurve() },
-					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [-1 * lineWidth, lineWidth] , cssclass: "redFunc" });
+					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXAt + -1 * lineWidth, partialDerivXAt + lineWidth] , cssclass: "redFunc" });
+				this.funcsToShow.push(partialDerivX);
 
-				let blueFunc1 = new Function3Dim(
+				let deriveFunc11 = new Function3Dim(
 					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [-50, partialDerivYAt + -1 * lineWidth], yrange: [-50, 50], cssclass: "blueFunc" });
+					{ sampleFreq: 10, xrange: [-50, partialDerivYAt + -1 * lineWidth], yrange: [-50, partialDerivXAt + -1 * lineWidth], cssclass: "blueFunc" });
+				this.funcsToShow.push(deriveFunc11);
 
-				let blueFunc2 = new Function3Dim(
+				let deriveFunc12 = new Function3Dim(
 					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [partialDerivYAt + lineWidth, 50], yrange: [-50, 50], cssclass: "blueFunc" });
+					{ sampleFreq: 10, xrange: [-50, partialDerivYAt + -1 * lineWidth], yrange: [partialDerivXAt + lineWidth, 50], cssclass: "blueFunc" });
+				this.funcsToShow.push(deriveFunc12);
 
-				this.funcsToShow = [partialDerivX, partialDerivY, blueFunc1, blueFunc2];
+				let deriveFunc21 = new Function3Dim(
+					{ func: redCurve() },
+					{ sampleFreq: 10, xrange: [partialDerivYAt + lineWidth, 50], yrange: [-50, partialDerivXAt + -1 * lineWidth], cssclass: "blueFunc" });
+				this.funcsToShow.push(deriveFunc21);
+
+				let deriveFunc22 = new Function3Dim(
+					{ func: redCurve() },
+					{ sampleFreq: 10, xrange: [partialDerivYAt + lineWidth, 50], yrange: [partialDerivXAt + lineWidth, 50], cssclass: "blueFunc" });
+				this.funcsToShow.push(deriveFunc22);
+
+				//this.funcsToShow = [partialDerivX, partialDerivY, blueFunc1, blueFunc2];
 			}
 
 			let vmfunc = new ViewModel();

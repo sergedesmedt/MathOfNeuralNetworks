@@ -87,12 +87,24 @@ function onPoint2DimDrag(space2dim, d, elem) {
     var xd = space2dim.convertXFromCanvas(d3.event.x);
     var yd = space2dim.convertYFromCanvas(d3.event.y);
 
-    d._xdomainObservable(xd);
-    d._ydomainObservable(yd);
+    if (!ko.isComputed(d._xdomainObservable))
+        d._xdomainObservable(xd);
+    if (!ko.isComputed(d._ydomainObservable))
+        d._ydomainObservable(yd);
+
+    let xdomainValue = d._xdomainObservable();
+    let ydomainValue = d._ydomainObservable();
+
+    let xspaceValue = space2dim.convertXToCanvas(xdomainValue);
+    let yspaceValue = space2dim.convertYToCanvas(ydomainValue);
+
+    //console.log("onPoint2DimDrag" +
+    //    " domain[" + xdomainValue + "][" + ydomainValue + "]" +
+    //    ", space[" + xspaceValue+"][" + yspaceValue+"]");
 
     d3.select(elem)
-        .attr('cx', space2dim.convertXToCanvas(d._xdomainObservable()))
-        .attr('cy', space2dim.convertYToCanvas(d._ydomainObservable()))
+        .attr('cx', xspaceValue)
+        .attr('cy', yspaceValue)
 }
 
 function onPoint2DimDragEnd(d) {
