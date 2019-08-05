@@ -107,8 +107,8 @@
 				this.a.subscribe(function (newValue) { space2dimvsum.update(); lineThroughOriginExpression.QueueUpdate(); });
 				this.b.subscribe(function (newValue) { space2dimvsum.update(); lineThroughOriginExpression.QueueUpdate(); });
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let p1 = new Point2Dim(this.a, this.b);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let p1 = new Point2Dim({x: this.a, y: this.b}, {});
 
 				let prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
@@ -133,7 +133,7 @@
 					return res;
 				}, this);
 
-				let pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				let pvrayend = new Point2Dim({x: this.vrayx, y: this.vrayy}, {});
 				let vrayend = new Circle(
 					{ center: pvrayend, radius: ko.observable(2) },
 					{ cssclass: "vrayendpt" }
@@ -201,8 +201,8 @@
 				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); lineAtDistanceExpression.QueueUpdate(); });
 				this.p1y.subscribe(function (newValue) { space2dimvsum.update(); lineAtDistanceExpression.QueueUpdate(); });
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let p1 = new Point2Dim(this.p1x, this.p1y);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let p1 = new Point2Dim({x: this.p1x, y: this.p1y}, {});
 
 				let prico = new Vector2Dim(
 					{ p1: p0, p2: p1 },
@@ -226,7 +226,7 @@
 					return res;
 				}, this);
 
-				let pvrayend = new Point2Dim(this.vrayx, this.vrayy);
+				let pvrayend = new Point2Dim({x: this.vrayx, y: this.vrayy}, {});
 				let vrayend = new Circle(
 					{ center: pvrayend, radius: ko.observable(2) },
 					{ cssclass: "vrayendpt" }

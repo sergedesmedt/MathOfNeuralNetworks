@@ -156,7 +156,7 @@
 				return dv2y;
 			});
 
-			let p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			let p1onv2 = new Point2Dim({x: this.p2onv1x, y: this.p2onv1y}, {});
 			return p1onv2;
 		}
 
@@ -171,8 +171,8 @@
 				this.a1 = ko.observable(40);
 				this.a2 = ko.observable(30);
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pa = new Point2Dim(this.a1, this.a2);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pa = new Point2Dim({x: this.a1, y: this.a2}, {});
 
 				let va = new Vector2Dim(
 					{ p1: p0, p2: pa },
@@ -227,8 +227,8 @@
 				this.a1.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
 				this.a2.subscribe(function (newValue) { space2dimvsum.update(); directionMathExpression.QueueUpdate(); });
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pa = new Point2Dim(this.a1, this.a2);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pa = new Point2Dim({x: this.a1, y: this.a2}, {});
 
 				let va = new Vector2Dim(
 					{ p1: p0, p2: pa },
@@ -241,7 +241,7 @@
 				this.v2 = ko.computed(function () {
 					return va._p2.getY() / va.getSize();
 				});
-				let pv = new Point2Dim(this.v1, this.v2);
+				let pv = new Point2Dim({x: this.v1, y: this.v2}, {});
 
 				let vv = new Vector2Dim(
 					{ p1: p0, p2: pv },
@@ -251,8 +251,8 @@
 
 				// following are helper objects for drawing projections, arcs, etc...
 				//	they do not add anything to the math involved
-				let px = new Point2Dim(ko.observable(1), ko.observable(0));
-				let py = new Point2Dim(ko.observable(0), ko.observable(1));
+				let px = new Point2Dim({x: ko.observable(1), y: ko.observable(0)}, {});
+				let py = new Point2Dim({x: ko.observable(0), y: ko.observable(1)}, {});
 				let vectorx = new Vector2Dim(
 					{ p1: p0, p2: px },
 					{ showSize: 0, p1draggable: 0, p2draggable: 0 }

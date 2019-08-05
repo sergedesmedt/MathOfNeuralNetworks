@@ -126,7 +126,7 @@
 					return y;
 				}, this);
 
-				this.ps = new Point2Dim(this.psx, this.psy);
+				this.ps = new Point2Dim({ x: this.psx, y: this.psy }, {});
 
 				let vector1 = new Vector2Dim(
 					{ p1: this.p0, p2: this.p1 },
@@ -266,7 +266,7 @@
 					return y;
 				}, this);
 
-				this.ps = new Point2Dim(this.psx, this.psy);
+				this.ps = new Point2Dim({ x: this.psx, y: this.psy }, {});
 				let psHandle = new Circle(
 					{ center: this.ps, radius: ko.observable(0.5) },
 					{ draggable: 0, id: "cnvxsegmentend" }
@@ -408,7 +408,7 @@
 					return y;
 				}, this);
 
-				this.ps = new Point2Dim(this.psx, this.psy);
+				this.ps = new Point2Dim({ x: this.psx, y: this.psy }, {});
 				let psHandle = new Circle(
 					{ center: this.ps, radius: ko.observable(0.5) },
 					{ draggable: 0, id: "notcnvxsegmentend" }

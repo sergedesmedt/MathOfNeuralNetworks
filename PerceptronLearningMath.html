@@ -216,10 +216,11 @@
 					{});
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let p1 = new Point2Dim(
-					ko.computed(function () { return this.perc1w1(); }, this),
-					ko.computed(function () { return this.perc1w2(); }, this)
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let p1 = new Point2Dim({
+					x: ko.computed(function () { return this.perc1w1(); }, this),
+					y: ko.computed(function () { return this.perc1w2(); }, this)
+					}, {}
 				);
 
 				let prico = new Vector2Dim(
@@ -266,7 +267,7 @@
 
 					this.pspx = ko.observable(0);
 					this.pspy = ko.observable(0);
-					let vlearnStartPoint = new Point2Dim(this.pspx, this.pspy);
+					let vlearnStartPoint = new Point2Dim({x: this.pspx, y: this.pspy}, {});
 					let clickedPoint = space2dimpercepanim.CreatePoint(x, y);
 
 					let vlearn = new Vector2Dim(

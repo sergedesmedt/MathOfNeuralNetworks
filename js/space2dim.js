@@ -188,7 +188,7 @@ Space2Dim.prototype.CreatePoint = function (x, y) {
     px.subscribe(function (newValue) { space2dim.update(); });
     py.subscribe(function (newValue) { space2dim.update(); });
 
-    var p = new Point2Dim(px, py);
+    var p = new Point2Dim({ x: px, y: py }, {});
     return p;
 }
 
@@ -203,6 +203,6 @@ Space2Dim.prototype.CreatePointAndUpdate = function (x, y, updateFunc) {
     px.subscribe(function (newValue) { space2dim.update(); callFunc(); });
     py.subscribe(function (newValue) { space2dim.update(); callFunc(); });
 
-    var p = new Point2Dim(px, py);
+    var p = new Point2Dim({ x: px, y: py }, {});
     return p;
 }

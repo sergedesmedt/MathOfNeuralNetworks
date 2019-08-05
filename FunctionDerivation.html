@@ -59,7 +59,7 @@
 				this.amplx.subscribe(function (newValue) { space2dimvsum.update(); });
 				this.amply.subscribe(function (newValue) { space2dimvsum.update(); });
 
-				let pampl = new Point2Dim(this.amplx, this.amply);
+				let pampl = new Point2Dim({x: this.amplx, y: this.amply}, {});
 
 				let ampl = this.amplx;
 				let generateRandomCurve = function () {
@@ -123,11 +123,11 @@
 				//this.p3x.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p3y.subscribe(function (newValue) { space2dimvsum.update(); });
 
-				//let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pl1 = new Point2Dim(this.p1x, this.p1y);
-				let pl2 = new Point2Dim(this.p2x, this.p2y);
+				//let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pl1 = new Point2Dim({x: this.p1x, y: this.p1y}, {});
+				let pl2 = new Point2Dim({x: this.p2x, y: this.p2y}, {});
 
-				//let pref3 = new Point2Dim(this.p3x, this.p3y);
+				//let pref3 = new Point2Dim({x: this.p3x, y: this.p3y}, {});
 
 				//let vector1 = new Vector2Dim(
 				//	{ p1: p0, p2: pl1 },

@@ -1,9 +1,6 @@
-﻿Point2Dim = function (
-    xdomain,
-    ydomain
-) {
-    this._xdomainObservable = xdomain;
-    this._ydomainObservable = ydomain;
+﻿function Point2Dim (props, config) {
+    this._xdomainObservable = props["x"];
+    this._ydomainObservable = props["y"];
 }
 
 Point2Dim.prototype.getX = function() {

@@ -185,7 +185,7 @@
 				return dv2y;
 			});
 
-			let p1onv2 = new Point2Dim(this.p2onv1x, this.p2onv1y);
+			let p1onv2 = new Point2Dim({x: this.p2onv1x, y: this.p2onv1y}, {});
 			return p1onv2;
 		}
 
@@ -208,9 +208,9 @@
 				this.b2 = ko.observable(50);
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pa = new Point2Dim(this.a1, this.a2);
-				let pb = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pa = new Point2Dim({x: this.a1, y: this.a2}, {});
+				let pb = new Point2Dim({x: this.b1, y: this.b2}, {});
 
 				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },
@@ -249,7 +249,7 @@
 					return da2;
 				});
 
-				let paonb = new Point2Dim(this.paonbx, this.paonby);
+				let paonb = new Point2Dim({x: this.paonbx, y: this.paonby}, {});
 
 				let aonb = new Vector2Dim(
 					{ p1: p0, p2: paonb },
@@ -349,9 +349,9 @@
 				this.b2 = ko.observable(50);
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pa = new Point2Dim(this.a1, this.a2);
-				let pb = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pa = new Point2Dim({x: this.a1, y: this.a2}, {});
+				let pb = new Point2Dim({x: this.b1, y: this.b2}, {});
 
 				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },
@@ -417,7 +417,7 @@
 					return db1;
 				});
 
-				let paonb = new Point2Dim(this.paonbx, this.paonby);
+				let paonb = new Point2Dim({x: this.paonbx, y: this.paonby}, {});
 
 				let aonb = new Vector2Dim(
 					{ p1: p0, p2: paonb },
@@ -428,7 +428,7 @@
 					{ showEndArrow: 0, p1draggable: 0, p2draggable: 0, cssclass: "projline" }
 				)
 
-				let pbona = new Point2Dim(this.pbonax, this.pbonay);
+				let pbona = new Point2Dim({x: this.pbonax, y: this.pbonay}, {});
 
 				let bona = new Vector2Dim(
 					{ p1: p0, p2: pbona },
@@ -521,12 +521,12 @@
 				this.psumy = ko.computed(function () { return Number(this.b2()) + Number(this.c2()); }, this);
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let pa = new Point2Dim(this.a1, this.a2);
-				let pb = new Point2Dim(this.b1, this.b2);
-				let pc = new Point2Dim(this.c1, this.c2);
+				let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+				let pa = new Point2Dim({x: this.a1, y: this.a2}, {});
+				let pb = new Point2Dim({x: this.b1, y: this.b2}, {});
+				let pc = new Point2Dim({x: this.c1, y: this.c2}, {});
 
-				let psum = new Point2Dim(this.psumx, this.psumy);
+				let psum = new Point2Dim({x: this.psumx, y: this.psumy}, {});
 
 				let a = new Vector2Dim(
 					{ p1: p0, p2: pa },

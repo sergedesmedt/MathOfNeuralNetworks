@@ -77,7 +77,7 @@
 			</div>
 		</div>
 		<div style="width:100%">
-			<div>You can drag the two red dots to change the vectors $\mathbf{a}$ and $\mathbf{b}$ and see how this affects the result of the sum, that is vector $\mathbf{c}</div>
+			<div>You can drag the two red dots to change the vectors $\mathbf{a}$ and $\mathbf{b}$ and see how this affects the result of the sum, that is vector $\mathbf{c}$</div>
 			<div id="vectoraddition" class="divcentered"></div>
 		</div>
 	</div>
@@ -169,11 +169,11 @@
 				this.b2.subscribe(function (newValue) { space2dimvsum.update(); summationMathExpression.QueueUpdate(); });
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let a = new Point2Dim(this.a1, this.a2);
-				let b = new Point2Dim(this.b1, this.b2);
+				let p0 = new Point2Dim({ x: this.p0x, y: this.p0y }, {});
+				let a = new Point2Dim({ x: this.a1, y: this.a2 }, { });
+				let b = new Point2Dim({ x: this.b1, y: this.b2 }, { });
 
-				let c = new Point2Dim(this.c1, this.c2);
+				let c = new Point2Dim({ x: this.c1, y: this.c2 }, { });
 
 				//let circle1 = new Circle(p3);
 				//let circle2 = new Circle(p2);
@@ -259,11 +259,11 @@
 				this.p2y.subscribe(function (newValue) { space2dimvdiff.update(); diffMathExpression.QueueUpdate(); });
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let p1 = new Point2Dim(this.p1x, this.p1y);
-				let p2 = new Point2Dim(this.p2x, this.p2y);
+				let p0 = new Point2Dim({ x: this.p0x, y: this.p0y }, {});
+				let p1 = new Point2Dim({ x: this.p1x, y: this.p1y }, {});
+				let p2 = new Point2Dim({ x: this.p2x, y: this.p2y }, {});
 
-				let pdiff = new Point2Dim(this.pdiffx, this.pdiffy);
+				let pdiff = new Point2Dim({ x: this.pdiffx, y: this.pdiffy }, {});
 
 				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
@@ -336,11 +336,11 @@
 				this.multiplyer.subscribe(function (newValue) { space2dimvmult.update();; multMathExpression.QueueUpdate(); });
 
 
-				let p0 = new Point2Dim(this.p0x, this.p0y);
-				let p1 = new Point2Dim(this.p1x, this.p1y);
+				let p0 = new Point2Dim({ x: this.p0x, y: this.p0y }, {});
+				let p1 = new Point2Dim({ x: this.p1x, y: this.p1y }, {});
 				let lambda = this.multiplyer;
 
-				let pmult = new Point2Dim(this.pmultx, this.pmulty);
+				let pmult = new Point2Dim({ x: this.pmultx, y: this.pmulty }, {});
 
 				let vector1 = new Vector2Dim(
 					{ p1: p0, p2: p1 },
