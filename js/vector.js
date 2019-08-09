@@ -178,21 +178,17 @@ Vector2Dim.draw = function (space2Dim, vectors) {
 }
 
 Vector2Dim.update = function (space2Dim, vectors) {
-    console.log("Vector2Dim.update");
-
-    var space = space2Dim;
-
     var svg = space2Dim.getCanvas();
 
-    var vectors = svg.selectAll(".vector")
+    var allVectors = svg.selectAll(".vector")
         .data(vectors);
 
-    var newVectors = vectors.enter();
-    var removedVectors = vectors.exit();
+    var newVectors = allVectors.enter();
+    var removedVectors = allVectors.exit();
 
     createVectors(space2Dim, newVectors);
     deleteVectors(space2Dim, removedVectors);
-    updateVectors(space2Dim, vectors);
+    updateVectors(space2Dim, allVectors);
 }
 
 function createVectors(space2Dim, newVectors) {

@@ -18,6 +18,7 @@
 	<script type="text/javascript" src="./js/mathfunction.js"></script>
 	<script type="text/javascript" src="./js/rico.js"></script>
 	<script type="text/javascript" src="./js/line.js"></script>
+	<script type="text/javascript" src="./js/dimlength.js"></script>
 	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./css/article.css">
@@ -25,6 +26,7 @@
 	<link rel="stylesheet" type="text/css" href="./css/space3dim.css">
 	<link rel="stylesheet" type="text/css" href="./css/vector.css">
 	<link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
 
 	<style>
 	</style>
@@ -50,23 +52,87 @@
 				this.lineendhandleX.subscribe(function (newValue) { space2dimvsse.update(); });
 				this.lineendhandleY.subscribe(function (newValue) { space2dimvsse.update(); });
 
-				let lineStartHandle = new Point2Dim({x: this.linestarthandleX, y: this.linestarthandleY}, {}); 
-				let lineEndHandle = new Point2Dim({x: this.lineendhandleX, y: this.lineendhandleY}, {});
-
+				let lineStartPoint = new Point2Dim({x: this.linestarthandleX, y: this.linestarthandleY}, {}); 
+				let lineEndPoint = new Point2Dim({x: this.lineendhandleX, y: this.lineendhandleY}, {});
 
 				let line = new Line2Dim(
-					{ p1: lineStartHandle, p2: lineEndHandle },
+					{ p1: lineStartPoint, p2: lineEndPoint },
 					{}
 				);
 
+				let startHandle = new Circle(
+					{ center: lineStartPoint, radius: ko.observable(0.75) },
+					{ draggable: 1 }
+				)
+
+				let endHandle = new Circle(
+					{ center: lineEndPoint, radius: ko.observable(0.75) },
+					{ draggable: 1 }
+				);
+
+				this.pointsToShow = ko.observableArray([]);
+
+				this.pointsToShow.subscribe(function (newValue) {
+					console.log("a value was added");
+					space2dimvsse.update();
+				});
+
+				this.pointsToShow.push(startHandle);
+				this.pointsToShow.push(endHandle);
+
+				this.dimlengthToShow = ko.observableArray([]);
+				this.dimlengthToShow.subscribe(function (newValue) {
+					space2dimvsse.update();
+				});
+
+				let me = this;
+				space2dimvsse.OnClick(function (x, y) {
+					let px = ko.observable(x);
+					let py = ko.observable(y);
+
+					px.subscribe(function (newValue) { space2dimvsse.update(); });
+					py.subscribe(function (newValue) { space2dimvsse.update(); });
+
+					let dataHandle = new Point2Dim({
+						x: px,
+						y: py
+					}, {});;
+
+					let dataManipulator = new Circle(
+						{ center: dataHandle, radius: ko.observable(1.5) },
+						{ draggable: 1 }
+					);
+
+					me.pointsToShow.push(dataManipulator);
+
+					//this.dataX = ko.observable(x);
+					this.dataY = ko.computed(function () {
+						return line.getY(px());
+					}, this)
+
+					//this.dataX.subscribe(function (newValue) { space2dimvsse.update(); });
+					this.dataY.subscribe(function (newValue) { space2dimvsse.update(); });
+
+					var lineY = line.getY(x);
+					let lineIntersection = new Point2Dim({
+						x: px,
+						//y: ko.observable(lineY)
+						y: dataY
+					}, {});;
 
 
-				this.pt1x = ko.observable(30);
-				this.pt1y = ko.observable(20);
-				let pt1 = new Point2Dim({x: this.pt1x, y: this.pt1y}, {});
+					let dim = new DimLength2Dim(
+						{ p1: dataHandle, p2: lineIntersection },
+						{}
+						);
+					me.dimlengthToShow.push(dim);
+				});
 
+				//this.pt1x = ko.observable(30);
+				//this.pt1y = ko.observable(20);
+				//let pt1 = new Point2Dim({x: this.pt1x, y: this.pt1y}, {});
 
-				this.pointsToShow = [lineStartHandle, lineEndHandle, pt1];
+				//this.circlesToShow = [startHandle, endHandle];
 				this.raysToShow = [line];
 
 			}
@@ -74,7 +140,10 @@
 			let vm = new SSEvsSEViewModel();
 
 			space2dimvsse.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
-			space2dimvsse.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow; });
+			//space2dimvsse.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
+			//space2dimvsse.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow(); });
+			space2dimvsse.registerHandler(Circle.draw, Circle.update, function () { return vm.pointsToShow(); });
+			space2dimvsse.registerHandler(DimLength2Dim.draw, DimLength2Dim.update, function () { return vm.dimlengthToShow(); });
 
 			space2dimvsse.show();
 		}

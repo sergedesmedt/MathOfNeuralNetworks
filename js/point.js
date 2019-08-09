@@ -1,6 +1,18 @@
 ﻿function Point2Dim (props, config) {
     this._xdomainObservable = props["x"];
     this._ydomainObservable = props["y"];
+
+    this._cssclass = "";
+    if (config.hasOwnProperty("cssclass")) {
+        this._cssclass = config["cssclass"];
+        //console.log("this._cssclass: " + this._cssclass);
+    }
+
+    this._cdraggable = 0;
+    if (config.hasOwnProperty("draggable")) {
+        this._cdraggable = config["draggable"];
+        //console.log("this._p1draggable: " + this._p1draggable);
+    }
 }
 
 Point2Dim.prototype.getX = function() {

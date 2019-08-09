@@ -23,17 +23,42 @@ Circle.draw = function (space2Dim, circles) {
     var space = space2Dim;
 
     var svg = space.getCanvas();
-    var allSvgCircles = svg.selectAll(".circle2dim")
+    var newSvgCircles = svg.selectAll(".circle2dim")
         .data(circles)
         .enter();
 
-    allSvgCircles.append("circle")
+    createCircle(space2Dim, newSvgCircles);
+
+}
+
+Circle.update = function (space2Dim, circles) {
+
+    var space = space2Dim;
+    var svg = space.getCanvas();
+
+    var allSvgCircles = svg.selectAll(".circle2dim")
+        .data(circles)
+
+    var newCirles = allSvgCircles.enter();
+    var removedCircles = allSvgCircles.exit();
+
+    createCircle(space2Dim, newCirles);
+    deleteCircle(space2Dim, removedCircles);
+    updateCircle(space2Dim, allSvgCircles);
+}
+
+function createCircle(space2Dim, newCircles) {
+    var space = space2Dim;
+
+    var svg = space.getCanvas();
+
+    newCircles.append("circle")
         .attr("id", function (d) {
             if (d._id == undefined)
                 return (Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36));
             else
                 return d._id;
-        })  
+        })
         .attr("class", function (d) {
             return "circle2dim"
                 + ((d._cdraggable == 0) ? "" : " circledraggable")
@@ -41,14 +66,14 @@ Circle.draw = function (space2Dim, circles) {
         })
         .attr("cx", function (d) { return space2Dim.convertXToCanvas(d._center.getX()); })
         .attr("cy", function (d) { return space2Dim.convertYToCanvas(d._center.getY()); })
-        .attr("r", function (d) { 
-			var r2canvas = space2Dim.convertXToCanvas(d._radius()) - space2Dim.convertXToCanvas(0);
-			//console.log("_radius: " + d._radius());
-			//console.log("r2canvas: " + r2canvas);
-			return r2canvas;
-			})
+        .attr("r", function (d) {
+            var r2canvas = space2Dim.convertXToCanvas(d._radius()) - space2Dim.convertXToCanvas(0);
+            //console.log("_radius: " + d._radius());
+            //console.log("r2canvas: " + r2canvas);
+            return r2canvas;
+        })
         .style("stroke", "black")
-        ;
+    ;
 
     let circen_drag = d3.drag()
         .on('start', onCirlce2DimDragStart)
@@ -57,10 +82,13 @@ Circle.draw = function (space2Dim, circles) {
 
     svg.selectAll(".circle2dim.circledraggable")
         .call(circen_drag);
-
 }
 
-Circle.update = function (space2Dim, circles) {
+function deleteCircle(space2Dim, removedCircles) {
+    removedCircles.remove();
+}
+
+function updateCircle(space2Dim, circles) {
 
     var space = space2Dim;
 

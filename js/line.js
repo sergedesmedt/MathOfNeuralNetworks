@@ -68,6 +68,11 @@ Line2Dim.draw = function (space2Dim, lines) {
         .attr("y2", function (d) { return calcRayDRicoY2(space, d);} )
 }
 
+Line2Dim.prototype.getY = function(x) {
+    var y = (this._d() - (this._prico.getDX() * x)) / this._prico.getDY();
+    return y;
+}
+
 Line2Dim.update = function (space2Dim, lines) {
     //console.log("UpdateLine ==================");
 
