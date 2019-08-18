@@ -1,6 +1,13 @@
 ﻿function Function2Dim(props, config) {
     this._func = props["func"];
 
+    this._minDomain = Number.MIN_SAFE_INTEGER;
+    this._maxDomain = Number.MAX_SAFE_INTEGER;
+    if (config.hasOwnProperty("domain")) {
+        this._minDomain = config["domain"][0];
+        this._maxDomain = config["domain"][1];
+    }
+
     this._sampleFreq = config["sampleFreq"];
 
     this._cssclass = "";
@@ -29,9 +36,12 @@
 
     let me = this;
     this._pathFactory = function (space2Dim, domainX){
-        var //numPoints = 50, //Math.floor(chartWidth / 200),
-            X = d3.range(domainX[0], domainX[1]), //.map(function (d) { return d / numPoints; }),
+        //console.log("range x: min=" + domainX[0] + ", max=" + domainX[1]);
+        let stepValue = 1;
+        let //numPoints = 50, //Math.floor(chartWidth / 200),
+            X = d3.range(domainX[0], domainX[1] + stepValue, stepValue), //.map(function (d) { return d / numPoints; }),
             Y = X.map(function (d) {
+                //console.log("map x: " + d);
                 return me._func(d);
             }),
             points = d3.zip(X, Y);
@@ -76,7 +86,13 @@ function createFuncs(space2Dim, newFuncs) {
     gfunc.append('path')
         .attr('class', 'funcplot')
         .attr('d', function (d) {
-            return d._pathFactory(space2Dim, domainX);
+            var domainMinValue = d._minDomain;
+            if (domainMinValue < domainX[0])
+                domainMinValue = domainX[0]
+            var domainMaxValue = d._maxDomain;
+            if (domainMaxValue > domainX[1])
+                domainMaxValue = domainX[1]
+            return d._pathFactory(space2Dim, [domainMinValue, domainMaxValue]);
         })
         ;
 
@@ -90,7 +106,14 @@ function updateFuncs(space2Dim, funcs) {
     var domainX = space2Dim.getDomain()[0];
     funcs.select(".funcplot")
         .attr('d', function (d) {
-            return d._pathFactory(space2Dim, domainX);
+            var domainMinValue = d._minDomain;
+            if (domainMinValue < domainX[0])
+                domainMinValue = domainX[0]
+            var domainMaxValue = d._maxDomain;
+            if (domainMaxValue > domainX[1])
+                domainMaxValue = domainX[1]
+
+            return d._pathFactory(space2Dim, [domainMinValue, domainMaxValue]);
         })
         ;
 }

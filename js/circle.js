@@ -1,5 +1,8 @@
 ﻿function Circle(props, config) {
     this._center = props["center"];
+    //console.log("Circle._center.x: " + this._center.getX());
+    //console.log("Circle._center.y: " + this._center.getY());
+
 	this._radius = props["radius"];
 
     this._cssclass = "";
@@ -42,6 +45,10 @@ Circle.update = function (space2Dim, circles) {
     var newCirles = allSvgCircles.enter();
     var removedCircles = allSvgCircles.exit();
 
+    console.log("Circle.update > newCirles[" + newCirles.size() + "]");
+    console.log("Circle.update > removedCircles[" + removedCircles.size() + "]");
+    console.log("Circle.update > updateCirles[" + allSvgCircles.size() + "]");
+
     createCircle(space2Dim, newCirles);
     deleteCircle(space2Dim, removedCircles);
     updateCircle(space2Dim, allSvgCircles);
@@ -64,12 +71,18 @@ function createCircle(space2Dim, newCircles) {
                 + ((d._cdraggable == 0) ? "" : " circledraggable")
                 + ((d._cssclass == "") ? "" : (" " + d._cssclass))
         })
-        .attr("cx", function (d) { return space2Dim.convertXToCanvas(d._center.getX()); })
-        .attr("cy", function (d) { return space2Dim.convertYToCanvas(d._center.getY()); })
+        .attr("cx", function (d) {
+            let domainx = d._center.getX();
+            //console.log("Circle.cx.domain: " + domainx);
+            return space2Dim.convertXToCanvas(domainx);
+        })
+        .attr("cy", function (d) {
+            let domainy = d._center.getY();
+            //console.log("Circle.cy.domain: " + domainy);
+            return space2Dim.convertYToCanvas(domainy);
+        })
         .attr("r", function (d) {
             var r2canvas = space2Dim.convertXToCanvas(d._radius()) - space2Dim.convertXToCanvas(0);
-            //console.log("_radius: " + d._radius());
-            //console.log("r2canvas: " + r2canvas);
             return r2canvas;
         })
         .style("stroke", "black")
@@ -90,18 +103,25 @@ function deleteCircle(space2Dim, removedCircles) {
 
 function updateCircle(space2Dim, circles) {
 
-    var space = space2Dim;
+    //var space = space2Dim;
 
-    var svg = space.getCanvas();
-    var allSvgCircles = svg.selectAll(".circle2dim")
-        .data(circles);
+    //var svg = space.getCanvas();
+    //var allSvgCircles = svg.selectAll(".circle2dim")
+    //    .data(circles);
 		
-	allSvgCircles
-		.attr("cx", function (d) { return space2Dim.convertXToCanvas(d._center.getX()); })
-        .attr("cy", function (d) { return space2Dim.convertYToCanvas(d._center.getY()); })
-        .attr("r", function (d) { 
+    circles
+        .attr("cx", function (d) {
+            let domainx = d._center.getX();
+            //console.log("Circle.cx.domain: " + domainx);
+            return space2Dim.convertXToCanvas(domainx);
+        })
+        .attr("cy", function (d) {
+            let domainy = d._center.getY();
+            //console.log("Circle.cy.domain: " + domainy);
+            return space2Dim.convertYToCanvas(domainy);
+        })
+        .attr("r", function (d) {
 			var r2canvas = space2Dim.convertXToCanvas(d._radius()) - space2Dim.convertXToCanvas(0);
-
 			return r2canvas;
 			})		
 }

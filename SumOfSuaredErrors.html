@@ -29,6 +29,16 @@
 	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
 
 	<style>
+        .group1 {
+            stroke: #000000;
+            stroke-width: 2;
+            fill: green;
+        }
+        .group2 {
+            stroke: #000000;
+            stroke-width: 2;
+            fill: red;
+        }
 	</style>
 </head>
 <body>
@@ -36,6 +46,10 @@
 		<h1>Sum of Squared Errors versus Sum of Errors</h1>
 		<div id="sumofsquarederrorsvssumoferrors"></div>
 	</div>
+    <div>
+        <h1>Sum of Squared Errors versus Mean Squared Error</h1>
+        <div id="sumofsquarederrorsvsmeansquarederror"></div>
+    </div>
 
 	<script type="text/javascript">
 		function createSSEvsSESample() {
@@ -140,15 +154,122 @@
 			let vm = new SSEvsSEViewModel();
 
 			space2dimvsse.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
-			//space2dimvsse.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow; });
-			//space2dimvsse.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow(); });
 			space2dimvsse.registerHandler(Circle.draw, Circle.update, function () { return vm.pointsToShow(); });
 			space2dimvsse.registerHandler(DimLength2Dim.draw, DimLength2Dim.update, function () { return vm.dimlengthToShow(); });
 
 			space2dimvsse.show();
 		}
 
+		function createSSEvsMSESample() {
+		    let space = new Space2Dim("sumofsquarederrorsvsmeansquarederror", 300, 300, 0, 100, 0, 100);
+
+		    function SSEvsMSE() {
+		        this.linestarthandleX = ko.observable(10);
+		        this.linestarthandleY = ko.observable(30);
+		        this.lineendhandleX = ko.observable(90);
+		        this.lineendhandleY = ko.observable(50);
+
+		        this.linestarthandleX.subscribe(function (newValue) { space.update(); });
+		        this.linestarthandleY.subscribe(function (newValue) { space.update(); });
+		        this.lineendhandleX.subscribe(function (newValue) { space.update(); });
+		        this.lineendhandleY.subscribe(function (newValue) { space.update(); });
+
+		        let lineStartPoint = new Point2Dim({ x: this.linestarthandleX, y: this.linestarthandleY }, {});
+		        let lineEndPoint = new Point2Dim({ x: this.lineendhandleX, y: this.lineendhandleY }, {});
+
+		        let line = new Line2Dim(
+					{ p1: lineStartPoint, p2: lineEndPoint },
+					{}
+				);
+
+		        let startHandle = new Circle(
+					{ center: lineStartPoint, radius: ko.observable(0.75) },
+					{ draggable: 1 }
+				)
+
+		        let endHandle = new Circle(
+					{ center: lineEndPoint, radius: ko.observable(0.75) },
+					{ draggable: 1 }
+				);
+
+		        this.pointsToShow = ko.observableArray([]);
+
+		        this.pointsToShow.subscribe(function (newValue) {
+		            console.log("a value was added");
+		            space.update();
+		        });
+
+		        this.pointsToShow.push(startHandle);
+		        this.pointsToShow.push(endHandle);
+
+		        this.dimlengthToShow = ko.observableArray([]);
+		        this.dimlengthToShow.subscribe(function (newValue) {
+		            space.update();
+		        });
+
+		        let me = this;
+		        space.OnClick(function (x, y) {
+		            let event = d3.event;
+
+		            let cssclass = "group1";
+		            if (d3.event.shiftKey)
+                        cssclass = "group2";
+
+		            let px = ko.observable(x);
+		            let py = ko.observable(y);
+
+		            px.subscribe(function (newValue) { space.update(); });
+		            py.subscribe(function (newValue) { space.update(); });
+
+		            let dataHandle = new Point2Dim({
+		                x: px,
+		                y: py
+		            }, {});;
+
+		            let dataManipulator = new Circle(
+						{ center: dataHandle, radius: ko.observable(1.5) },
+						{ draggable: 1, cssclass: cssclass }
+					);
+
+		            me.pointsToShow.push(dataManipulator);
+
+		            //this.dataX = ko.observable(x);
+		            this.dataY = ko.computed(function () {
+		                return line.getY(px());
+		            }, this)
+
+		            //this.dataX.subscribe(function (newValue) { space.update(); });
+		            this.dataY.subscribe(function (newValue) { space.update(); });
+
+		            var lineY = line.getY(x);
+		            let lineIntersection = new Point2Dim({
+		                x: px,
+		                //y: ko.observable(lineY)
+		                y: dataY
+		            }, {});;
+
+
+		            let dim = new DimLength2Dim(
+						{ p1: dataHandle, p2: lineIntersection },
+						{}
+						);
+		            me.dimlengthToShow.push(dim);
+		        });
+
+		        this.raysToShow = [line];
+		    }
+
+		    let vm = new SSEvsMSE();
+
+		    space.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vm.raysToShow; });
+		    space.registerHandler(Circle.draw, Circle.update, function () { return vm.pointsToShow(); });
+		    space.registerHandler(DimLength2Dim.draw, DimLength2Dim.update, function () { return vm.dimlengthToShow(); });
+
+		    space.show();
+        }
+
 		createSSEvsSESample();
+		createSSEvsMSESample();
 	</script>
 </body>
 </html>

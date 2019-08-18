@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Convex Functions</title>
+    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+    <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+    <script type="text/javascript" src="./d3/d3.v5.js"></script>
+    <script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+    <script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+    <script type="text/javascript" src="./js/space2dim.js"></script>
+    <script type="text/javascript" src="./js/space3dim.js"></script>
+    <script type="text/javascript" src="./js/point.js"></script>
+    <script type="text/javascript" src="./js/circle.js"></script>
+    <script type="text/javascript" src="./js/vector.js"></script>
+    <script type="text/javascript" src="./js/mathfunction.js"></script>
+    <script type="text/javascript" src="./js/rico.js"></script>
+    <script type="text/javascript" src="./js/line.js"></script>
+    <script type="text/javascript" src="./js/dimlength.js"></script>
+    <script type="text/javascript" src="./js/mathfunction3d.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./css/article.css">
+    <link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+    <link rel="stylesheet" type="text/css" href="./css/space3dim.css">
+    <link rel="stylesheet" type="text/css" href="./css/vector.css">
+    <link rel="stylesheet" type="text/css" href="./css/line.css">
+    <link rel="stylesheet" type="text/css" href="./css/dimlength.css">
+
+    <style>
+		.funcplot {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: none;
+		}
+		.abovefunc {
+			stroke: #00ff21;
+			stroke-width: 1;
+		}
+		.belowfunc {
+			stroke: #ff0000;
+			stroke-width: 1;
+		}
+    </style>
+</head>
+<body>
+    <div>
+        <h1>A Convex Function</h1>
+        <div id="convexfunctionsample"></div>
+    </div>
+    <div>
+        <h1>A NOT Convex function</h1>
+        <div id="notconvexfunctionsample"></div>
+    </div>
+
+    <script type="text/javascript">
+
+
+		let someConvexFunctionFactory = function () {
+
+			let f = function (x) {
+				return 0.04 * x * x - 40;
+			}
+
+			return f;
+		}
+
+		let someNotconvexFunctionFactory = function () {
+
+			let f = function (x) {
+				let xt = (x - 10);
+				return (0.001 * xt * xt * xt) + (0.03 * xt * xt) - 10;
+			}
+
+			return f;
+		}
+
+        function createConvexSample(divid, funcFactory) {
+        	let space = new Space2Dim(divid, 300, 300, -50, 50, -50, 50);
+
+            function ConvexSampleViewModel() {
+
+            	let convexFunc = funcFactory();
+
+                this.p1x = ko.observable(-30);
+                this.p1y = ko.computed(function () {
+                    return convexFunc(this.p1x());
+                }, this);
+                this.p2x = ko.observable(30);
+                this.p2y = ko.computed(function () {
+                    return convexFunc(this.p2x());
+                }, this);
+
+
+
+            	//this.dimlengthToShow = ko.observableArray([]);
+                this.circlesToShow = ko.observableArray([]);
+                this.dimlengthToShow = ko.observableArray([]);
+            	//let convexStartPoints = ko.observableArray([]);
+
+                let px1s = this.p1x;
+                let py1s = this.p1y;
+                let px2s = this.p2x;
+                let py2s = this.p2y;
+                let convexEvaluation = function (src) {
+                	src.circlesToShow.removeAll();
+                	src.dimlengthToShow.removeAll();
+                	//convexStartPoints.removeAll();
+
+                	let idealStepWidth = 5;
+                	let x1s = px1s();
+                	let y1s = py1s();
+                	let x2s = px2s();
+                	let y2s = py2s();
+
+                	let nofSteps = Math.round((x2s - x1s) / idealStepWidth);
+                	let lambdaStep = 1.0 / nofSteps;
+                	for (let i = 1; i < nofSteps; i++)
+                	{
+                		let lambda = i * lambdaStep;
+                		let xd = (1 - lambda) * x1s + lambda * x2s;
+                		let ys = convexFunc(xd);
+                		let ye = (1 - lambda) * y1s + lambda * y2s;
+
+                		let ps = new Point2Dim({ x: ko.observable(xd), y: ko.observable(ys) }, {});
+                		let pe = new Point2Dim({ x: ko.observable(xd), y: ko.observable(ye) }, {});
+
+                		//convexStartPoints.push(ps);
+                		//convexStartPoints.push(pe);
+
+                		let cssclass = "abovefunc";
+                		if (ye <= ys)
+							cssclass = "belowfunc";
+
+                		let dim = new DimLength2Dim(
+							{ p1: ps, p2: pe },
+							{ cssclass: cssclass }
+							);
+
+                		src.dimlengthToShow.push(dim);
+
+                		let psHandle = new Circle(
+							{ center: ps, radius: ko.observable(0.5) },
+							{ draggable: 0 }
+						);
+                		let peHandle = new Circle(
+							{ center: pe, radius: ko.observable(0.5) },
+							{ draggable: 0 }
+						);
+
+                		src.circlesToShow.push(psHandle);
+                		src.circlesToShow.push(peHandle);
+					}
+                }
+
+                let me = this;
+                this.p1x.subscribe(function (newValue) { space.update(); convexEvaluation(me); });
+                this.p2x.subscribe(function (newValue) { space.update(); convexEvaluation(me); });
+
+                let pl1 = new Point2Dim({ x: this.p1x, y: this.p1y }, {});
+                let pl2 = new Point2Dim({ x: this.p2x, y: this.p2y }, {});
+
+                let linesegment = new Vector2Dim(
+					{ p1: pl1, p2: pl2 },
+					{ showEndArrow: 0, dvaluelvl: 0, p1draggable: 0, p2draggable: 0 }
+				);
+
+                let func = new Function2Dim({ func: funcFactory() }, {});
+
+
+                this.funcsToShow = [func];
+                this.pointsToShow = [pl1, pl2];
+                this.getPointsToShow = function () {
+                	result = this.pointsToShow; //.concat(convexStartPoints());
+                	return result;
+                };
+                this.vectorsToShow = [linesegment];
+
+                convexEvaluation(me);
+
+            }
+
+            let vm = new ConvexSampleViewModel();
+
+            space.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vm.funcsToShow; });
+            space.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.getPointsToShow(); });
+            space.registerHandler(Circle.draw, Circle.update, function () { return vm.circlesToShow(); });
+            space.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
+            space.registerHandler(DimLength2Dim.draw, DimLength2Dim.update, function () { return vm.dimlengthToShow(); });
+            space.show();
+        }
+
+        //function createNotConvexSample() {
+        //    let space = new Space2Dim("notconvexfunctionsample", 300, 300, -50, 50, -50, 50);
+
+        //    function NotConvexSampleViewModel() {
+
+        //        let func = new Function2Dim({ func: notconvexFunctionFactory() }, {});
+
+        //        this.funcsToShow = [func];
+
+        //    }
+
+        //    let vm = new NotConvexSampleViewModel();
+
+        //    space.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vm.funcsToShow; });
+
+        //    space.show();
+        //}
+
+        createConvexSample("convexfunctionsample", someConvexFunctionFactory);
+        createConvexSample("notconvexfunctionsample", someNotconvexFunctionFactory);
+    </script>
+</body>
+</html>

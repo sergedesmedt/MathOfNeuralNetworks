@@ -3,3 +3,16 @@
     stroke-width: 1;
     fill: #000000;
 }
+
+.dimlengthsize {
+    stroke: #000000;
+    stroke-width: 1;
+    fill: #000000;
+}
+
+.dimlengthsize.hidden {
+    stroke: #000000;
+    stroke-width: 1;
+    fill: #000000;
+    visibility: collapse;
+}

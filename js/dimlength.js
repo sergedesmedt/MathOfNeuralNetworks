@@ -8,6 +8,11 @@
 
     this._sizeDist = -10;
     this._sizePos = 0.5;
+    this._showSize = 0;
+    if (config.hasOwnProperty("showSize")) {
+        this._showSize = config["showSize"];
+        //console.log("this._showSize: " + this._showSize);
+    }
 
     this._cssclass = "";
     if (config.hasOwnProperty("cssclass")) {
@@ -17,34 +22,9 @@
 }
 
 DimLength2Dim.prototype.setConfig = function (config) {
-    if (config.hasOwnProperty("name")) {
-        this._name = config["name"];
-        //console.log("this._name: " + this._name);
-    }
-
     if (config.hasOwnProperty("showSize")) {
         this._showSize = config["showSize"];
         //console.log("this._showSize: " + this._showSize);
-    }
-
-    if (config.hasOwnProperty("showEndArrow")) {
-        this._showEndArrow = config["showEndArrow"];
-        //console.log("this._showEndArrow: " + this._showEndArrow);
-    }
-
-    if (config.hasOwnProperty("dvaluelvl")) {
-        this._dvaluelvl = config["dvaluelvl"];
-        //console.log("this._dvaluelvl: " + this._dvaluelvl);
-    }
-
-    if (config.hasOwnProperty("p1draggable")) {
-        this._p1draggable = config["p1draggable"];
-        //console.log("this._p1draggable: " + this._p1draggable);
-    }
-
-    if (config.hasOwnProperty("p2draggable")) {
-        this._p2draggable = config["p2draggable"];
-        //console.log("this._p2draggable: " + this._p2draggable);
     }
 
     if (config.hasOwnProperty("cssclass")) {
@@ -106,7 +86,7 @@ function createDimLength(space2Dim, newDimlengths) {
 
     var svgdefs = dimlengths.append("svg:defs");
     svgdefs.append("marker")
-        .attr("class", function (d) { return "vectorarrow" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
+        .attr("class", function (d) { return "linearrow" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("id", function (d, i, n) { return space2Dim.getId() + "linearrow" + i; })
         .attr("refX", 5)
         .attr("refY", 5)
@@ -119,7 +99,7 @@ function createDimLength(space2Dim, newDimlengths) {
         ;
 
     var dimlengthlines = dimlengths.append("line")
-        .attr("class", function (d) { return "dimlengthline" /*+ ((d._cssclass == "") ? "" : (" " + d._cssclass))*/; })
+        .attr("class", function (d) { return "dimlengthline" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("x1", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("y1", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
         .attr("x2", function (d) { return space2Dim.convertXToCanvas(d._p2.getX()); })
@@ -136,6 +116,7 @@ function createDimLength(space2Dim, newDimlengths) {
         .append("text")
         .attr("class", function (d) {
             return DimLength2Dim.mainCssClass + "size"
+                + ((d._showSize == 1) ? "" : " hidden")
                 + ((d._cssclass == "") ? "" : (" " + d._cssclass));
         })
         .text(function (d) { return d3.format(".1f")(d.getSize()); })
@@ -177,6 +158,7 @@ function deleteDimLength(space2Dim, removedDimlengths) {
 function updateDimLength(space2Dim, dimlengths) {
 
     dimlengths.select(".dimlengthline")
+        .attr("class", function (d) { return "dimlengthline" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("x1", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("y1", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
         .attr("x2", function (d) { return space2Dim.convertXToCanvas(d._p2.getX()); })
@@ -251,6 +233,7 @@ function updateDimLength(space2Dim, dimlengths) {
 
     //var distSize = -5;
     dimlengths.select("." + DimLength2Dim.mainCssClass + "size")
+        .classed('hidden', function (d) { return d._showSize == 0; })
         .text(function (d) { return d3.format(".1f")(d.getSize()); })
         .attr("x", function (d) {
             var p1x = space2Dim.convertXToCanvas(d._p1.getX());
