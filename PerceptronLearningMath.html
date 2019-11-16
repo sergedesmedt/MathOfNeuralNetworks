@@ -301,13 +301,13 @@
 					animationTransition.selectAll(".vectorline.learnvector")
 						.style("opacity", 1)
 						.on("start", function () {
-							console.log("Animate into view started");
+							//console.log("Animate into view started");
 							learningStepsDiv
 								.selectAll(".learnstep1")
 								.classed("hidden", false);
 						})
 						.on("end", function () {
-							console.log("Animate into view ended");
+							//console.log("Animate into view ended");
 							perceptronLearnStepDesiredExpression.RegisterExpression("perceptronlearn_sample_desired", getPerceptronLearnStepDesiredMathExpression);
 							perceptronLearnStepDesiredExpression.QueueUpdate(); 
 						});

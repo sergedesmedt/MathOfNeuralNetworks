@@ -2,6 +2,7 @@ function Space2Dim(
     elemId
     , htmlWidth, htmlHeight
     , domainXMin, domainXMax, domainYMin, domainYMax
+    , rotation
 ) {
     this._htmlWidth = htmlWidth;
     this._htmlHeight = htmlHeight;
@@ -18,7 +19,7 @@ function Space2Dim(
     this._valuedspacingx = 8;
     this._valuedspacingy = 12;
 
-    this._margin = 65;
+    this._margin = 20;
     var margin = { top: this._margin, right: this._margin, bottom: this._margin, left: this._margin };
 
     this._xscale = d3.scaleLinear()
@@ -37,6 +38,11 @@ function Space2Dim(
         .ticks(10)
         .tickSize(-1 * this._htmlWidth);
 
+    this._rotate = 0;
+    if (rotation != undefined)
+    {
+        this._rotate = rotation;
+    }
     var svg = d3.select("#" + this._parentId)
         .append("svg")
         .attr("id", this._svgId)
@@ -44,7 +50,8 @@ function Space2Dim(
         .attr("height", this._htmlHeight + margin.top + margin.bottom)
         .append("g")
         .attr("id", this._canvasId)
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "rotate(" + this._rotate + ", " + (margin.left + this._htmlWidth / 2) + "," + (margin.top + this._htmlHeight / 2) + ")"
+        + " translate(" + margin.left + "," + margin.top + ")");
 
     svg.append("rect")
         .attr("width", this._htmlWidth)

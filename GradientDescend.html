@@ -1,0 +1,384 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Gradient Descend</title>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/space3dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
+	<script type="text/javascript" src="./js/dimlength.js"></script>
+	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
+	<script type="text/javascript" src="./js/mathfunction3dz.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/space3dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
+	<link rel="stylesheet" type="text/css" href="./css/function3d.css">
+
+	<style>
+
+		.currMinFunc {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: #000000;
+		}
+
+	</style>
+
+
+</head>
+<body>
+	<h1>Gradient Descend</h1>
+	<input type="range" min="0" max="1" step="0.01" data-bind="value: Learning.learningrate, valueUpdate: 'input'">
+	<button onclick="doSingleIteration()">Iterate once</button>
+	<div>
+		<table>
+			<tr>
+				<td>
+					<h2>Error function</h2>
+					<div id="gradentdescend"></div>
+				</td>
+				<td>
+					<h2>Partial Derivative Y</h2>
+					<div id="partialderivy"></div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<h2>Partial Derivative X</h2>
+					<div id="partialderivx"></div>
+				</td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+
+	<script type="text/javascript">
+		let lambda = -10;
+
+		let coeff = 0.02;
+
+		let xMin = -50, xMax = 50;
+		let yMin = -50, yMax = 50;
+
+		//let dim3dCurveFactory = function () {
+		//	let f = function (x, z) {
+		//		let ysq = (z / coeff) - (x * x);
+		//		if (ysq < 0)
+		//			return [];
+		//		let y = Math.sqrt(ysq);
+		//		return [y, -y];
+		//	}
+
+		//	return f;
+		//};
+
+		//let dim3dCurveFactory = function () {
+		//	let f = function (x, y) {
+		//		return coeff * (x * x + y * y);
+		//	}
+
+		//	return f;
+		//};
+
+		let errCurve = function (x, y) {
+			return coeff * (x * x + y * y);
+		}
+
+		let dim2dCurrMinFunction = function (x, y) {
+			return (coeff * (x * x + y * y)) + 1;
+		}
+
+		let xCurveFactory = function (y) {
+			let f = function (x) {
+				return coeff * (x * x + y * y);
+			}
+
+			return f;
+		}
+
+		//let derivXCurveFactory = function () {
+		//	let f = function (x) {
+		//		return 2 * coeff * x;
+		//	}
+
+		//	return f;
+		//}
+
+		let derivXCurve = function (x) {
+			return 2 * coeff * x;
+		}
+
+		let yCurveFactory = function (x) {
+			let f = function (y) {
+				return coeff * (x * x + y * y);
+			}
+
+			return f;
+		}
+
+		//let derivYCurveFactory = function () {
+		//	let f = function (y) {
+		//		return 2 * coeff * y;
+		//	}
+
+		//	return f;
+		//}
+		let derivYCurve = function (y) {
+			return 2 * coeff * y;
+		}
+
+		let space3dim = new Space3Dim("gradentdescend", 200, 200, 4, -50, 50, 50, -50, 0, -1);
+		let space2dimDerivX = new Space2Dim("partialderivx", 200, 200, -50, 50, -50, 50);
+		let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, 90);
+
+		function createGradientDescendSample() {
+
+			function ViewModel() {
+
+				let startGenerator = d3.randomUniform(-50, 50);
+				let startX = startGenerator()
+				let startY = startGenerator();
+
+				this.currentMinXAt = ko.observable(startX);
+				this.currentMinXAt.subscribe(function (newvalue) {
+					//console.log("currentMinXAt: newvalue[" + newvalue + "]");
+					if (vm.curvesToShow.length == 2)
+					{
+						vm.curvesToShow.pop();
+						vm.curvesToShow.push(getAllToUpdate());
+					}
+
+					space3dim.update();
+					space2dimDerivX.update();
+				});
+
+				this.currentMinYAt = ko.observable(startY);
+				this.currentMinYAt.subscribe(function (newvalue) {
+					//console.log("tangentp1x: newvalue[" + newvalue + "]");
+					//if (vm.curvesToShow.length == 2) 
+					//{
+					//	vm.curvesToShow.pop();
+					//	vm.curvesToShow.push(getAllToUpdate());
+					//}
+
+					//space3dim.update();
+					space2dimDerivY.update();
+				});
+
+				this.currMinAt = new Point2Dim({ x: this.currentMinXAt, y: this.currentMinYAt }, {});
+				this.funcXToShow = [];
+				this.funcYToShow = [];
+				this.curvesToShow = [];
+				this.tangentsToShow = [];
+
+				let errorfunc = errCurve;
+
+				let getColorFunc = function () {
+					let minz = errorfunc(0, 0);
+					let maxz = errorfunc(xMax, yMax);
+
+					let steps = 10;
+					let zstep = (maxz - minz) / steps;
+
+					let fillColorFunc = function (x, y, z) {
+						let colorInterpol = d3.scaleLinear()
+							.domain([minz, maxz])
+							.range(['#00FF00', '#FF0000'])
+							.interpolate(d3.interpolateHsl); //interpolateHsl interpolateHcl interpolateRgb
+
+						let i = 0;
+						while (z >= (minz + zstep * i)) {
+							i++;
+						}
+
+						return colorInterpol(minz + zstep * i);
+					}
+
+					return fillColorFunc;
+				}
+
+				let me = this;
+
+				let getAllToUpdate = function () {
+
+					let currentMinXAtVal = parseInt(me.currentMinXAt());
+					let currentMinYAtVal = parseInt(me.currentMinYAt());
+
+					let currMinCurve = new Function3Dim(
+						{ func: dim2dCurrMinFunction },
+						{ sampleFreq: 3, xrange: [currentMinXAtVal - 2, currentMinXAtVal + 2], yrange: [currentMinYAtVal - 2, currentMinYAtVal + 2], cssclass: "currMinFunc" });
+
+					return currMinCurve;
+				}
+
+				let getAllToShown = function () {
+
+					let currentMinXAtVal = parseInt(me.currentMinXAt());
+					let currentMinYAtVal = parseInt(me.currentMinYAt());
+
+					let errorCurve = new Function3Dim(
+						{ func: errCurve /*dim3dCurveFactory()*/ },
+						{ sampleFreq: 40, xrange: [xMin, xMax], yrange: [yMin, yMax], colorFunc: getColorFunc() });
+
+					let currMinCurve = getAllToUpdate();
+					//let currMinCurve = new Function3Dim(
+					//	{ func: dim2dCurrMinFunction },
+					//	{ sampleFreq: 3, xrange: [startX - 2, startX + 2], yrange: [startY - 2, startY + 2], cssclass: "currMinFunc" });
+
+
+					let xFunc = new Function2Dim({ func: xCurveFactory(currentMinYAtVal) }, {});
+					let derivXFunc = new Function2Dim({ func: derivXCurve }, {});
+					//let posXX = ko.observable(currentMinXAtVal);
+					////let posXX = ko.observable(0);
+					//posXX.subscribe(function (newvalue) {
+					//	//console.log("tangentp1x: newvalue[" + newvalue + "]");
+					//	space2dimDerivX.update();
+					//});
+					let posXY1 = ko.observable(0);
+					let posXY2 = ko.observable(1);
+					let posX1 = new Point2Dim({ x: me.currentMinXAt, y: posXY1 }, {});
+					let posX2 = new Point2Dim({ x: me.currentMinXAt, y: posXY2 }, {});
+
+					let posXLine = new Line2Dim(
+						{ p1: posX1, p2: posX2 },
+						{ id: "posx" }
+					);
+
+					let xval1 = currentMinXAtVal;
+					let zval1 = errCurve(currentMinXAtVal, currentMinYAtVal);
+					//console.log("xval1[" + xval1 + "] - zval1[" + zval1 + "]");
+					let xval2 = currentMinXAtVal + lambda;
+					let zval2 = zval1 + lambda * derivXCurve(currentMinXAtVal);
+					//console.log("xval2[" + xval2 + "] - zval2[" + zval2 + "]");
+
+					let tangentp1x = ko.observable(xval1);
+					////let tangentp1x = ko.observable(0);
+					//tangentp1x.subscribe(function (newvalue) {
+					//	//console.log("tangentp1x: newvalue[" + newvalue + "]");
+					//	space2dimDerivX.update();
+					//});
+					let tangentp1y = ko.observable(zval1);
+					let tangentp2x = ko.observable(xval2);
+					let tangentp2y = ko.observable(zval2);
+					//let tangentp1y = ko.observable(25);
+					//let tangentp2x = ko.observable(45);
+					//let tangentp2y = ko.observable(-10);
+					//let txp1 = new Point2Dim({ x: tangentp1x, y: tangentp1y }, {});
+					let txp1 = new Point2Dim({ x: tangentp1x, y: tangentp1y }, {});
+					let txp2 = new Point2Dim({ x: tangentp2x, y: tangentp2y }, {});
+
+					//let tangentx = new Line2Dim(
+					//	{ p1: txp1, p2: txp2 },
+					//	{ id: "tgx"}
+					//);
+					//console.log("tangentx: " +
+					//	"txp1=x[" + txp1.getX() + "]y[" + txp1.getY() + "]" +
+					//	"txp2=x[" + txp2.getX() + "]y[" + txp2.getY() + "]" +
+					//	""
+					//	);
+
+					let yFunc = new Function2Dim({ func: yCurveFactory(currentMinXAtVal) }, {});
+					let derivYFunc = new Function2Dim({ func: derivYCurve }, {});
+					//let posYX = ko.observable(currentMinYAtVal);
+					let posYY1 = ko.observable(0);
+					let posYY2 = ko.observable(1);
+					let posY1 = new Point2Dim({ x: me.currentMinYAt, y: posYY1 }, {});
+					let posY2 = new Point2Dim({ x: me.currentMinYAt, y: posYY2 }, {});
+
+					let posYLine = new Line2Dim(
+						{ p1: posY1, p2: posY2 },
+						{}
+					);
+
+					//me.rayXToShow = [tangentx];
+					me.xToShow = [xFunc/*, derivXFunc*/];
+					me.xCurrPosTo = [posXLine]; //, tangentx];
+					me.yToShow = [yFunc/*, derivYFunc*/];
+					me.yCurrPosTo = [posYLine];
+
+					me.curvesToShow = [errorCurve, currMinCurve];
+					//me.curvesToShow = [currMinCurve];
+				};
+
+				getAllToShown();
+			}
+
+			let vmfunc = new ViewModel();
+
+			space3dim.registerMeshProvider(Function3DimZ.getMeshData, function () { return vmfunc.curvesToShow; });
+			space3dim.show();
+
+			//space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.rayXToShow; });
+			space2dimDerivX.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.xToShow; });
+			space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.xCurrPosTo; });
+			space2dimDerivX.show();
+
+			space2dimDerivY.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.yToShow; });
+			space2dimDerivY.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.yCurrPosTo; });
+			space2dimDerivY.show();
+
+			//let svg = space2dimDerivX.getSvg();
+			//let animationTransition1 = svg.transition().duration(2000);
+			////vmfunc.xCurrPosTo[1].AnimateProperty(animationTransition1, { x1: -10 }, null, space2dimDerivX);
+			//vmfunc.xCurrPosTo[1].AnimateValue(animationTransition1, { x1: -10 }, null, space2dimDerivX);
+
+			//var animationTransition2 = animationTransition1.transition().duration(2000);
+			//vmfunc.xCurrPosTo[1].AnimateProperty(animationTransition2, { x2: 10 }, null, space2dimDerivX);
+
+			return vmfunc;
+
+		};
+
+		let vm = createGradientDescendSample();
+
+		function doSingleIteration() {
+			//console.log("doSingleIteration");
+
+			let svg = space2dimDerivX.getSvg();
+
+			//vmfunc.xCurrPosTo[1].AnimateProperty(animationTransition1, { x1: -10 }, null, space2dimDerivX);
+			//vm.xCurrPosTo[1].AnimateValue(animationTransition1, { x1: -10 }, null, space2dimDerivX);
+
+			//let animationTransition2 = svg.transition().duration(2000);
+			//vm.xCurrPosTo[0].AnimateValue(animationTransition2, { x1: -10 }, null, space2dimDerivX);
+
+			let valueTween = function () {
+				let x1curr = vm.currMinAt.getX();
+				let dxcurr = derivXCurve(x1curr);
+
+				let y1curr = vm.currMinAt.getY();
+				let dycurr = derivYCurve(y1curr);
+
+				let x1t = x1curr + lambda * dxcurr;
+				let y1t = y1curr + lambda * dycurr;
+
+				return function (t) {
+					vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
+					vm.currMinAt.setY(y1curr + (y1t - y1curr) * t);
+				}
+			};
+
+			let animationTransition1 = svg.transition().duration(2000);
+			animationTransition1.tween("learntween", valueTween);
+
+		};
+
+	</script>
+</body>
+</html>

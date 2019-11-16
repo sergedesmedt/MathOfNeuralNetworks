@@ -96,6 +96,11 @@ function onPoint2DimDrag(space2dim, d, elem) {
     var xd = space2dim.convertXFromCanvas(d3.event.x);
     var yd = space2dim.convertYFromCanvas(d3.event.y);
 
+    if (d.onDrag)
+    {
+        [xd, yd] = d.onDrag(xd, yd);
+    }
+
     if (!ko.isComputed(d._xdomainObservable))
         d._xdomainObservable(xd);
     if (!ko.isComputed(d._ydomainObservable))

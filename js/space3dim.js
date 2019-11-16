@@ -1,14 +1,17 @@
 ﻿function Space3Dim(
     elemId
-    , htmlWidth, htmlHeight
-    , domainXMin, domainXMax, domainYMin, domainYMax
+    , htmlWidth, htmlHeight, htmlZ
+    , domainXMin, domainXMax, domainYMin, domainYMax, domainZMin, domainZMax
 ) {
     this._htmlWidth = htmlWidth;
     this._htmlHeight = htmlHeight;
+    this._htmlZ = htmlZ;
     this._domainXMin = domainXMin;
     this._domainXMax = domainXMax;
     this._domainYMin = domainYMin;
     this._domainYMax = domainYMax;
+    this._domainZMin = domainZMin;
+    this._domainZMax = domainZMax;
     this._parentId = elemId;
     this._canvasId = "svgcanvas" + this._parentId;
     this._svgId = "svg" + elemId;
@@ -16,8 +19,18 @@
     this._handlers = [];
     this._meshProviders = [];
 
-    this._margin = 65;
-    var margin = { top: this._margin, right: this._margin, bottom: this._margin, left: this._margin };
+    this._margin = 20;
+    let margin = { top: this._margin, right: this._margin, bottom: this._margin, left: this._margin };
+
+    this._xscale = d3.scaleLinear()
+        .domain([this._domainXMin, this._domainXMax])
+        .range([0, this._htmlWidth]);
+    this._yscale = d3.scaleLinear()
+        .domain([this._domainYMin, this._domainYMax])
+        .range([this._htmlHeight, 0]);
+    this._zscale = d3.scaleLinear()
+        .domain([this._domainZMin, this._domainZMax])
+        .range([0, this._htmlZ]);
 
     this._yaw = 0.0;
     this._pitch = 0.0;
@@ -32,54 +45,6 @@
         .attr("id", this._canvasId)
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    this._xaxis = [
-        [[0, 0, 0], [100, 0, 0]],
-        [[100, 0, 0], [0, 0, 0]]
-    ];
-    this._yaxis = [
-        [[0, 0, 0], [0, 100, 0]],
-        [[0, 100, 0], [0, 0, 0]]
-    ];
-    this._zaxis = [
-        [[0, 0, 0], [0, 0, 100]],
-        [[0, 0, 100], [0, 0, 0]]
-    ];
-
-    //var origtransf = this.convertPointToCanvas([0, 0, 0]);
-    //var xaxtranf = this.convertPointToCanvas([100, 0, 0]);
-    //var yaxtranf = this.convertPointToCanvas([0, 100, 0]);
-    //var zaxtranf = this.convertPointToCanvas([0, 0, 100]);
-
-    //this._xaxis = transform.append("g")
-    //    .attr("class", "x axis");
-
-    //this._xaxisline = this._xaxis.append("line");
-    //this._xaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", xaxtranf[0])
-    //    .attr("y2", xaxtranf[1])
-
-    //this._yaxis = transform.append("g")
-    //    .attr("class", "x axis");
-
-    //this._yaxisline = this._yaxis.append("line");
-    //this._yaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", yaxtranf[0])
-    //    .attr("y2", yaxtranf[1])
-
-    //this._zaxis = transform.append("g")
-    //    .attr("class", "x axis");
-
-    //this._zaxisline = this._zaxis.append("line");
-    //this._zaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", zaxtranf[0])
-    //    .attr("y2", zaxtranf[1])
-
     let me = this;
     svg.on("mousedown", function () {
         me._drag = [d3.mouse(this), me._yaw, me._pitch];
@@ -89,12 +54,11 @@
         me._drag = false;
     }).on("mousemove", function () {
         if (me._drag) {
-            const scale = 50;
+            const scale = 200;
             var mouse = d3.mouse(this);
             me._yaw = me._drag[1] - (mouse[0] - me._drag[0][0]) / scale;
             me._pitch = me._drag[2] + (mouse[1] - me._drag[0][1]) / scale;
             me._pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, me._pitch));
-            //md.turntable(yaw, pitch);
             me._viewpointTransformation = calcViewPointTransformation(me._yaw, me._pitch);
 
             me.update();
@@ -126,7 +90,14 @@ Space3Dim.prototype.getParent = function () {
 }
 
 Space3Dim.prototype.convertPointToCanvas = function (point) {
-    return transformPoint(point, this._viewpointTransformation);
+
+    let htmlCoord = [
+        this._xscale(point[0]), 
+        this._yscale(point[1]),
+        this._zscale(point[2]),
+    ];
+
+    return transformPoint(htmlCoord, this._viewpointTransformation);
 }
 
 Space3Dim.prototype.registerHandler = function (drawMethod, updateMethod, itemFactory) {
@@ -146,6 +117,16 @@ Space3Dim.prototype.convertToPath = function (points, cssclass) {
             var o2 = points[x + 1][y + 1];
             var o3 = points[x][y + 1];
 
+            let color = null;
+            if(o0.length == 4)
+            {
+                let xm = (o0[0] + o1[0] + o2[0] + o3[0]) / 4;
+                let ym = (o0[1] + o1[1] + o2[1] + o3[1]) / 4;
+                let zm = (o0[2] + o1[2] + o2[2] + o3[2]) / 4;
+
+                color = o0[3](xm, ym, zm);
+            }
+
             var p0 = this.convertPointToCanvas(o0);
             var p1 = this.convertPointToCanvas(o1);
             var p2 = this.convertPointToCanvas(o2);
@@ -153,7 +134,6 @@ Space3Dim.prototype.convertToPath = function (points, cssclass) {
 
 
             var depth = p0[2] + p1[2] + p2[2] + p3[2];
-            //var depth = Math.min.apply(null, [p0[2], p1[2], p2[2], p3[2]]);
 
             //console.log("cssclass" + cssclass + " depth[" + depth + "]" + " o0=" + o0[0] + "," + o0[1] + "," + o0[2] + " - p0=" + p0[0] + "," + p0[1] + "," + p0[2]);
             //console.log("cssclass" + cssclass + " depth[" + depth + "]" + " o1=" + o1[0] + "," + o1[1] + "," + o1[2] + " - p1=" + p1[0] + "," + p1[1] + "," + p1[2]);
@@ -170,11 +150,11 @@ Space3Dim.prototype.convertToPath = function (points, cssclass) {
                 origPoint: [o0, o1, o2, o3],
                 projPoint: [p0, p1, p2, p3],
                 cssclass: cssclass,
+                fillColor: color
             });
         }
     }
 
-    //mesh.sort(function (a, b) { return b.depth - a.depth });
     return mesh;
 }
 
@@ -200,14 +180,6 @@ Space3Dim.prototype.show = function () {
 
     meshes.sort(function (a, b) { return b.depth - a.depth });
 
-    //var newFuncs = svg.selectAll(".mesh3d")
-    //    .data(meshes)
-    //    .enter();
-
-    //var gfunc = newFuncs
-    //    .append("g")
-    //    .attr("class", "mesh3d");
-
     var newMeshes = svg.selectAll(".mesh3drect")
         .data(meshes)
         .enter();
@@ -217,12 +189,7 @@ Space3Dim.prototype.show = function () {
         .attr("class", function (d) { return "mesh3drect " + d.cssclass; })
         .attr("id", function (d) { return "depth[" + d.depth + "]"; })
         .attr("d", function (d) { return d.path; })
-        //.attr("stroke", "#000000")
-        //.attr("fill", "#FFFFFF")
-
-    //this._handlers.forEach(function (item, index, arr) {
-    //    item.drawMethod(space3dim, item.itemFactory());
-    //});
+        .style("fill", function (d) { return d.fillColor; })
 } 
 
 Space3Dim.prototype.update = function () {
@@ -252,36 +219,8 @@ Space3Dim.prototype.update = function () {
         .attr("class", function (d) { return "mesh3drect " + d.cssclass; })
         .attr("id", function (d) { return "depth[" + d.depth + "]"; })
         .attr("d", function (d) { return d.path; })
-        //.attr("stroke", "#000000")
-        //.attr("fill", "#FFFFFF")
+        .style("fill", function (d) { return d.fillColor; })
 
-
-    //var origtransf = this.convertPointToCanvas([0, 0, 0]);
-    //var xaxtranf = this.convertPointToCanvas([100, 0, 0]);
-    //var yaxtranf = this.convertPointToCanvas([0, 100, 0]);
-    //var zaxtranf = this.convertPointToCanvas([0, 0, 100]);
-
-    //this._xaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", xaxtranf[0])
-    //    .attr("y2", xaxtranf[1])
-
-    //this._yaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", yaxtranf[0])
-    //    .attr("y2", yaxtranf[1])
-
-    //this._zaxisline
-    //    .attr("x1", origtransf[0])
-    //    .attr("y1", origtransf[1])
-    //    .attr("x2", zaxtranf[0])
-    //    .attr("y2", zaxtranf[1])
-
-    //this._handlers.forEach(function (item, index, arr) {
-    //    item.updateMethod(space3dim, item.itemFactory());
-    //});
 }
 
 
@@ -301,31 +240,16 @@ var calcViewPointTransformation = function (yaw, pitch) {
     transformPrecalc[7] = sinA;
     transformPrecalc[8] = cosA * cosB;
 
-    //if (timer) clearTimeout(timer);
-    //timer = setTimeout(renderSurface);
-
     return transformPrecalc;
 }
 
 var transformPoint = function (point, viewpointTransformation) {
     // calculate the transformed coordinates according to the yaw and pitch
-
     var x = viewpointTransformation[0] * point[0] + viewpointTransformation[1] * point[1] + viewpointTransformation[2] * point[2];
     var y = viewpointTransformation[3] * point[0] + viewpointTransformation[4] * point[1] + viewpointTransformation[5] * point[2];
     var z = viewpointTransformation[6] * point[0] + viewpointTransformation[7] * point[1] + viewpointTransformation[8] * point[2];
-
-    //var inversepoint = inverseTransformPoint([x, y, z], viewpointTransformation);
 
     //console.log("orig=" + point[0] + "," + point[1] + "," + point[2] + " - reverse=" + inversepoint[0] + "," + inversepoint[1] + "," + inversepoint[2]);
 
     return [x, y, z];
 };
-
-//var inverseTransformPoint = function (point, viewpointTransformation) {
-//    // https://math.stackexchange.com/questions/2895880/inversion-of-rotation-matrix
-
-//    var x = viewpointTransformation[0] * point[0] + viewpointTransformation[3] * point[1] + viewpointTransformation[6] * point[2];
-//    var y = viewpointTransformation[1] * point[0] + viewpointTransformation[4] * point[1] + viewpointTransformation[7] * point[2];
-//    var z = viewpointTransformation[2] * point[0] + viewpointTransformation[5] * point[1] + viewpointTransformation[8] * point[2];
-//    return [x, y, z];
-//}

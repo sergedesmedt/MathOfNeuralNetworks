@@ -12,7 +12,12 @@
 	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/space3dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
 	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
+	<script type="text/javascript" src="./js/dimlength.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="./css/article.css">
 	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
@@ -33,116 +38,214 @@
 			fill: #ffffff;
 		}
 
+		.funcplot {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: none;
+		}
 	</style>
 
 </head>
 <body>
 	<div>
-		<div style="width:100%">
-			<div id="space2dimdiv"></div>
+		<div>
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAt, valueUpdate: 'input'" />
 		</div>
 		<div>
-			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAt, valueUpdate: 'input'" />
 		</div>
 		<div>
-			<input type="range" min="0" max="1" step="0.01" data-bind="value: Concave.lambda, valueUpdate: 'input'" />
-		</div>
-		<div style="width:100%">
 			<div id="space3dimdiv"></div>
+		</div>
+		<h2>Partial Derivative X</h2>
+		<div>
+			<div id="partialderivx"></div>
+		</div>
+		<h2>Partial Derivative Y</h2>
+		<div>
+			<div id="partialderivy"></div>
 		</div>
 	</div>
 
 	<script type="text/javascript">
 
-		let redCurve = function () {
+		let coeff = 0.01;
 
+		let dim3dCurveFactory = function () {
 			let f = function (x, y) {
 				//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
 				//return Math.sqrt(x * x + y * y);
-				return 0.005 * (x * x + y * y);
+				return coeff * (x * x + y * y);
 			}
 
 			return f;
 		};
 
-		let blueCurve1 = function () {
-
-			let f = function (x, y) {
-				//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
-				//return Math.sqrt(x * x + y * y);
-				return 10 + (0.005 * (x * x + y * y));
+		let xCurveFactory = function (y) {
+			let f = function (x) {
+				return coeff * (x * x + y * y);
 			}
 
 			return f;
-		};
-
-		let blueCurve2 = function () {
-
-			let f = function (x, y) {
-				//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
-				//return Math.sqrt(x * x + y * y);
-				return /*10 +*/ (0.005 * (x * x + y * y));
-			}
-
-			return f;
-		};
-
-		function createSpace2Dim() {
-			let space2dimvsum = new Space2Dim("space2dimdiv", 100, 100, -50, 50, -50, 50);
-			space2dimvsum.show();
 		}
 
+		let derivXCurveFactory = function () {
+			let f = function (x) {
+				return 2 * coeff * x;
+			}
+
+			return f;
+		}
+
+		let yCurveFactory = function (x) {
+			let f = function (y) {
+				return coeff * (x * x + y * y);
+			}
+
+			return f;
+		}
+
+		let derivYCurveFactory = function () {
+			let f = function (y) {
+				return 2 * coeff * y;
+			}
+
+			return f;
+		}
+
+
 		function createSpace3Dim() {
-			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, -50, 50, -50, 50);
-			let lineWidth = 2;
-			let partialDerivYAt = 25;
-			let partialDerivXAt = 10;
+			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, 100, -50, 50, -50, 50, -50, 50);
+			let space2dimDerivX = new Space2Dim("partialderivx", 100, 100, -50, 50, -50, 50);
+			let space2dimDerivY = new Space2Dim("partialderivy", 100, 100, -50, 50, -50, 50, 90);
+
+			let lineWidth = 1;
 
 			function ViewModel() {
-				this.funcsToShow = [];
 
-				let partialDerivY = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYAt + -1 * lineWidth, partialDerivYAt + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
-				this.funcsToShow.push(partialDerivY);
+				this.partialDerivYAt = ko.observable(25);
+				this.partialDerivXAt = ko.observable(10);
 
-				let partialDerivX = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXAt + -1 * lineWidth, partialDerivXAt + lineWidth] , cssclass: "redFunc" });
-				this.funcsToShow.push(partialDerivX);
+				this.xToShow = [];
+				this.yToShow = [];
 
-				let deriveFunc11 = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [-50, partialDerivYAt + -1 * lineWidth], yrange: [-50, partialDerivXAt + -1 * lineWidth], cssclass: "blueFunc" });
-				this.funcsToShow.push(deriveFunc11);
+				this.xCurrPosTo = [];
+				this.yCurrPosTo = [];
 
-				let deriveFunc12 = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [-50, partialDerivYAt + -1 * lineWidth], yrange: [partialDerivXAt + lineWidth, 50], cssclass: "blueFunc" });
-				this.funcsToShow.push(deriveFunc12);
+				this.curvesToShow = [];
 
-				let deriveFunc21 = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [partialDerivYAt + lineWidth, 50], yrange: [-50, partialDerivXAt + -1 * lineWidth], cssclass: "blueFunc" });
-				this.funcsToShow.push(deriveFunc21);
+				let me = this;
+				let getFuncsToShow = function () {
+					console.log("partialDerivYAt.subscribe: " + me.partialDerivYAt());
 
-				let deriveFunc22 = new Function3Dim(
-					{ func: redCurve() },
-					{ sampleFreq: 10, xrange: [partialDerivYAt + lineWidth, 50], yrange: [partialDerivXAt + lineWidth, 50], cssclass: "blueFunc" });
-				this.funcsToShow.push(deriveFunc22);
+					let partialDerivYAtVal = parseInt(me.partialDerivYAt());
+					let partialDerivXAtVal = parseInt(me.partialDerivXAt());
 
-				//this.funcsToShow = [partialDerivX, partialDerivY, blueFunc1, blueFunc2];
+					let partialDerivYRangeXStart = (-1 * lineWidth) + partialDerivYAtVal;
+					let partialDerivYRangeXEnd = lineWidth + partialDerivYAtVal;
+
+					let partialDerivY = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYAtVal - lineWidth, partialDerivYAtVal + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
+
+					let partialDerivX = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXAtVal - lineWidth, partialDerivXAtVal + lineWidth], cssclass: "redFunc" });
+
+					let deriveFunc11 = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+						{ sampleFreq: 10, xrange: [-50, partialDerivYAtVal + -1 * lineWidth], yrange: [-50, partialDerivXAtVal + -1 * lineWidth], cssclass: "blueFunc" });
+
+					let deriveFunc12 = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+						{ sampleFreq: 10, xrange: [-50, partialDerivYAtVal + -1 * lineWidth], yrange: [partialDerivXAtVal + lineWidth, 50], cssclass: "blueFunc" });
+
+					let deriveFunc21 = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+						{ sampleFreq: 10, xrange: [partialDerivYAtVal + lineWidth, 50], yrange: [-50, partialDerivXAtVal + -1 * lineWidth], cssclass: "blueFunc" });
+
+					let deriveFunc22 = new Function3Dim(
+						{ func: dim3dCurveFactory() },
+						{ sampleFreq: 10, xrange: [partialDerivYAtVal + lineWidth, 50], yrange: [partialDerivXAtVal + lineWidth, 50], cssclass: "blueFunc" });
+
+					me.curvesToShow = [partialDerivY, partialDerivX, deriveFunc11, deriveFunc12, deriveFunc21, deriveFunc22];
+					//me.curvesToShow = [partialDerivY, partialDerivX];
+
+
+					let xFunc = new Function2Dim({ func: xCurveFactory(partialDerivYAtVal) }, {});
+					let derivXFunc = new Function2Dim({ func: derivXCurveFactory() }, {});
+					let posXX = ko.observable(partialDerivXAtVal);
+					let posXY1 = ko.observable(0);
+					let posXY2 = ko.observable(1);
+					let posX1 = new Point2Dim({ x: posXX, y: posXY1 }, {});
+					let posX2 = new Point2Dim({ x: posXX, y: posXY2 }, {});
+
+					let posXLine = new Line2Dim(
+						{ p1: posX1, p2: posX2 },
+						{}
+					);
+
+					let yFunc = new Function2Dim({ func: yCurveFactory(partialDerivXAtVal) }, {});
+					let derivYFunc = new Function2Dim({ func: derivYCurveFactory() }, {});
+					let posYX = ko.observable(partialDerivYAtVal);
+					let posYY1 = ko.observable(0);
+					let posYY2 = ko.observable(1);
+					let posY1 = new Point2Dim({ x: posYX, y: posYY1 }, {});
+					let posY2 = new Point2Dim({ x: posYX, y: posYY2 }, {});
+
+					let posYLine = new Line2Dim(
+						{ p1: posY1, p2: posY2 },
+						{}
+					);
+
+					me.xToShow = [xFunc, derivXFunc];
+					me.xCurrPosTo = [posXLine];
+
+					me.yToShow = [yFunc, derivYFunc];
+					me.yCurrPosTo = [posYLine];
+
+				}
+
+				this.partialDerivXAt.subscribe(function (newValue) {
+					getFuncsToShow();
+					space3dimvsum.update();
+					space2dimDerivX.update();
+					space2dimDerivY.update();
+				});
+				this.partialDerivYAt.subscribe(function (newValue)
+				{
+					getFuncsToShow();
+					space3dimvsum.update();
+					space2dimDerivX.update();
+					space2dimDerivY.update();
+				});
+
+				getFuncsToShow();
 			}
 
 			let vmfunc = new ViewModel();
 
-			//space3dimvsum.registerHandler(Function3Dim.draw, Function3Dim.update, function () { return vmfunc.funcsToShow; });
-			space3dimvsum.registerMeshProvider(Function3Dim.getMeshData, function () { return vmfunc.funcsToShow; });
+			space3dimvsum.registerMeshProvider(Function3Dim.getMeshData, function () { return vmfunc.curvesToShow; });
 			space3dimvsum.show();
+
+			space2dimDerivX.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.xToShow; });
+			space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.xCurrPosTo; });
+			space2dimDerivX.show();
+
+			space2dimDerivY.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.yToShow; });
+			space2dimDerivY.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.yCurrPosTo; });
+			space2dimDerivY.show();
+
+			return vmfunc;
 		}
 
-		createSpace2Dim();
-		createSpace3Dim();
+		function PageViewModel()
+		{
+			this.Func3d = createSpace3Dim();
+		}
+
+		let vm = new PageViewModel();
+		ko.applyBindings(vm);
 
 	</script>
 </body >

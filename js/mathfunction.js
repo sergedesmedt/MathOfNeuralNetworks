@@ -61,7 +61,7 @@ Function2Dim.draw = function (space2Dim, funcs) {
 }
 
 Function2Dim.update = function (space2Dim, funcData) {
-    console.log("Function2Dim.update");
+    //console.log("Function2Dim.update");
 
     var svg = space2Dim.getCanvas();
 

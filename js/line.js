@@ -8,7 +8,7 @@
             this._p1 = props["p1"];
             this._p2 = props["p2"];
 
-            let drico = getDRicoFromP1P1(this._p1, this._p2);
+            let drico = getDRicoFromP1P2(this._p1, this._p2);
 
             this._d = drico[0];
             //this._d.subscribe(function (newValue) { console.log("d from p1,p2: " + newValue); })
@@ -42,10 +42,85 @@
         //console.log("contains neiter p1 or d")
     }
 
+    if (config.hasOwnProperty("id")) {
+        this._id = config["id"];
+        //console.log("this._id: " + this._id);
+    }
+
     if (this._deftype == "unknown") {
         throw "unknown definition";
     }
 
+}
+
+Line2Dim.prototype.getY = function (x) {
+    var y = (this._d() - (this._prico.getDX() * x)) / this._prico.getDY();
+    return y;
+}
+
+Line2Dim.prototype.AnimateProperty = function (d3animation, props, actions, space2dim) {
+    let propAnimation = d3animation;
+    propAnimation = propAnimation.select("#" + this._id)
+        .selectAll(".rayline")
+    if (props.hasOwnProperty("x1"))
+    {
+        let x1t = props["x1"];
+        if (space2dim != undefined)
+            x1t = space2dim.convertXToCanvas(x1t);
+
+        propAnimation
+            .attr("x1", x1t)
+    }
+    if (props.hasOwnProperty("x2")) {
+        let x2t = props["x2"];
+        if (space2dim != undefined)
+            x2t = space2dim.convertXToCanvas(x2t);
+
+        propAnimation
+            .attr("x2", x2t);
+    }
+
+    return propAnimation;
+}
+
+Line2Dim.prototype.AnimateValue = function (d3animation, props, actions, space2dim) {
+    let valueAnimation = d3animation;
+
+    let x1curr = this._p1.getX();
+    let x1t = x1curr;
+    if (props.hasOwnProperty("x1")) {
+        x1t = props["x1"];
+    }
+    let x2curr = this._p2.getX();
+    let x2t = x2curr;
+    if (props.hasOwnProperty("x2")) {
+        x2t = props["x2"];
+    }
+
+    let me = this;
+
+    let valueTween = function () {
+        return function (t) {
+            me._p1.setX(x1curr + (x1t - x1curr) * t);
+            //me._p2.setX(x2curr + (x2t - x2curr) * t);
+
+            //console.log("Line2Dim.AnimateValue["+me._id+"]: "+
+            //    "_p1=x[" + me._p1.getX() + "]y[" + me._p1.getY() + "]" +
+            //    "_p2=x[" + me._p2.getX() + "]y[" + me._p2.getY() + "]" +
+            //    ""
+            //    );
+
+            //let drico = getDRicoFromP1P2(me._p1, me._p2);
+
+            //me._d = drico[0];
+            //me._prico = drico[1];
+
+        }
+    };
+
+    valueAnimation.tween("line2dimtween", valueTween);
+
+    return valueAnimation;
 }
 
 Line2Dim.draw = function (space2Dim, lines) {
@@ -58,6 +133,12 @@ Line2Dim.draw = function (space2Dim, lines) {
 
     var gray = allSvgRays
         .append("g")
+        .attr("id", function (d) {
+            if (d._id == undefined)
+                return (Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36));
+            else
+                return d._id;
+        })
         .attr("class", "ray");
 
     gray.append("line")
@@ -66,11 +147,6 @@ Line2Dim.draw = function (space2Dim, lines) {
         .attr("y1", function (d) { return calcRayDRicoY1(space, d);} )
         .attr("x2", function (d) { return calcRayDRicoX2(space, d);} )
         .attr("y2", function (d) { return calcRayDRicoY2(space, d);} )
-}
-
-Line2Dim.prototype.getY = function(x) {
-    var y = (this._d() - (this._prico.getDX() * x)) / this._prico.getDY();
-    return y;
 }
 
 Line2Dim.update = function (space2Dim, lines) {
@@ -92,7 +168,7 @@ Line2Dim.update = function (space2Dim, lines) {
 
 }
 
-var getDRicoFromP1P1 = function (p1, p2) {
+var getDRicoFromP1P2 = function (p1, p2) {
     let p = p1;
 
     // get unit vector perpendicular to rico

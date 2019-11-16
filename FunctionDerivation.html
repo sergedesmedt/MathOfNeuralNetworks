@@ -222,15 +222,15 @@
 							0 ///*Math.random()*/ * Math.PI - Math.PI	// shift
 						]; // [ FREQUENCY , SHIFT ]
 					});
-					for (i = 0; i < params.length; i++) {
-						//console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
-					}
+					//for (i = 0; i < params.length; i++) {
+					//	console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
+					//}
 
 					let f = function (x) {
 						let spectrSin = params.map(function (d) { return Math.sin(d[0] * x + d[1]); });
-						for (i = 0; i < spectrSin.length; i++) {
-							//console.log("spectrSin[" + i + "] = " + spectrSin[i]);
-						}
+						//for (i = 0; i < spectrSin.length; i++) {
+						//	console.log("spectrSin[" + i + "] = " + spectrSin[i]);
+						//}
 						var result = ampl() * (d3.sum(spectrSin) /*/ (3 * n) + 0.5*/);
 						//console.log("generateRandomCurve x["+x+"], result[" + result + "]");
 						return result;
@@ -313,7 +313,6 @@
 		}
 
 		let vm = new MainViewModel();
-
 		ko.applyBindings(vm);
 
 	</script>
