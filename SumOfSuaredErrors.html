@@ -1,7 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Sum of Squared Errors</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
+
 	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
@@ -10,6 +18,7 @@
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
 	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/space3dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
@@ -29,42 +38,114 @@
 	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
 
 	<style>
-        .group1 {
-            stroke: #000000;
-            stroke-width: 2;
-            fill: green;
-        }
-        .group2 {
-            stroke: #000000;
-            stroke-width: 2;
-            fill: red;
-        }
+		.linehandle {
+			stroke: red;
+			stroke-width: 1;
+			fill: red;
+		}
+
+		.handle {
+			stroke: #000000;
+			stroke-width: 2;
+			fill: green;
+		}
 	</style>
 </head>
 <body>
 	<div>
 		<h1>Sum of Squared Errors versus Sum of Errors</h1>
-		<div id="sumofsquarederrorsvssumoferrors"></div>
+		<p>What if we take the sum of squared errors</p>
+		<p>
+			$$E(w) = \sum_{j=1}^{M} e_j^2$$
+		</p>
+		<p>What if we just take the sum of the errors</p>
+		<p>
+			$$E(w) = \sum_{j=1}^{M} e_j$$
+		</p>
+		<p>A Sample:</p>
+		<div class="container_height250">
+			<div id="sse_vs_soe_sample">
+				$${}$$
+			</div>
+		</div>
+		<div style="width:100%">
+			<p>You can use the red dots on the line to manipulate the line.</p>
+			<p>When you click somewhere on the graph a point will be added. The points used to calculate the error are the point clicked and the intersection of a vertical line through the clicked point with the reference line. These points are somewhat larger in diameter and colored green. They can be manipulated by dragging them.</p>
+			<p>If you two ppoints at a somewhat equal distance from the referene line, but one above and the other below, you will notice that the sum of errors will be close to zero. Because the points are on opposite sides of the line their error will add-up to zero.</p>
+			<div id="sumofsquarederrorsvssumoferrors" class="divcentered"></div>
+		</div>
 	</div>
-    <div>
-        <h1>Sum of Squared Errors versus Mean Squared Error</h1>
-        <div id="sumofsquarederrorsvsmeansquarederror"></div>
-    </div>
+	<div>
+		<h1>Sum of Squared Errors versus Mean Squared Error</h1>
+		<p>What if we take the sum of squared errors</p>
+		<p>
+			$$E(w) = \sum_{j=1}^{M} e_j^2$$
+		</p>
+		<p>What if we take the mean sum of squared errors</p>
+		<p>
+			$$E(w) = \frac{1}{M} \sum_{j=1}^{M} e_j^2$$
+		</p>
+		<p>A Sample:</p>
+		<div class="container_height250">
+			<div id="sse_vs_msse_sample">
+				$${}$$
+			</div>
+		</div>
+		<div style="width:100%">
+			<p>You can use the red dots on the line to manipulate the line.</p>
+			<p>When you click somewhere on the graph a point will be added. The points used to calculate the error are the point clicked and the intersection of a vertical line through the clicked point with the reference line. These points are somewhat larger in diameter and colored green. They can be manipulated by dragging them.</p>
+			<p>When adding ponts at both sides of the reference line the mean error will remain more orless constant, while the pure sum will onnly get bigger. Image what would happen when having thousands of points.</p>
+			<div id="sumofsquarederrorsvsmeansquarederror" class="divcentered"></div>
+		</div>
+	</div>
 
 	<script type="text/javascript">
+
+		function calculateSumOfSquaredErrors(data) {
+			let sum = 0;
+
+			data.forEach(function (item, index) {
+				sum += Math.pow((item[0].getY() - item[1].getY()), 2);
+			});
+
+			return sum;
+		}
+
+		function calculateMeanSumOfSquaredErrors(data) {
+			let sum = 0;
+
+			data.forEach(function (item, index) {
+				sum += Math.pow((item[0].getY() - item[1].getY()), 2);
+			});
+
+			return sum / data.length;
+		}
+
+		function calculateSumOfErrors(data)
+		{
+			let sum = 0;
+
+			data.forEach(function (item, index) {
+				sum += (item[0].getY() - item[1].getY());
+			});
+
+			return sum;
+		}
+
 		function createSSEvsSESample() {
+			let magnitudeMathExpression = new MathExpressions();
 			let space2dimvsse = new Space2Dim("sumofsquarederrorsvssumoferrors", 300, 300, 0, 100, 0, 100);
 
 			function SSEvsSEViewModel() {
-				this.linestarthandleX = ko.observable(10);
+				this.linestarthandleX = ko.computed(function(){ return 10;});
 				this.linestarthandleY = ko.observable(30);
-				this.lineendhandleX = ko.observable(90);
+				this.lineendhandleX = ko.computed(function () { return 90; });
 				this.lineendhandleY = ko.observable(50);
 
-				this.linestarthandleX.subscribe(function (newValue) { space2dimvsse.update(); });
-				this.linestarthandleY.subscribe(function (newValue) { space2dimvsse.update(); });
-				this.lineendhandleX.subscribe(function (newValue) { space2dimvsse.update(); });
-				this.lineendhandleY.subscribe(function (newValue) { space2dimvsse.update(); });
+				//this.linestarthandleX.subscribe(function (newValue) { space2dimvsse.update(); });
+				this.linestarthandleY.subscribe(function (newValue) { space2dimvsse.update(); magnitudeMathExpression.QueueUpdate(); });
+				//this.lineendhandleX.subscribe(function (newValue) { space2dimvsse.update(); });
+				this.lineendhandleY.subscribe(function (newValue) { space2dimvsse.update(); magnitudeMathExpression.QueueUpdate(); });
 
 				let lineStartPoint = new Point2Dim({x: this.linestarthandleX, y: this.linestarthandleY}, {}); 
 				let lineEndPoint = new Point2Dim({x: this.lineendhandleX, y: this.lineendhandleY}, {});
@@ -76,12 +157,12 @@
 
 				let startHandle = new Circle(
 					{ center: lineStartPoint, radius: ko.observable(0.75) },
-					{ draggable: 1 }
+					{ draggable: 1, cssclass: "linehandle" }
 				)
 
 				let endHandle = new Circle(
 					{ center: lineEndPoint, radius: ko.observable(0.75) },
-					{ draggable: 1 }
+					{ draggable: 1, cssclass: "linehandle" }
 				);
 
 				this.pointsToShow = ko.observableArray([]);
@@ -89,6 +170,7 @@
 				this.pointsToShow.subscribe(function (newValue) {
 					console.log("a value was added");
 					space2dimvsse.update();
+					magnitudeMathExpression.QueueUpdate();
 				});
 
 				this.pointsToShow.push(startHandle);
@@ -97,15 +179,50 @@
 				this.dimlengthToShow = ko.observableArray([]);
 				this.dimlengthToShow.subscribe(function (newValue) {
 					space2dimvsse.update();
+					magnitudeMathExpression.QueueUpdate();
 				});
 
+				this.errorPoints = [];
+
 				let me = this;
+
+				let getMathExpression = function () {
+					let sumSquaredExpression = "E(w) &= \\sum_{j=1}^{M} e_j^2\\\\";
+					let sumExpression = "E(w) &= \\sum_{j=1}^{M} e_j\\\\";
+					let sumOfErrors = calculateSumOfErrors(me.errorPoints);
+					let sumOfErrorsFormatted = d3.format(".2f")(sumOfErrors);
+					let sumOfSquaredErrors = calculateSumOfSquaredErrors(me.errorPoints);
+					let sumOfSquaredErrorsFormatted = d3.format(".2f")(sumOfSquaredErrors);
+
+					me.errorPoints.forEach(function (item, index) {
+						let ylFormatted = d3.format(".2f")(item[0].getY());
+						let ypFormatted = d3.format(".2f")(item[1].getY());
+
+						sumExpression = sumExpression
+							+ "" + (index==0?"&=":"+") + " (" + ylFormatted + " - " + ypFormatted + ")"; //\\\\";
+
+						sumSquaredExpression = sumSquaredExpression
+							+ "" + (index == 0 ? "&=" : "+") + " (" + ylFormatted + " - " + ypFormatted + ")^2"; //\\\\";
+					});
+					
+					let mathExpression = "\\begin{aligned}"
+						+ sumSquaredExpression
+						+ "\\\\ &= " + sumOfSquaredErrorsFormatted + "\\\\"
+						+ sumExpression
+						+ "\\\\ &= " + sumOfErrorsFormatted + "\\\\"
+						+ "\\end{aligned}";
+
+					return mathExpression;
+				}
+
+				magnitudeMathExpression.RegisterExpression("sse_vs_soe_sample", getMathExpression);
+
 				space2dimvsse.OnClick(function (x, y) {
 					let px = ko.observable(x);
 					let py = ko.observable(y);
 
-					px.subscribe(function (newValue) { space2dimvsse.update(); });
-					py.subscribe(function (newValue) { space2dimvsse.update(); });
+					px.subscribe(function (newValue) { space2dimvsse.update(); magnitudeMathExpression.QueueUpdate(); });
+					py.subscribe(function (newValue) { space2dimvsse.update(); magnitudeMathExpression.QueueUpdate(); });
 
 					let dataHandle = new Point2Dim({
 						x: px,
@@ -114,7 +231,7 @@
 
 					let dataManipulator = new Circle(
 						{ center: dataHandle, radius: ko.observable(1.5) },
-						{ draggable: 1 }
+						{ draggable: 1, cssclass: "handle" }
 					);
 
 					me.pointsToShow.push(dataManipulator);
@@ -134,10 +251,11 @@
 						y: dataY
 					}, {});;
 
+					me.errorPoints.push([lineIntersection, dataHandle]);
 
 					let dim = new DimLength2Dim(
 						{ p1: dataHandle, p2: lineIntersection },
-						{}
+						{ }
 						);
 					me.dimlengthToShow.push(dim);
 				});
@@ -161,18 +279,19 @@
 		}
 
 		function createSSEvsMSESample() {
-		    let space = new Space2Dim("sumofsquarederrorsvsmeansquarederror", 300, 300, 0, 100, 0, 100);
+			let magnitudeMathExpression = new MathExpressions();
+			let space = new Space2Dim("sumofsquarederrorsvsmeansquarederror", 300, 300, 0, 100, 0, 100);
 
 		    function SSEvsMSE() {
-		        this.linestarthandleX = ko.observable(10);
+		    	this.linestarthandleX = ko.computed(function () { return 10; });
 		        this.linestarthandleY = ko.observable(30);
-		        this.lineendhandleX = ko.observable(90);
+		        this.lineendhandleX = ko.computed(function () { return 90; });
 		        this.lineendhandleY = ko.observable(50);
 
-		        this.linestarthandleX.subscribe(function (newValue) { space.update(); });
-		        this.linestarthandleY.subscribe(function (newValue) { space.update(); });
-		        this.lineendhandleX.subscribe(function (newValue) { space.update(); });
-		        this.lineendhandleY.subscribe(function (newValue) { space.update(); });
+		        //this.linestarthandleX.subscribe(function (newValue) { space.update(); });
+		        this.linestarthandleY.subscribe(function (newValue) { space.update(); magnitudeMathExpression.QueueUpdate(); });
+		        //this.lineendhandleX.subscribe(function (newValue) { space.update(); });
+		        this.lineendhandleY.subscribe(function (newValue) { space.update(); magnitudeMathExpression.QueueUpdate(); });
 
 		        let lineStartPoint = new Point2Dim({ x: this.linestarthandleX, y: this.linestarthandleY }, {});
 		        let lineEndPoint = new Point2Dim({ x: this.lineendhandleX, y: this.lineendhandleY }, {});
@@ -184,12 +303,12 @@
 
 		        let startHandle = new Circle(
 					{ center: lineStartPoint, radius: ko.observable(0.75) },
-					{ draggable: 1 }
+					{ draggable: 1, cssclass: "linehandle" }
 				)
 
 		        let endHandle = new Circle(
 					{ center: lineEndPoint, radius: ko.observable(0.75) },
-					{ draggable: 1 }
+					{ draggable: 1, cssclass: "linehandle" }
 				);
 
 		        this.pointsToShow = ko.observableArray([]);
@@ -197,6 +316,7 @@
 		        this.pointsToShow.subscribe(function (newValue) {
 		            console.log("a value was added");
 		            space.update();
+		            magnitudeMathExpression.QueueUpdate();
 		        });
 
 		        this.pointsToShow.push(startHandle);
@@ -205,21 +325,56 @@
 		        this.dimlengthToShow = ko.observableArray([]);
 		        this.dimlengthToShow.subscribe(function (newValue) {
 		            space.update();
+		            magnitudeMathExpression.QueueUpdate();
 		        });
 
-		        let me = this;
-		        space.OnClick(function (x, y) {
-		            let event = d3.event;
+		        this.errorPoints = [];
 
-		            let cssclass = "group1";
-		            if (d3.event.shiftKey)
-                        cssclass = "group2";
+		        let me = this;
+
+		        let getMathExpression = function () {
+		        	let sumSquaredExpression = "E(w) &= \\sum_{j=1}^{M} e_j^2\\\\";
+		        	let meanSumExpression = "E(w) &= \\frac{1}{M} \\sum_{j=1}^{M} e_j\\\\ &= \\frac{1}{" + me.errorPoints.length + "} (";
+		        	let meanSumOfErrors = calculateMeanSumOfSquaredErrors(me.errorPoints);
+		        	let meanSumOfErrorsFormatted = d3.format(".2f")(meanSumOfErrors);
+		        	let sumOfSquaredErrors = calculateSumOfSquaredErrors(me.errorPoints);
+		        	let sumOfSquaredErrorsFormatted = d3.format(".2f")(sumOfSquaredErrors);
+
+		        	me.errorPoints.forEach(function (item, index) {
+		        		let ylFormatted = d3.format(".2f")(item[0].getY());
+		        		let ypFormatted = d3.format(".2f")(item[1].getY());
+
+		        		meanSumExpression = meanSumExpression
+							+ (index == 0 ? "" : "+") + " (" + ylFormatted + " - " + ypFormatted + ")^2";
+
+		        		sumSquaredExpression = sumSquaredExpression
+							+ "" + (index == 0 ? "&=" : "+") + " (" + ylFormatted + " - " + ypFormatted + ")^2";
+		        	});
+
+		        	let mathExpression = "\\begin{aligned}"
+						+ sumSquaredExpression
+						+ "\\\\ &= " + sumOfSquaredErrorsFormatted + "\\\\"
+						+ meanSumExpression + ")\\\\"
+						+ "&= " + meanSumOfErrorsFormatted + "\\\\"
+						+ "\\end{aligned}";
+
+		        	return mathExpression;
+		        }
+
+		        magnitudeMathExpression.RegisterExpression("sse_vs_msse_sample", getMathExpression);
+
+		        space.OnClick(function (x, y) {
+		            //let event = d3.event;
+
+		            //let cssclass = "group1";
+		            //if (d3.event.shiftKey)
+                    //    cssclass = "group2";
 
 		            let px = ko.observable(x);
 		            let py = ko.observable(y);
 
-		            px.subscribe(function (newValue) { space.update(); });
-		            py.subscribe(function (newValue) { space.update(); });
+		            px.subscribe(function (newValue) { space.update(); magnitudeMathExpression.QueueUpdate(); });
+		            py.subscribe(function (newValue) { space.update(); magnitudeMathExpression.QueueUpdate(); });
 
 		            let dataHandle = new Point2Dim({
 		                x: px,
@@ -228,7 +383,7 @@
 
 		            let dataManipulator = new Circle(
 						{ center: dataHandle, radius: ko.observable(1.5) },
-						{ draggable: 1, cssclass: cssclass }
+						{ draggable: 1, cssclass: "handle" }
 					);
 
 		            me.pointsToShow.push(dataManipulator);
@@ -248,10 +403,11 @@
 		                y: dataY
 		            }, {});;
 
+		            me.errorPoints.push([lineIntersection, dataHandle]);
 
 		            let dim = new DimLength2Dim(
 						{ p1: dataHandle, p2: lineIntersection },
-						{}
+						{ }
 						);
 		            me.dimlengthToShow.push(dim);
 		        });
