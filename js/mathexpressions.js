@@ -26,6 +26,9 @@ MathExpressions.prototype.QueueUpdate = function() {
     //console.log("wil je dit nog doen aub?");
     var me = this;
 
+    if (me._expressionProvider == undefined)
+        return;
+
     var checkForChanges = function() {
         if (me._hasChanges) {
             me._hasChanges = false;
