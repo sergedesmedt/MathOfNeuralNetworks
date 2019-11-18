@@ -1,4 +1,4 @@
-﻿function Circle(props, config) {
+function Circle(props, config) {
     this._center = props["center"];
     //console.log("Circle._center.x: " + this._center.getX());
     //console.log("Circle._center.y: " + this._center.getY());
@@ -135,8 +135,17 @@ function onCircle2DimDrag(space2dim, d, elem) {
     var xd = space2dim.convertXFromCanvas(d3.event.x);
     var yd = space2dim.convertYFromCanvas(d3.event.y);
 
-    d._center.setX(xd);
-    d._center.setY(yd);
+    if (d.onDrag) {
+        [xd, yd] = d.onDrag(xd, yd);
+    }
+
+    if (!ko.isComputed(d._center._xdomainObservable))
+        d._center.setX(xd);
+        //d._center._xdomainObservable(xd);
+    if (!ko.isComputed(d._center._ydomainObservable))
+        d._center.setY(yd);
+        //d._center._ydomainObservable(yd);
+
 
     d3.select(elem)
         .attr('cx', space2dim.convertXToCanvas(d._center.getX()))
