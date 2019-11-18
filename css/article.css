@@ -1,4 +1,4 @@
-﻿.divcentered {
+.divcentered {
     display: table;
     margin: 0 auto;
 }
@@ -25,6 +25,10 @@
 
 .container_height200 {
     height: 200px;
+}
+
+.container_height250 {
+    height: 250px;
 }
 
 .container_height300 {
