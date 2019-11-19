@@ -1,58 +1,96 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Convex Functions</title>
-    <!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
-    <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-    <script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
-    <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
-    <script type="text/javascript" src="./d3/d3.v5.js"></script>
-    <script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
-    <script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <script type="text/javascript" src="./js/space2dim.js"></script>
-    <script type="text/javascript" src="./js/space3dim.js"></script>
-    <script type="text/javascript" src="./js/point.js"></script>
-    <script type="text/javascript" src="./js/circle.js"></script>
-    <script type="text/javascript" src="./js/vector.js"></script>
-    <script type="text/javascript" src="./js/mathfunction.js"></script>
-    <script type="text/javascript" src="./js/rico.js"></script>
-    <script type="text/javascript" src="./js/line.js"></script>
-    <script type="text/javascript" src="./js/dimlength.js"></script>
-    <script type="text/javascript" src="./js/mathfunction3d.js"></script>
+	<title>Convex Functions</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/space3dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
+	<script type="text/javascript" src="./js/dimlength.js"></script>
+	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="./css/article.css">
-    <link rel="stylesheet" type="text/css" href="./css/space2dim.css">
-    <link rel="stylesheet" type="text/css" href="./css/space3dim.css">
-    <link rel="stylesheet" type="text/css" href="./css/vector.css">
-    <link rel="stylesheet" type="text/css" href="./css/line.css">
-    <link rel="stylesheet" type="text/css" href="./css/dimlength.css">
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/space3dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
 
-    <style>
+	<style>
 		.funcplot {
 			stroke: #000000;
 			stroke-width: 1;
 			fill: none;
 		}
+
 		.abovefunc {
 			stroke: #00ff21;
 			stroke-width: 1;
 		}
+
 		.belowfunc {
 			stroke: #ff0000;
 			stroke-width: 1;
 		}
-    </style>
+	</style>
 </head>
 <body>
-    <div>
-        <h1>A Convex Function</h1>
-        <div id="convexfunctionsample"></div>
-    </div>
-    <div>
-        <h1>A NOT Convex function</h1>
-        <div id="notconvexfunctionsample"></div>
-    </div>
+	<div>
+		<h1>A Convex Function</h1>
+		<p>
+			$$f( \lambda A + (1- \lambda)B) \leq \lambda f(A) + (1- \lambda)f(B)$$
+		</p>
+		<p>in which $A$ and $B$ are two points in $\mathbb{R}^n$ and $\lambda$ is in the interval $(0, 1)$</p>
+		<p>What the above expression says in words is:</p>
+		<p>The value of the function for any value $X$ on the line segment between $A$ and $B$ is less then any value on the line segment between the result of the function in $A$ and $B$.</p>
+		<div>
+			<div>
+				<p>A sample:</p>
+				<p>The function is:</p>
+				<p>$$f(x) = 0.04 * x^2 - 40 $$</p>
+			</div>
+			<div>
+				<p>The above expression becomes:</p>
+				<div id="convexfunction_sample">
+					$${}$$
+				</div>
+			</div>
+		</div>
+		<div style="width:100%">
+			<p>You can drag the two black dots to change the endpoints $A$ and $B$ of the linesegment.</p>
+			<p>Change the value of $\lambda$ by dragging the slider:</p>
+			<div class="divcentered">
+				<input type="range" min="0" max="1" step="0.01" data-bind="value: ConvexLinesegment.lambda, valueUpdate: 'input'" />
+			</div>
+			<div id="convexfunctionsample" class="divcentered"></div>
+		</div>
+	</div>
+	<div>
+		<h1>A NOT Convex function</h1>
+		<div style="width:100%">
+			<div id="notconvexfunctionsample" class="divcentered"></div>
+		</div>
+	</div>
 
     <script type="text/javascript">
 
@@ -77,9 +115,16 @@
 		}
 
         function createConvexSample(divid, funcFactory) {
+        	let mathExpression = new MathExpressions();
         	let space = new Space2Dim(divid, 300, 300, -50, 50, -50, 50);
 
             function ConvexSampleViewModel() {
+
+            	this.lambda = ko.observable(0.5);
+            	this.lambda.subscribe(function (newValue) {
+            		space.update();
+            		mathExpression.QueueUpdate();
+            	});
 
             	let convexFunc = funcFactory();
 
@@ -166,6 +211,11 @@
 
                 let func = new Function2Dim({ func: funcFactory() }, {});
 
+                let getMathExpression = function () {
+                	return "x";
+                }
+
+                mathExpression.RegisterExpression("convexfunction_sample", getMathExpression);
 
                 this.funcsToShow = [func];
                 this.pointsToShow = [pl1, pl2];
@@ -187,6 +237,8 @@
             space.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vm.vectorsToShow; });
             space.registerHandler(DimLength2Dim.draw, DimLength2Dim.update, function () { return vm.dimlengthToShow(); });
             space.show();
+
+            return vm;
         }
 
         //function createNotConvexSample() {
@@ -207,8 +259,15 @@
         //    space.show();
         //}
 
-        createConvexSample("convexfunctionsample", someConvexFunctionFactory);
-        createConvexSample("notconvexfunctionsample", someNotconvexFunctionFactory);
+        function ViewModel() {
+        	this.ConvexLinesegment = createConvexSample("convexfunctionsample", someConvexFunctionFactory);
+        	this.ConcaveLinesegment = createConvexSample("notconvexfunctionsample", someNotconvexFunctionFactory);
+        }
+
+        let vm = new ViewModel();
+
+        ko.applyBindings(vm);
+
     </script>
 </body>
 </html>
