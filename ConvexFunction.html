@@ -198,8 +198,16 @@
                 }
 
                 let me = this;
-                this.p1x.subscribe(function (newValue) { space.update(); convexEvaluation(me); });
-                this.p2x.subscribe(function (newValue) { space.update(); convexEvaluation(me); });
+                this.p1x.subscribe(function (newValue) {
+                	space.update();
+                	mathExpression.QueueUpdate();
+                	convexEvaluation(me);
+                });
+                this.p2x.subscribe(function (newValue) {
+                	space.update();
+                	mathExpression.QueueUpdate();
+                	convexEvaluation(me);
+                });
 
                 let pl1 = new Point2Dim({ x: this.p1x, y: this.p1y }, {});
                 let pl2 = new Point2Dim({ x: this.p2x, y: this.p2y }, {});
@@ -212,7 +220,26 @@
                 let func = new Function2Dim({ func: funcFactory() }, {});
 
                 let getMathExpression = function () {
-                	return "x";
+                	let a = me.p1x();
+                	let b = me.p2x();
+                	let lambda = me.lambda();
+                	let aFormatted = d3.format(".2f")(a);
+                	let bFormatted = d3.format(".2f")(b);
+                	let lambdaFormatted = d3.format(".2f")(lambda);
+
+                	let x = lambda * a + (1 - lambda) * b;
+                	let xFormatted = d3.format(".2f")(x);
+                	let fx = convexFunc(x);
+                	let fxFormatted = d3.format(".2f")(fx);
+
+                	let mathExpression = "\\begin{aligned}"
+                		+ "f( \\lambda A + (1- \\lambda)B)"
+						+ " &= f(" + lambdaFormatted + "*" + aFormatted + "+(1-" + lambdaFormatted + ")*" + bFormatted + ")\\\\"
+						+ " &= f(" + xFormatted + ")\\\\"
+						+ " &= " + fxFormatted + "\\\\"
+                		+ "\\lambda f(A) + (1- \\lambda)f(B)"
+                		+ "\\end{aligned}";
+                	return mathExpression;
                 }
 
                 mathExpression.RegisterExpression("convexfunction_sample", getMathExpression);
@@ -261,7 +288,7 @@
 
         function ViewModel() {
         	this.ConvexLinesegment = createConvexSample("convexfunctionsample", someConvexFunctionFactory);
-        	this.ConcaveLinesegment = createConvexSample("notconvexfunctionsample", someNotconvexFunctionFactory);
+        	//this.ConcaveLinesegment = createConvexSample("notconvexfunctionsample", someNotconvexFunctionFactory);
         }
 
         let vm = new ViewModel();
