@@ -256,9 +256,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namex = (vuy * d._nameDist) + (p1x + d._namePos * (p2x - p1x));
             //console.log("namex: " + namex);
@@ -270,9 +275,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namey = -(vux * d._nameDist) + (p1y + d._namePos * (p2y - p1y));
             //console.log("namey: " + namey);
@@ -296,9 +306,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namex = (vuy * d._nameDist) + (p1x + d._namePos * (p2x - p1x));
             //console.log("namex: " + namex);
@@ -310,9 +325,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namey = -(vux * d._nameDist) + (p1y + d._namePos * (p2y - p1y));
             //console.log("namey: " + namey);
@@ -337,9 +357,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var lengthx = (vuy * d._sizeDist) + (p1x + d._sizePos * (p2x - p1x));
             //console.log("lengthx: " + lengthx);
@@ -351,9 +376,14 @@ function createVectors(space2Dim, newVectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var lengthy = -(vux * d._sizeDist) + (p1y + d._sizePos * (p2y - p1y));
             //console.log("lengthy: " + lengthy);
@@ -485,9 +515,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namex = (vuy * d._nameDist) + (p1x + d._namePos * (p2x - p1x));
             //console.log("namex: " + namex);
@@ -499,9 +534,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namey = -(vux * d._nameDist) + (p1y + d._namePos * (p2y - p1y));
             //console.log("namey: " + namey);
@@ -518,9 +558,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namex = (vuy * d._nameDist) + (p1x + d._namePos * (p2x - p1x));
             //console.log("namex: " + namex);
@@ -532,9 +577,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var namey = -(vux * d._nameDist) + (p1y + d._namePos * (p2y - p1y));
             //console.log("namey: " + namey);
@@ -553,9 +603,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var lengthx = (vuy * d._sizeDist) + (p1x + d._sizePos * (p2x - p1x));
             //console.log("lengthx: " + lengthx);
@@ -567,9 +622,14 @@ function updateVectors(space2Dim, vectors) {
             var p2x = space2Dim.convertXToCanvas(d._p2.getX());
             var p2y = space2Dim.convertYToCanvas(d._p2.getY());
 
+            var vux = 0;
+            var vuy = 1;
             var vulen = Math.sqrt(((p2x - p1x) * (p2x - p1x)) + ((p2y - p1y) * (p2y - p1y)))
-            var vux = (p2x - p1x) / vulen;
-            var vuy = (p2y - p1y) / vulen;
+            if(vulen != 0)
+            {
+                vux = (p2x - p1x) / vulen;
+                vuy = (p2y - p1y) / vulen;
+            }
 
             var lengthy = -(vux * d._sizeDist) + (p1y + d._sizePos * (p2y - p1y));
             //console.log("lengthy: " + lengthy);
