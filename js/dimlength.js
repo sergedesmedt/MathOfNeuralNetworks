@@ -86,8 +86,8 @@ function createDimLength(space2Dim, newDimlengths) {
 
     var svgdefs = dimlengths.append("svg:defs");
     svgdefs.append("marker")
-        .attr("class", function (d) { return "linearrow" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
-        .attr("id", function (d, i, n) { return space2Dim.getId() + "linearrow" + i; })
+        .attr("class", function (d) { return "dimlinearrow" + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
+        .attr("id", function (d, i, n) { return space2Dim.getId() + "dimlinearrow" + i; })
         .attr("refX", 5)
         .attr("refY", 5)
         .attr("markerWidth", 20)
@@ -107,8 +107,8 @@ function createDimLength(space2Dim, newDimlengths) {
         ;
 
     dimlengthlines
-        .attr("marker-end", function (d, i, n) { return "url(#" + space2Dim.getId() + "linearrow" + i + ")"; })
-        .attr("marker-start", function (d, i, n) { return "url(#" + space2Dim.getId() + "linearrow" + i + ")"; })
+        .attr("marker-end", function (d, i, n) { return "url(#" + space2Dim.getId() + "dimlinearrow" + i + ")"; })
+        .attr("marker-start", function (d, i, n) { return "url(#" + space2Dim.getId() + "dimlinearrow" + i + ")"; })
     ;
 
     //var distSize = -5;
