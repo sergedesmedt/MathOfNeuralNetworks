@@ -1,10 +1,13 @@
-function Circle(props, config) {
+﻿function Circle(props, config) {
     this._center = props["center"];
     //console.log("Circle._center.x: " + this._center.getX());
     //console.log("Circle._center.y: " + this._center.getY());
 
 	this._radius = props["radius"];
 
+    if (config.hasOwnProperty("id"))
+        this._id = config["id"];
+        
     this._cssclass = "";
     if (config.hasOwnProperty("cssclass")) {
         this._cssclass = config["cssclass"];
@@ -16,9 +19,20 @@ function Circle(props, config) {
         this._cdraggable = config["draggable"];
         //console.log("this._p1draggable: " + this._p1draggable);
     }
+}
 
-    if (config.hasOwnProperty("id"))
-        this._id = config["id"];
+Circle.prototype.setConfig = function(config){
+    this._cssclass = "";
+    if (config.hasOwnProperty("cssclass")) {
+        this._cssclass = config["cssclass"];
+        //console.log("this._cssclass: " + this._cssclass);
+    }
+
+    this._cdraggable = 0;
+    if (config.hasOwnProperty("draggable")) {
+        this._cdraggable = config["draggable"];
+        //console.log("this._p1draggable: " + this._p1draggable);
+    }
 }
 
 Circle.draw = function (space2Dim, circles) {
@@ -45,9 +59,9 @@ Circle.update = function (space2Dim, circles) {
     var newCirles = allSvgCircles.enter();
     var removedCircles = allSvgCircles.exit();
 
-    console.log("Circle.update > newCirles[" + newCirles.size() + "]");
-    console.log("Circle.update > removedCircles[" + removedCircles.size() + "]");
-    console.log("Circle.update > updateCirles[" + allSvgCircles.size() + "]");
+    //console.log("Circle.update > newCirles[" + newCirles.size() + "]");
+    //console.log("Circle.update > removedCircles[" + removedCircles.size() + "]");
+    //console.log("Circle.update > updateCirles[" + allSvgCircles.size() + "]");
 
     createCircle(space2Dim, newCirles);
     deleteCircle(space2Dim, removedCircles);

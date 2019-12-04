@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Learn Function Derivation</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+
+	<style>
+		.funcplot {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: none;
+		}
+
+		.epsilon_ok {
+			stroke: #00FF00;
+			fill: none;
+		}
+
+		.epsilon_nok {
+			stroke: #FF0000;
+			fill: none;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<h1>Continuity</h1>
+		<input type="range" min="-50" max="0" step="1" data-bind="value: ContinuitySample.leftApproach, valueUpdate: 'input'" />
+		<input type="range" min="0" max="50" step="1" data-bind="value: ContinuitySample.rightApproach, valueUpdate: 'input'" />
+		<div style="width:100%">
+			<div id="continuitySample" class="divcentered"></div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		function createContinuitySample() {
+			let space = new Space2Dim("continuitySample", 300, 300, -50, 50, -50, 50);
+
+			function ViewModel() {
+				let funcFactory = function () {
+					let f = function (x) {
+						return Math.abs(x);
+					};
+
+					return f;
+				};
+
+				let func = funcFactory();
+
+				let p0Value = new Point2Dim({
+					x: ko.observable(0),
+					y: ko.computed(function () {
+						return func(0);
+					})
+				}, {});;
+
+				let p0Visual = new Circle(
+					{ center: p0Value, radius: ko.observable(1.5) },
+					{ draggable: 0 }
+				);
+
+				this.leftApproach = ko.observable(-25);
+				this.leftApproachY = ko.computed(function () {
+					return func(this.leftApproach());
+				}, this);
+
+				this.rightApproach = ko.observable(25);
+				this.rightApproachY = ko.computed(function () {
+					return func(this.rightApproach());
+				}, this);
+
+				this.leftApproach.subscribe(function (newValue) { space.update(); });
+				this.rightApproach.subscribe(function (newValue) { space.update(); });
+
+				let pLeftApproach = new Point2Dim({ x: this.leftApproach, y: this.leftApproachY }, {});
+				let pRightApproach = new Point2Dim({ x: this.rightApproach, y: this.rightApproachY }, {});
+
+
+
+				let theFunc = new Function2Dim({ func: func }, { });
+
+
+				this.circlesToShow = [p0Visual];
+				this.pointsToShow = [pLeftApproach, pRightApproach];
+				this.funcsToShow = [theFunc];
+
+			}
+
+			let vmfunc = new ViewModel();
+
+			space.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
+			space.registerHandler(Circle.draw, Circle.update, function () { return vmfunc.circlesToShow; });
+			space.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
+
+			space.show();
+
+			return vmfunc;
+		}
+
+		function MainViewModel()
+		{
+			this.ContinuitySample = createContinuitySample();
+		}
+
+		let vm = new MainViewModel();
+		ko.applyBindings(vm);
+
+	</script>
+</body>
+</html>

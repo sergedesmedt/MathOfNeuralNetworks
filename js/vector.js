@@ -489,7 +489,10 @@ function deleteVectors(space2Dim, removedVectors) {
 }
 
 function updateVectors(space2Dim, vectors) {
- 
+
+    vectors.select(".vectorarrow")
+        .attr("class", function (d) { return ((d._deftype == "defp1p2") ? "vectorarrow" : "vectorarrow defp1delta") + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
+
     vectors.select(".vectorstartpoint")
         .attr("cx", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("cy", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
@@ -501,6 +504,7 @@ function updateVectors(space2Dim, vectors) {
         ;
 
     vectors.select(".vectorline")
+        .attr("class", function (d) { return ((d._deftype == "defp1p2") ? "vectorline" : "vectorline defp1delta") + ((d._cssclass == "") ? "" : (" " + d._cssclass)); })
         .attr("x1", function (d) { return space2Dim.convertXToCanvas(d._p1.getX()); })
         .attr("y1", function (d) { return space2Dim.convertYToCanvas(d._p1.getY()); })
         .attr("x2", function (d) { return space2Dim.convertXToCanvas(d._p2.getX()); })
