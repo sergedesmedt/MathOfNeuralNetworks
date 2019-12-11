@@ -104,8 +104,9 @@
 				<div id="limitSample" class="divcentered"></div>
 			</div>
 		</div>
-		<h2>A sample of a fucntion without a limit</h2>
+		<h2>A sample of a function without a limit</h2>
 		<p>Let us define following <a href="https://en.wikipedia.org/wiki/Piecewise">piecewise function</a></p>
+		<p>Let us see what we get when we suppose the limit is 10:</p>
 		<p>
 			$$f(x) =
 			\begin{cases}
@@ -136,8 +137,10 @@
 
 		function createLimitSample()
 		{
-        	let leftMathExpression = new MathExpressions();
+        	let mathExpression = new MathExpressions();
 			let space = new Space2Dim("limitSample", 300, 300, -50, 50, -10, 40);
+
+			let limit = 10;
 
 			function ViewModel() {
 				let leftFuncFactory = function() {
@@ -169,9 +172,9 @@
 					{ draggable: 0 }
 				);
 
-				this.epsilon = ko.observable(10);
+				this.epsilon = ko.observable(20);
 				this.epsilonY = ko.computed(function () {
-					let ey = 10 + Number(this.epsilon());
+					let ey = limit + Number(this.epsilon());
 					//console.log(ey);
 					return ey;
 				}, this);
@@ -190,7 +193,7 @@
 					return rightMathFunc(this.rightDelta());
 				}, this);
 
-				let p0epsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: ko.computed(function(){return 10;}) }, {});
+				let p0epsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: ko.computed(function(){return limit;}) }, {});
 				let pepsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.epsilonY }, {});
 				let pepsilonVisual = new Circle({ center: pepsilon, radius: ko.observable(1) }, {});
 				let epsilonVisual = new Vector2Dim({p1: p0epsilon, p2: pepsilon}, { name: "e" });
@@ -223,7 +226,7 @@
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
 					}
-					leftMathExpression.QueueUpdate();
+					mathExpression.QueueUpdate();
 					space.update(); 
 				}, this);
 				this.delta.subscribe(function (newValue) { 
@@ -241,12 +244,12 @@
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
 					}
-					leftMathExpression.QueueUpdate();
+					mathExpression.QueueUpdate();
 					space.update(); 
 				}, this);
 
 				let me = this;
-				let getLeftMathExpression = function() {
+				let getMathExpression = function() {
 					let delta = me.delta();
 					let epsilon = me.epsilon();
 
@@ -257,7 +260,7 @@
 					return mathExpression;
 				}
 
-				leftMathExpression.RegisterExpression("limit_sample", getLeftMathExpression);
+				mathExpression.RegisterExpression("limit_sample", getMathExpression);
 
 				this.circlesToShow = [p0Visual, pepsilonVisual, pleftDeltaVisual, prightDeltaVisual];
 				this.vectorsToShow = [epsilonVisual, leftDeltaVisual, rightDeltaVisual];
@@ -279,19 +282,26 @@
 
 		function createNoLimitSample() 
 		{
-        	let leftMathExpression = new MathExpressions();
+        	let mathExpression = new MathExpressions();
 			let space = new Space2Dim("nolimitSample", 300, 300, -50, 50, -10, 40);
+
+			let leftLimit = 5;
+			let rightLimit = 15;
 
 			function ViewModel() {
 				let leftMathFunc = function (x) {
-						return 0.01 * x * x + 5;
+						return 0.01 * x * x + leftLimit;
 					};
 				let rightMathFunc = function (x) {
-						return 0.01 * x * x + 15;
+						return 0.01 * x * x + rightLimit;
 					};
 
 				let leftInverseMathFunc = function(y) {
-					return Math.sqrt((y-5)/0.01)
+					return -1 * Math.sqrt((y-leftLimit)/0.01)
+				}
+
+				let rightInverseMathFunc = function(y) {
+					return Math.sqrt((y-rightLimit)/0.01)
 				}
 
 				let p0Value = new Point2Dim({
@@ -304,9 +314,18 @@
 					{ draggable: 0 }
 				);
 
-				this.epsilon = ko.observable(-25);
+				this.epsilon = ko.observable(20);
 				this.epsilonY = ko.computed(function () {
-					return leftMathFunc(this.epsilon()+10);
+					let ey = leftLimit + Number(this.epsilon());
+					//console.log(ey);
+					return ey;
+				}, this);
+
+				this.leftValidDelta = ko.computed(function(){
+					return leftInverseMathFunc(this.epsilonY());
+				}, this);
+				this.rightValidDelta = ko.computed(function(){
+					return rightInverseMathFunc(this.epsilonY());
 				}, this);
 
 				this.delta = ko.observable(20)
@@ -328,22 +347,39 @@
 				let pepsilonVisual = new Circle({ center: pepsilon, radius: ko.observable(1) }, {});
 				let epsilonVisual = new Vector2Dim({p1: p0epsilon, p2: pepsilon}, { name: "e" });
 
-				let p0delta = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.leftDeltaY }, {});
+				let pleftValidDelta = new Point2Dim({ x: this.leftValidDelta, y: this.epsilonY }, {});
+				let leftValidDeltaVisual = new Vector2Dim({p1: pepsilon, p2: pleftValidDelta}, { name: "dlv" });
+				let prighttValidDelta = new Point2Dim({ x: this.rightValidDelta, y: this.epsilonY }, {});
+				let rightValidDeltaVisual = new Vector2Dim({p1: pepsilon, p2: prighttValidDelta}, { name: "dlv" });
 
+				let p0leftDelta = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.leftDeltaY }, {});
 				let pleftdelta = new Point2Dim({ x: this.leftDelta, y: this.leftDeltaY }, {});
 				let pleftDeltaVisual = new Circle({ center: pleftdelta, radius: ko.observable(1) }, {});
-				let leftDeltaVisual = new Vector2Dim({p1: p0delta, p2: pleftdelta}, { name: "dl", cssclass: "epsilon_ok" });
+				let leftDeltaVisual = new Vector2Dim({p1: p0leftDelta, p2: pleftdelta}, { name: "dl", cssclass: "epsilon_ok" });
 				let leftFunc = new Function2Dim({ func: leftMathFunc }, { domain: [Number.MIN_SAFE_INTEGER, 0] });
 
+				let p0rightDelta = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.rightDeltaY }, {});
 				let prightdelta = new Point2Dim({ x: this.rightDelta, y: this.rightDeltaY }, {});
 				let prightDeltaVisual = new Circle({ center: prightdelta, radius: ko.observable(1) }, {});
-				let rightDeltaVisual = new Vector2Dim({p1: p0delta, p2: prightdelta}, { name: "dr", cssclass: "epsilon_ok" });
+				let rightDeltaVisual = new Vector2Dim({p1: p0rightDelta, p2: prightdelta}, { name: "dr", cssclass: "epsilon_ok" });
 				let rightFunc = new Function2Dim({ func: rightMathFunc }, { domain: [0, Number.MAX_SAFE_INTEGER] });
 
 				this.epsilon.subscribe(function (newValue) { 
 					//console.log("epsilon changed: newValue = " + newValue);
+
 					let currDelta = this.delta();
-					if(Math.abs(newValue) < Math.abs(currDelta))
+					let leftDeltaY = leftMathFunc(-currDelta);
+					let rightDeltaY = rightMathFunc(currDelta);
+					//console.log("epsilon changed: currDelta = " + currDelta);
+					//console.log("epsilon changed: leftDeltaY = " + leftDeltaY);
+					//console.log("epsilon changed: rightDeltaY = " + rightDeltaY);
+
+					let leftEpsilon = Math.abs(leftDeltaY - leftLimit);
+					let rightEpsilon = Math.abs(rightDeltaY - leftLimit);
+					let maxEpsilon = Math.max(leftEpsilon, rightEpsilon);
+
+					//console.log("epsilon changed: maxEpsilon = " + maxEpsilon);
+					if(Math.abs(newValue) < Math.abs(maxEpsilon))
 					{
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
@@ -353,7 +389,7 @@
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
 					}
-					leftMathExpression.QueueUpdate();
+					mathExpression.QueueUpdate();
 					space.update(); 
 				}, this);
 				this.delta.subscribe(function (newValue) { 
@@ -369,12 +405,12 @@
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
 					}
-					leftMathExpression.QueueUpdate();
+					mathExpression.QueueUpdate();
 					space.update(); 
 				}, this);
 
 				let me = this;
-				let getLeftMathExpression = function() {
+				let getMathExpression = function() {
 					let delta = me.leftDelta();
 					let epsilon = me.epsilon();
 
@@ -385,10 +421,10 @@
 					return mathExpression;
 				}
 
-				leftMathExpression.RegisterExpression("nolimit_sample", getLeftMathExpression);
+				mathExpression.RegisterExpression("nolimit_sample", getMathExpression);
 
 				this.circlesToShow = [p0Visual, pepsilonVisual, pleftDeltaVisual, prightDeltaVisual];
-				this.vectorsToShow = [epsilonVisual, leftDeltaVisual, rightDeltaVisual];
+				this.vectorsToShow = [epsilonVisual, leftValidDeltaVisual, rightValidDeltaVisual, leftDeltaVisual, rightDeltaVisual];
 				//this.pointsToShow = [pRightApproach];
 				this.funcsToShow = [leftFunc, rightFunc];
 			}
