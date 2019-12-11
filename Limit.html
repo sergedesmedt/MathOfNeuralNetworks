@@ -301,7 +301,12 @@
 				}
 
 				let rightInverseMathFunc = function(y) {
-					return Math.sqrt((y-rightLimit)/0.01)
+					let result = NaN
+					if(y >= rightLimit)
+					{
+						result = Math.sqrt((y-rightLimit)/0.01)
+					}
+					return result
 				}
 
 				let p0Value = new Point2Dim({
@@ -325,7 +330,10 @@
 					return leftInverseMathFunc(this.epsilonY());
 				}, this);
 				this.rightValidDelta = ko.computed(function(){
-					return rightInverseMathFunc(this.epsilonY());
+					let result = rightInverseMathFunc(this.epsilonY());
+					if(isNaN(result))
+					return 0; 
+					return result;
 				}, this);
 
 				this.delta = ko.observable(20)
@@ -342,15 +350,15 @@
 					return rightMathFunc(this.rightDelta());
 				}, this);
 
-				let p0epsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: ko.computed(function(){return 5;}) }, {});
+				let p0epsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: ko.computed(function(){return leftLimit;}) }, {});
 				let pepsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.epsilonY }, {});
 				let pepsilonVisual = new Circle({ center: pepsilon, radius: ko.observable(1) }, {});
 				let epsilonVisual = new Vector2Dim({p1: p0epsilon, p2: pepsilon}, { name: "e" });
 
 				let pleftValidDelta = new Point2Dim({ x: this.leftValidDelta, y: this.epsilonY }, {});
 				let leftValidDeltaVisual = new Vector2Dim({p1: pepsilon, p2: pleftValidDelta}, { name: "dlv" });
-				let prighttValidDelta = new Point2Dim({ x: this.rightValidDelta, y: this.epsilonY }, {});
-				let rightValidDeltaVisual = new Vector2Dim({p1: pepsilon, p2: prighttValidDelta}, { name: "dlv" });
+				let prightValidDelta = new Point2Dim({ x: this.rightValidDelta, y: this.epsilonY }, {});
+				let rightValidDeltaVisual = new Vector2Dim({p1: pepsilon, p2: prightValidDelta}, { name: "dlv" });
 
 				let p0leftDelta = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.leftDeltaY }, {});
 				let pleftdelta = new Point2Dim({ x: this.leftDelta, y: this.leftDeltaY }, {});
@@ -394,8 +402,17 @@
 				}, this);
 				this.delta.subscribe(function (newValue) { 
 					//console.log("delta changed: newValue = " + newValue);
+
+					let leftDeltaY = leftMathFunc(-1 * newValue);
+					let rightDeltaY = rightMathFunc(newValue);
+
+					let leftEpsilon = Math.abs(leftDeltaY - leftLimit);
+					let rightEpsilon = Math.abs(rightDeltaY - leftLimit);
+					let maxEpsilon = Math.max(leftEpsilon, rightEpsilon);
+
 					let currEpsilon = this.epsilon();
-					if(Math.abs(newValue) > Math.abs(currEpsilon))
+
+					if(Math.abs(currEpsilon) < Math.abs(maxEpsilon))
 					{
 						leftDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
 						rightDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
