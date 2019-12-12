@@ -83,9 +83,9 @@
 		<p>
 			$$f(x) =
 			\begin{cases}
-			x^2+10 & \text{if } x < 0\\
+			\frac{x^2}{100}+10 & \text{if } x < 0\\
 			20 & \text{if } x = 0\\
-			x^2+10 & \text{if } x > 0\\
+			\frac{x^2}{100}+10 & \text{if } x > 0\\
 			\end{cases}
 			$$
 		</p>
@@ -100,24 +100,25 @@
 				<p>You can use the following slider to regulate $\delta$</p>
 				<input type="range" min="0" max="50" step="1" data-bind="value: LimitSample.delta, valueUpdate: 'input'" />
 			</div>
+			<p>Watch how no matter how small you make $\epsilon$, you can always find a $\delta$ such that the $\epsilon$-$\delta$ definition still holds. If the definiton does not hold, the vectors representing $\delta$ willbe coloured red</p>
 			<div style="width:100%">
 				<div id="limitSample" class="divcentered"></div>
 			</div>
 		</div>
 		<h2>A sample of a function without a limit</h2>
 		<p>Let us define following <a href="https://en.wikipedia.org/wiki/Piecewise">piecewise function</a></p>
-		<p>Let us see what we get when we suppose the limit is 10:</p>
 		<p>
 			$$f(x) =
 			\begin{cases}
-			x^2+5 & \text{if } x < 0\\
+			\frac{x^2}{100}+5 & \text{if } x < 0\\
 			10 & \text{if } x = 0\\
-			x^2+15 & \text{if } x > 0\\
+			\frac{x^2}{100}+15 & \text{if } x > 0\\
 			\end{cases}
 			$$
 		</p>
 		<div style="width:100%">
-			<p>The limit $L$ of the piecewise function for $x\to{0}$ comming from the left is $10$. However, the right-sided limit is 30. Which means the above delta-epsilon definition of limit does not hold!</p>
+			<p>The limit $L$ of the piecewise function for $x\to{0}$ comming from the left is $5$. However, the right-sided limit is 15. Which means the above delta-epsilon definition of limit does not hold!</p>
+			<p>Let us see what we get when we suppose the limit is 5:</p>
 			<div id="nolimit_sample">
 				$${}$$
 			</div>
@@ -127,6 +128,7 @@
 				<p>You can use the following slider to regulate $\delta$</p>
 				<input type="range" min="0" max="50" step="1" data-bind="value: NoLimitSample.delta, valueUpdate: 'input'" />
 			</div>
+			<p>Everything from the above still holds, until we let $\epsilon$ get smaller then 10. From that moment there is no delta for the right side of the piecewise fucntion as there is no value defined for $x$ which result in the desired value of $y=f(x)$</p>
 			<div style="width:100%">
 				<div id="nolimitSample" class="divcentered"></div>
 			</div>
@@ -145,7 +147,7 @@
 			function ViewModel() {
 				let leftFuncFactory = function() {
 					let f = function (x) {
-						return 0.01 * x * x + 10;
+						return ((x * x) / 100) + 10;
 					}
 
 					return f;
@@ -153,7 +155,7 @@
 
 				let rightFuncFactory = function () {
 					let f = function (x) {
-						return 0.01 * x * x + 10;
+						return ((x * x) / 100) + 10;
 					}
 
 					return f;
@@ -172,7 +174,7 @@
 					{ draggable: 0 }
 				);
 
-				this.epsilon = ko.observable(20);
+				this.epsilon = ko.observable(5);
 				this.epsilonY = ko.computed(function () {
 					let ey = limit + Number(this.epsilon());
 					//console.log(ey);
@@ -290,21 +292,21 @@
 
 			function ViewModel() {
 				let leftMathFunc = function (x) {
-						return 0.01 * x * x + leftLimit;
+						return ((x * x) / 100) + leftLimit;
 					};
 				let rightMathFunc = function (x) {
-						return 0.01 * x * x + rightLimit;
+						return ((x * x) / 100) + rightLimit;
 					};
 
 				let leftInverseMathFunc = function(y) {
-					return -1 * Math.sqrt((y-leftLimit)/0.01)
+					return -1 * Math.sqrt((y-leftLimit) * 100)
 				}
 
 				let rightInverseMathFunc = function(y) {
 					let result = NaN
 					if(y >= rightLimit)
 					{
-						result = Math.sqrt((y-rightLimit)/0.01)
+						result = Math.sqrt((y-rightLimit) * 100)
 					}
 					return result
 				}
@@ -433,7 +435,7 @@
 
 					let mathExpression = "\\begin{aligned}"
 						+ "\\lvert x−c \\lvert < \\delta &\\implies \\lvert f(x)−L\\lvert < \\epsilon\\\\"
-						+ "\\lvert x−0 \\lvert < " + Math.abs(delta) + " &\\implies \\lvert f(x)−10\\lvert < " + Math.abs(epsilon) + "\\\\"
+						+ "\\lvert x−0 \\lvert < " + Math.abs(delta) + " &\\implies \\lvert f(x) - 5\\lvert < " + Math.abs(epsilon) + "\\\\"
 						+ "\\end{aligned}";
 					return mathExpression;
 				}
