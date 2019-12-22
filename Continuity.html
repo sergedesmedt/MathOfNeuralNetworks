@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Learn Function Derivation</title>
+	<title>Continuity of a function</title>
 	<script type="text/x-mathjax-config">
 		MathJax.Hub.Config({
 		showProcessingMessages: false,
@@ -52,10 +52,38 @@
 <body>
 	<div>
 		<h1>Continuity</h1>
-		<input type="range" min="-50" max="0" step="1" data-bind="value: ContinuitySample.leftApproach, valueUpdate: 'input'" />
-		<input type="range" min="0" max="50" step="1" data-bind="value: ContinuitySample.rightApproach, valueUpdate: 'input'" />
+		<p>
+			$$\lim_{x\to{c}}f(x) = f(c)$$
+		</p>
+		<p>In words:</p>
+		<p>A function $f(x)$ is continuous at a point $c$ if the limit of the function approaching that point ($\lim_{x\to{c}}f(x)$) is equal to the value of the function at that point ($f(c)$)</p>
+		<h2>A Sample</h2>
+		<p>Let us define following <a href="https://en.wikipedia.org/wiki/Piecewise">piecewise function</a></p>
+		<p>
+			$$f(x) =
+			\begin{cases}
+			\lvert{x}\lvert & \text{if } x < 0\\
+			0 & \text{if } x = 0\\
+			\lvert{x}\lvert & \text{if } x > 0\\
+			\end{cases}
+			$$
+		</p>
 		<div style="width:100%">
-			<div id="continuitySample" class="divcentered"></div>
+			<p>The limit $L$ of the piecewise function for $x\to{0}$ is $0$</p>
+			<div id="continuity_sample">
+				$${}$$
+			</div>
+			<div class="divcentered">
+				<p>You can use the following slider to regulate the function value at 0</p>
+				<input type="range" min="-30" max="30" step="10" data-bind="value: ContinuitySample.funcAtZero, valueUpdate: 'input'" />
+				<p>You can use the following slider to regulate $\epsilon$</p>
+				<input type="range" min="0" max="50" step="1" data-bind="value: ContinuitySample.epsilon, valueUpdate: 'input'" />
+				<p>You can use the following slider to regulate $\delta$</p>
+				<input type="range" min="0" max="50" step="1" data-bind="value: ContinuitySample.delta, valueUpdate: 'input'" />
+			</div>
+			<div style="width:100%">
+				<div id="continuitySample" class="divcentered"></div>
+			</div>
 		</div>
 	</div>
 
