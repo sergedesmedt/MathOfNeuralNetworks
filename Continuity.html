@@ -59,7 +59,7 @@
 		<p>A function $f(x)$ is continuous at a point $c$ if the limit of the function approaching that point ($\lim_{x\to{c}}f(x)$) is equal to the value of the function at that point ($f(c)$)</p>
 		<h2>A Sample</h2>
 		<p>Let us define following <a href="https://en.wikipedia.org/wiki/Piecewise">piecewise function</a></p>
-		<p>
+		<!--<p>
 			$$f(x) =
 			\begin{cases}
 			\lvert{x}\lvert & \text{if } x < 0\\
@@ -67,7 +67,10 @@
 			\lvert{x}\lvert & \text{if } x > 0\\
 			\end{cases}
 			$$
-		</p>
+		</p>-->
+		<p><div id="pcwsfunc">
+			$${}$$
+		</div></p>
 		<div style="width:100%">
 			<p>The limit $L$ of the piecewise function for $x\to{0}$ is $0$</p>
 			<div id="continuity_sample">
@@ -81,6 +84,14 @@
 				<p>You can use the following slider to regulate $\delta$</p>
 				<input type="range" min="0" max="50" step="1" data-bind="value: ContinuitySample.delta, valueUpdate: 'input'" />
 			</div>
+			<p>Notice how:</p>
+			<p>
+				<ol>
+					<li>If you use the sliders for $\epsilon$ and $\delta$, you can find that the limit of the piecewise function is $0$. This is independant of the value at $0$ itself.</li>
+					<li>If you use the slider to change the value at zero and you set it to $0$, then the piecewise function is continuous: the value at $0$ is equal to the limit when approaching $0$.</li>
+					<li>If you use the slider to change the value at zero and you set it to something different than $0$, then the piecewise function is not continuous: the value at $0$ is different of the limit when approaching $0$.</li>
+				</ol>
+			</p>
 			<div style="width:100%">
 				<div id="continuitySample" class="divcentered"></div>
 			</div>
@@ -90,7 +101,11 @@
 	<script type="text/javascript">
 
 		function createContinuitySample() {
+			let functionMathExpression = new MathExpressions();
+			let limitMathExpression = new MathExpressions();
 			let space = new Space2Dim("continuitySample", 300, 300, -50, 50, -50, 50);
+
+			let limit = 0;
 
 			function ViewModel() {
 				let funcFactory = function () {
@@ -103,11 +118,13 @@
 
 				let func = funcFactory();
 
+				this.funcAtZero = ko.observable(0);
+				this.funcAtZero.subscribe(function (newValue) { space.update(); functionMathExpression.QueueUpdate(); });
+
+				let valY = this.funcAtZero;
 				let p0Value = new Point2Dim({
 					x: ko.observable(0),
-					y: ko.computed(function () {
-						return func(0);
-					})
+					y: valY
 				}, {});;
 
 				let p0Visual = new Circle(
@@ -115,36 +132,124 @@
 					{ draggable: 0 }
 				);
 
-				this.leftApproach = ko.observable(-25);
-				this.leftApproachY = ko.computed(function () {
-					return func(this.leftApproach());
+				this.epsilon = ko.observable(25);
+				this.epsilonY = ko.computed(function () {
+					let ey = limit + Number(this.epsilon());
+					//console.log(ey);
+					return ey;
 				}, this);
 
-				this.rightApproach = ko.observable(25);
-				this.rightApproachY = ko.computed(function () {
-					return func(this.rightApproach());
+				this.delta = ko.observable(20)
+				this.leftDelta = ko.computed(function(){
+					return -1 * this.delta();
+				}, this)
+				this.leftDeltaY = ko.computed(function () {
+					return func(this.leftDelta());
+				}, this);
+				this.rightDelta = ko.computed(function(){
+					return this.delta();
+				}, this)
+				this.rightDeltaY = ko.computed(function () {
+					return func(this.rightDelta());
 				}, this);
 
-				this.leftApproach.subscribe(function (newValue) { space.update(); });
-				this.rightApproach.subscribe(function (newValue) { space.update(); });
+				let p0epsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: ko.computed(function(){return limit;}) }, {});
+				let pepsilon = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.epsilonY }, {});
+				let pepsilonVisual = new Circle({ center: pepsilon, radius: ko.observable(1) }, {});
+				let epsilonVisual = new Vector2Dim({p1: p0epsilon, p2: pepsilon}, { name: "e" });
 
-				let pLeftApproach = new Point2Dim({ x: this.leftApproach, y: this.leftApproachY }, {});
-				let pRightApproach = new Point2Dim({ x: this.rightApproach, y: this.rightApproachY }, {});
+				let p0delta = new Point2Dim({ x: ko.computed(function(){return 0;}), y: this.leftDeltaY }, {});
+
+				let pleftdelta = new Point2Dim({ x: this.leftDelta, y: this.leftDeltaY }, {});
+				let pleftDeltaVisual = new Circle({ center: pleftdelta, radius: ko.observable(1) }, {});
+				let leftDeltaVisual = new Vector2Dim({p1: p0delta, p2: pleftdelta}, { name: "dl", cssclass: "epsilon_ok" });
+				let leftFunc = new Function2Dim({ func: func }, { domain: [Number.MIN_SAFE_INTEGER, 0] });
+
+				let prightdelta = new Point2Dim({ x: this.rightDelta, y: this.rightDeltaY }, {});
+				let prightDeltaVisual = new Circle({ center: prightdelta, radius: ko.observable(1) }, {});
+				let rightDeltaVisual = new Vector2Dim({p1: p0delta, p2: prightdelta}, { name: "dr", cssclass: "epsilon_ok" });
+				let rightFunc = new Function2Dim({ func: func }, { domain: [0, Number.MAX_SAFE_INTEGER] });
+
+				this.epsilon.subscribe(function (newValue) { 
+					//console.log("epsilon changed: newValue = " + newValue);
+					let currDelta = this.delta();
+					let deltaY = func(currDelta);
+					let newEpsilon = newValue;
+
+					if(Math.abs(newEpsilon) < Math.abs(deltaY-limit))
+					{
+						leftDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
+						rightDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
+					}
+					else
+					{
+						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
+						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
+					}
+					functionMathExpression.QueueUpdate();
+					limitMathExpression.QueueUpdate();
+					space.update(); 
+				}, this);
+
+				this.delta.subscribe(function (newValue) { 
+					//console.log("delta changed: newValue = " + newValue);
+					let deltaY = func(newValue);
+					let currEpsilon = this.epsilon();
+
+					if(Math.abs(currEpsilon) < Math.abs(deltaY-limit))
+					{
+						leftDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
+						rightDeltaVisual.setConfig({ cssclass: "epsilon_nok" });	
+					}
+					else
+					{
+						leftDeltaVisual.setConfig({ cssclass: "epsilon_ok" });	
+						rightDeltaVisual.setConfig({ cssclass: "epsilon_ok" });
+					}
+					functionMathExpression.QueueUpdate();
+					limitMathExpression.QueueUpdate();
+					space.update(); 
+				}, this);
 
 
+				let me = this;
+				let getFunctionMathExpression = function() {
+					let valueAtZero = valY();
 
-				let theFunc = new Function2Dim({ func: func }, { });
+					let mathExpression = "f(x) ="
+						+ "\\begin{cases}"
+						+ "\\lvert{x}\\lvert & \\text{if } x < 0\\\\"
+						+ valueAtZero + " & \\text{if } x = 0\\\\"
+						+ "\\lvert{x}\\lvert & \\text{if } x > 0\\\\"
+						+ "\\end{cases}";
+					return mathExpression;
+				}
 
+				functionMathExpression.RegisterExpression("pcwsfunc", getFunctionMathExpression);
 
-				this.circlesToShow = [p0Visual];
-				this.pointsToShow = [pLeftApproach, pRightApproach];
-				this.funcsToShow = [theFunc];
+				let getLimitMathExpression = function() {
+					let delta = me.delta();
+					let epsilon = me.epsilon();
 
+					let mathExpression = "\\begin{aligned}"
+						+ "\\lvert x−c \\lvert < \\delta &\\implies \\lvert f(x)−L\\lvert < \\epsilon\\\\"
+						+ "\\lvert x−0 \\lvert < " + Math.abs(delta) + " &\\implies \\lvert f(x)−" + limit + "\\lvert < " + Math.abs(epsilon) + "\\\\"
+						+ "\\end{aligned}";
+					return mathExpression;
+				}
+
+				limitMathExpression.RegisterExpression("continuity_sample", getLimitMathExpression);
+
+				this.circlesToShow = [p0Visual, pepsilonVisual, pleftDeltaVisual, prightDeltaVisual];
+				this.vectorsToShow = [epsilonVisual, leftDeltaVisual, rightDeltaVisual];
+				//this.pointsToShow = [];
+				this.funcsToShow = [leftFunc, rightFunc];
 			}
 
 			let vmfunc = new ViewModel();
 
-			space.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
+			//space.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
+			space.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.vectorsToShow; });
 			space.registerHandler(Circle.draw, Circle.update, function () { return vmfunc.circlesToShow; });
 			space.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
 
