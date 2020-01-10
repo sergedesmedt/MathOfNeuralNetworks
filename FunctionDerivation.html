@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Learn Function Derivation</title>
@@ -38,20 +38,38 @@
 			fill: none;
 		}
 
-		.epsilon_ok {
-			stroke: #00FF00;
-			fill: none;
+		.derivative_at {
+			fill: #1afa1ae7;
 		}
 
-		.epsilon_nok {
-			stroke: #FF0000;
-			fill: none;
+		.limit_h {
+			fill: #033dbbe8;
 		}
 	</style>
 </head>
 <body>
 	<div>
 		<h1>Derivative of a function</h1>
+		<p>
+			$$f'(x) = \lim_{h\to0}\frac{f(x+h) - f(x)}{h}$$
+		</p>
+		<p>In words:</p>
+		<p>So the derivative is a small change in the outcome of a function divided by a small change in the argument of that function.</p>
+		<h2>A Sample</h2>
+		<p>Let us define the following function:</p>
+		<p>
+			$$y = 30*sin(x\frac{\pi}{50})$$
+		</p>
+		<p>Then we can write the above formula for the derivative as:</p>
+		<div id="derivation_sample">
+			$${}$$
+		</div>
+		<div class="divcentered">
+			<p>You can use the following slider to change the point at which you want to take the derivative</p>
+			<input type="range" min="-50" max="50" step="1" data-bind="value: DerivationSample.derivAtX, valueUpdate: 'input'"/>
+			<p>You can use the following slider to influence $h$</p>
+			<input type="range" min="1" max="20" step="0.5" data-bind="value: DerivationSample.limitH, valueUpdate: 'input'"/>
+		</div>
 		<div style="width:100%">
 			<div id="functionderivationanimation" class="divcentered"></div>
 		</div>
@@ -62,46 +80,42 @@
 		function createFunctionDerivationAnimationSample() {
 			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -50, 50);
 
+			let initDerivAtX = 30;
+			let initLimitH = 5;
+
 			function ViewModel() {
 
-				this.amplx = ko.observable(30);
-				this.amply = ko.observable(0);
+				this.derivAtX = ko.observable(initDerivAtX);
+				this.limitH = ko.observable(initLimitH);
 
-				this.amplx.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.amply.subscribe(function (newValue) { space2dimvsum.update(); });
+				this.derivAtX.subscribe(function (newValue) { 
+					//functionMathExpression.QueueUpdate();
+					//limitMathExpression.QueueUpdate();
+					console.log("update derivatX");
+					space2dimvsum.update(); 
+				}, this);
 
-				let pampl = new Point2Dim({x: this.amplx, y: this.amply}, {});
+				this.limitH.subscribe(function (newValue) { 
+					//functionMathExpression.QueueUpdate();
+					//limitMathExpression.QueueUpdate();
+					console.log("update limitH");
+					space2dimvsum.update(); 
+				}, this);
 
-				let ampl = this.amplx;
+				// this.amplx = ko.observable(30);
+				// this.amply = ko.observable(0);
+
+				// this.amplx.subscribe(function (newValue) { space2dimvsum.update(); });
+				// this.amply.subscribe(function (newValue) { space2dimvsum.update(); });
+
+				// let pampl = new Point2Dim({x: this.amplx, y: this.amply}, {});
+
+				// let ampl = this.amplx;
 				let generateRandomCurve = function () {
-					//let amplitude = ampl();
-
-					//console.log("amplitude: " + amplitude);
-
-					let n = 1; //Math.floor(Math.random() * 4 + 1);
-
-					let spectrRange = d3.range(0, 1);
-					//for (i = 0; i < spectrRange.length; i++) {
-					//	console.log("range[" + i + "] = " + spectrRange[i]);
-					//}
-
-					let params = spectrRange.map(function () {
-						return [
-							0.01 /*Math.random()*/ * (2 * Math.PI),		// frequency
-							0 ///*Math.random()*/ * Math.PI - Math.PI	// shift
-						]; // [ FREQUENCY , SHIFT ]
-					});
-					//for (i = 0; i < params.length; i++) {
-					//	console.log("params[" + i + "] = " + params[i][0] +","+ params[i][1]);
-					//}
-
 					let f = function (x) {
-						let spectrSin = params.map(function (d) { return Math.sin(d[0] * x + d[1]); });
-						//for (i = 0; i < spectrSin.length; i++) {
-						//	console.log("spectrSin[" + i + "] = " + spectrSin[i]);
-						//}
-						var result = ampl() * (d3.sum(spectrSin) /*/ (3 * n) + 0.5*/);
-						//console.log("generateRandomCurve x["+x+"], result[" + result + "]");
+						let freq = Math.PI / 50.0;
+
+						var result = 30 * Math.sin(freq * x);
 						return result;
 					};
 
@@ -112,11 +126,18 @@
 
 				//this.p0x = ko.observable(0);
 				//this.p0y = ko.observable(0);
-				this.p1x = ko.observable(-30);
+				this.p1x = this.derivAtX;
 				this.p1y = ko.computed(function () {
 					return curveFunc(this.p1x());
 				}, this); //ko.observable(-6);
-				this.p2x = ko.observable(30);
+				this.p2x = ko.computed(function() {
+					let x = this.p1x();
+					let h =  this.limitH();
+					let xplush = Number(x) + Number(h);
+					console.log("update xplus[" + xplush + "]");
+
+					return xplush;
+				}, this);
 				this.p2y = ko.computed(function () {
 					return curveFunc(this.p2x());
 				}, this); //ko.observable(6);
@@ -127,9 +148,9 @@
 
 				//this.p0x.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p0y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.p1x.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p1y.subscribe(function (newValue) { space2dimvsum.update(); });
-				this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
+				//this.p2x.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p2y.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p3x.subscribe(function (newValue) { space2dimvsum.update(); });
 				//this.p3y.subscribe(function (newValue) { space2dimvsum.update(); });
@@ -158,17 +179,19 @@
 
 				let func = new Function2Dim({ func: generateRandomCurve() }, { });
 
+				this.circlesToShow = [];
 				this.funcsToShow = [func];
-				this.pointsToShow = [pl1, pl2/*, pampl*/];
+				//this.pointsToShow = [pl1, pl2];
 				this.raysToShow = [ray/*, rayref*/];
 			}
 
 			let vmfunc = new ViewModel();
 
 			space2dimvsum.appenGlobalAttributes(Vector2Dim.global);
+			space2dimvsum.registerHandler(Circle.draw, Circle.update, function () { return vmfunc.circlesToShow; });
 			space2dimvsum.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.raysToShow; });
 			space2dimvsum.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.funcsToShow; });
-			space2dimvsum.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
+			//space2dimvsum.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vmfunc.pointsToShow; });
 			space2dimvsum.show();
 
 			return vmfunc;
