@@ -62,13 +62,13 @@
 		</p>
 		<p>In words:</p>
 		<p>So the derivative is a small change in the outcome of a function divided by a small change in the argument of that function.</p>
-		<h2>A Sample</h2>
+		<h2>A Sample differentiable function</h2>
 		<p>Let us define the following function:</p>
 		<p>
 			$$y = 30*sin(x\frac{\pi}{50})$$
 		</p>
 		<p>Then we can write the above formula for the derivative as:</p>
-		<div id="derivation_sample">
+		<div id="differentiable_sample">
 			$${}$$
 		</div>
 		<div class="divcentered">
@@ -86,9 +86,10 @@
 	<script type="text/javascript">
 
 		function createFunctionDerivationAnimationSample() {
+			let functionMathExpression = new MathExpressions();
 			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -50, 50);
 
-			let initDerivAtX = 30;
+			let initDerivAtX = 0;
 			let initLimitH = 5;
 
 			function ViewModel() {
@@ -99,11 +100,13 @@
 				this.derivAtX.subscribe(function (newValue) { 
 					console.log("update derivatX");
 					space2dimvsum.update(); 
+					functionMathExpression.QueueUpdate();
 				}, this);
 
 				this.limitH.subscribe(function (newValue) { 
 					console.log("update limitH");
 					space2dimvsum.update(); 
+					functionMathExpression.QueueUpdate();
 				}, this);
 
 				let generateRandomCurve = function () {
@@ -111,6 +114,7 @@
 						let freq = Math.PI / 50.0;
 
 						var result = 30 * Math.sin(freq * x);
+						//return Math.abs(result);
 						return result;
 					};
 
@@ -180,6 +184,26 @@
 
 
 				let func = new Function2Dim({ func: generateRandomCurve() }, { });
+
+				let me = this;
+				let getFunctionMathExpression = function() {
+					let limitH = d3.format(".1f")(me.limitH()); 
+					let x = d3.format(".1f")(pl1.getX());
+
+					let mathExpression = ""
+						+ "\\begin{aligned}"
+						+ "f'(x) &= \\lim_{h\\to0}\\frac{f(x+h) - f(x)}{h}\\\\"
+						+ "&= \\frac{df}{dx}\\\\"
+						+ "&= \\lim_{h\\to0}\\frac{30*sin((x+h)\\frac{\\pi}{50}) - 30*sin(x\\frac{\\pi}{50})}{h}\\\\"
+						+ "\\text{Approaching from the right (h > 0) we get:}\\\\"
+						+ "&= \\frac{30*sin(("+x+"+"+limitH+")\\frac{\\pi}{50}) - 30*sin("+x+"\\frac{\\pi}{50})}{"+limitH+"}\\\\"
+						+ "\\text{Approaching from the left (h < 0) we get:}\\\\"
+						+ "&= \\frac{30*sin(("+x+"-"+limitH+")\\frac{\\pi}{50}) - 30*sin("+x+"\\frac{\\pi}{50})}{-"+limitH+"}\\\\"
+						+ "\\end{aligned}\\\\";
+					return mathExpression;				
+				}
+
+				functionMathExpression.RegisterExpression("differentiable_sample", getFunctionMathExpression);
 
 				this.circlesToShow = [p1phVisual, p1mhVisual, p1Visual];
 				this.funcsToShow = [func];
