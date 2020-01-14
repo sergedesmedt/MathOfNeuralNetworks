@@ -52,6 +52,10 @@
 			stroke-width: 0;
 			fill: #ff00ff;
 		}
+
+		.sample_height {
+			height: 500px;
+		}
 	</style>
 </head>
 <body>
@@ -68,26 +72,75 @@
 			$$y = 30*sin(x\frac{\pi}{50})$$
 		</p>
 		<p>Then we can write the above formula for the derivative as:</p>
-		<div id="differentiable_sample">
+		<div id="differentiable_sample" class="sample_height">
 			$${}$$
 		</div>
 		<div class="divcentered">
 			<p>You can use the following slider to change the point at which you want to take the derivative</p>
 			<input type="range" min="-50" max="50" step="1" data-bind="value: DerivationSample.derivAtX, valueUpdate: 'input'"/>
-			<p>You can use the following slider to influence $h$</p>
+			<p>You can use the following slider to influence $h$. Notice how for every point, when the value of $h$ goes to zero, then the calculated derivatives approaching from the left and the right converge to the same value. Our function is derivable.</p>
 			<input type="range" min="0.000001" max="20" step="0.01" data-bind="value: DerivationSample.limitH, valueUpdate: 'input'"/>
-			<p>(If you move this slider to fast the visuals can't follow, so be easy with it)</p>
+			<p>(If you move this slider too fast the visuals can't follow, so be easy with it)</p>
 		</div>
 		<div style="width:100%">
 			<div id="functionderivationanimation" class="divcentered"></div>
+		</div>
+		<h2>A Sample non-differentiable function</h2>
+		<p>Let us define the following function:</p>
+		<p>
+			$$y = abs(30*sin(x\frac{\pi}{50}))$$
+		</p>
+		<p>Then we can write the above formula for the derivative as:</p>
+		<div id="nondifferentiable_sample" class="sample_height">
+			$${}$$
+		</div>
+		<div class="divcentered">
+			<p>You can use the following slider to change the point at which you want to take the derivative</p>
+			<input type="range" min="-50" max="50" step="1" data-bind="value: NonDerivationSample.derivAtX, valueUpdate: 'input'"/>
+			<p>You can use the following slider to influence $h$. Notice how for $x=0$, when the value of $h$ goes to zero, then the calculated derivatives approaching from the left and the right do NOT converge to the same value. Our function is NOT derivable.</p>
+			<input type="range" min="0.000001" max="20" step="0.01" data-bind="value: NonDerivationSample.limitH, valueUpdate: 'input'"/>
+			<p>(If you move this slider too fast the visuals can't follow, so be easy with it)</p>
+		</div>
+		<div style="width:100%">
+			<div id="nonfunctionderivationanimation" class="divcentered"></div>
 		</div>
 	</div>
 
 	<script type="text/javascript">
 
-		function createFunctionDerivationAnimationSample() {
+		let derivableFunctionFactory = function () {
+			let f = function (x) {
+				let freq = Math.PI / 50.0;
+
+				var result = 30 * Math.sin(freq * x);
+				return result;
+			};
+
+			return f;
+		};
+		
+		let derivableFunctionAsMathExpression = function (xvalAsText) {
+			return "30*sin("+xvalAsText+"\\frac{\\pi}{50})";
+		}
+
+		let nonDerivableFunctionFactory = function () {
+			let f = function (x) {
+				let freq = Math.PI / 50.0;
+
+				var result = 30 * Math.sin(freq * x);
+				return Math.abs(result);
+			};
+
+			return f;
+		};
+		
+		let nonDerivableFunctionAsMathExpression = function (xvalAsText) {
+			return "abs(30*sin("+xvalAsText+"\\frac{\\pi}{50}))";
+		}
+
+		function createFunctionDerivationAnimationSample(divid, mathid, funcFactory, funcAsMathExpression) {
 			let functionMathExpression = new MathExpressions();
-			let space2dimvsum = new Space2Dim("functionderivationanimation", 300, 300, -50, 50, -50, 50);
+			let space2dimvsum = new Space2Dim(divid, 300, 300, -50, 50, -50, 50);
 
 			let initDerivAtX = 0;
 			let initLimitH = 5;
@@ -109,19 +162,9 @@
 					functionMathExpression.QueueUpdate();
 				}, this);
 
-				let generateRandomCurve = function () {
-					let f = function (x) {
-						let freq = Math.PI / 50.0;
+				//let generateRandomCurve = 
 
-						var result = 30 * Math.sin(freq * x);
-						//return Math.abs(result);
-						return result;
-					};
-
-					return f;
-				};
-
-				let curveFunc = generateRandomCurve();
+				let curveFunc = funcFactory();
 
 				this.p1x = this.derivAtX;
 				this.p1y = ko.computed(function () {
@@ -183,27 +226,63 @@
 				);
 
 
-				let func = new Function2Dim({ func: generateRandomCurve() }, { });
+				let func = new Function2Dim({ func: funcFactory() }, { });
 
 				let me = this;
 				let getFunctionMathExpression = function() {
-					let limitH = d3.format(".1f")(me.limitH()); 
-					let x = d3.format(".1f")(pl1.getX());
+					let limitH = Number(me.limitH());
+					let x = Number(pl1.getX());
+
+					let limitHFormatted = d3.format(".1f")(me.limitH()); 
+					let xFormatted = d3.format(".1f")(x);
+
+					let fatx = curveFunc(x);
+					let fatxFormatted = d3.format(".1f")(fatx); 
+
+					let fplush = curveFunc(x+limitH);
+					let fplushFormatted = d3.format(".1f")(fplush); 
+					let dright = fplush - fatx;
+					let drightFormatted = d3.format(".1f")(dright); 
+
+					let fminh = curveFunc(x-limitH);
+					let fminFormatted = d3.format(".1f")(fminh); 
+					let dleft = fminh - fatx;
+					let dleftFormatted = d3.format(".1f")(dleft); 
+
+					let fderivright = dright / limitH;
+					let fderivrightFormatted = d3.format(".1f")(fderivright); 
+					let fderivleft = dleft / - limitH;
+					let fderivleftFormatted = d3.format(".1f")(fderivleft); 
+
+					let fplusFuncMathExpression = funcAsMathExpression("(x+h)");
+					let fplusFuncValExpression = funcAsMathExpression("("+xFormatted+"+"+limitHFormatted+")");
+					let fminFuncValExpression = funcAsMathExpression("("+xFormatted+"-"+limitHFormatted+")");
+					let fFuncMathExpression = funcAsMathExpression("x");
+					let fFuncValExpression = funcAsMathExpression(xFormatted);
 
 					let mathExpression = ""
 						+ "\\begin{aligned}"
 						+ "f'(x) &= \\lim_{h\\to0}\\frac{f(x+h) - f(x)}{h}\\\\"
 						+ "&= \\frac{df}{dx}\\\\"
-						+ "&= \\lim_{h\\to0}\\frac{30*sin((x+h)\\frac{\\pi}{50}) - 30*sin(x\\frac{\\pi}{50})}{h}\\\\"
+						+ "&= \\lim_{h\\to0}\\frac{"+fplusFuncMathExpression+" - "+fFuncMathExpression+"}{h}\\\\"
+						//+ "&= \\lim_{h\\to0}\\frac{30*sin((x+h)\\frac{\\pi}{50}) - 30*sin(x\\frac{\\pi}{50})}{h}\\\\"
 						+ "\\text{Approaching from the right (h > 0) we get:}\\\\"
-						+ "&= \\frac{30*sin(("+x+"+"+limitH+")\\frac{\\pi}{50}) - 30*sin("+x+"\\frac{\\pi}{50})}{"+limitH+"}\\\\"
+						+ "&= \\frac{"+fplusFuncValExpression+" - " + fFuncValExpression + "}{-" + limitHFormatted + "}\\\\"
+						//+ "&= \\frac{30*sin(("+xFormatted+"+"+limitHFormatted+")\\frac{\\pi}{50}) - 30*sin("+xFormatted+"\\frac{\\pi}{50})}{"+limitHFormatted+"}\\\\"
+						+ "&= \\frac{" + fplushFormatted+" - " + fatxFormatted + "}{" + limitH + "}\\\\"
+						+ "&= \\frac{" + drightFormatted + "}{" + limitH + "}\\\\"
+						+ "&= " + fderivrightFormatted + "\\\\"
 						+ "\\text{Approaching from the left (h < 0) we get:}\\\\"
-						+ "&= \\frac{30*sin(("+x+"-"+limitH+")\\frac{\\pi}{50}) - 30*sin("+x+"\\frac{\\pi}{50})}{-"+limitH+"}\\\\"
+						+ "&= \\frac{"+fminFuncValExpression+" - " + fFuncValExpression + "}{-" + limitHFormatted + "}\\\\"
+						//+ "&= \\frac{30*sin(("+xFormatted+"-"+limitHFormatted+")\\frac{\\pi}{50}) - 30*sin("+xFormatted+"\\frac{\\pi}{50})}{-"+limitHFormatted+"}\\\\"
+						+ "&= \\frac{" + fminFormatted+" - " + fatxFormatted + "}{" + limitH + "}\\\\"
+						+ "&= \\frac{" + dleftFormatted + "}{-" + limitH + "}\\\\"
+						+ "&= " + fderivleftFormatted + "\\\\"
 						+ "\\end{aligned}\\\\";
 					return mathExpression;				
 				}
 
-				functionMathExpression.RegisterExpression("differentiable_sample", getFunctionMathExpression);
+				functionMathExpression.RegisterExpression(mathid, getFunctionMathExpression);
 
 				this.circlesToShow = [p1phVisual, p1mhVisual, p1Visual];
 				this.funcsToShow = [func];
@@ -223,7 +302,8 @@
 
 		function MainViewModel()
 		{
-			this.DerivationSample = createFunctionDerivationAnimationSample();
+			this.DerivationSample = createFunctionDerivationAnimationSample("functionderivationanimation", "differentiable_sample", derivableFunctionFactory, derivableFunctionAsMathExpression);
+			this.NonDerivationSample = createFunctionDerivationAnimationSample("nonfunctionderivationanimation", "nondifferentiable_sample", nonDerivableFunctionFactory, nonDerivableFunctionAsMathExpression);
 		}
 
 		let vm = new MainViewModel();
