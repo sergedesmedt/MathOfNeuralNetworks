@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Learn Gradients</title>
@@ -48,6 +48,22 @@
 </head>
 <body>
 	<div>
+		<h1>Derivative of a multi-variable function: the Partial Derivative</h1>
+		<p>Let's say we have a function:</p>
+		<p>
+			$$f(x_1,x_2,...,x_i, ...,x_n)$$
+		</p>
+		<p>Then we can take the derivative for each variable:</p>
+		<p>
+			$$\begin{aligned}
+			\frac{\partial f}{\partial x_1} & =\lim_{h\to0}\frac{f(x_1+h,x_2,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			\frac{\partial f}{\partial x_2} & =\lim_{h\to0}\frac{f(x_1,x_2+h,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			...\\
+			\frac{\partial f}{\partial x_i} & =\lim_{h\to0}\frac{f(x_1,x_2,...,x_i+h, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			...\\
+			\frac{\partial f}{\partial x_n} & =\lim_{h\to0}\frac{f(x_1,x_2,...,x_i, ...,x_n+h) - f(x_1,x_2,...,x_i, ...,x_n)}{h}
+			\end{aligned}$$
+		</p>
 		<div>
 			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAt, valueUpdate: 'input'" />
 		</div>
