@@ -2,6 +2,13 @@
 <html>
 <head>
 	<title>Learn Gradients</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
 	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
@@ -64,10 +71,22 @@
 			\frac{\partial f}{\partial x_n} & =\lim_{h\to0}\frac{f(x_1,x_2,...,x_i, ...,x_n+h) - f(x_1,x_2,...,x_i, ...,x_n)}{h}
 			\end{aligned}$$
 		</p>
-		<div>
-			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAt, valueUpdate: 'input'" />
+		<p>In words:</p>
+		<p>The partial derivative is the derivative of a multi-variable function taken by keeping but one of its variables constant. Thus
+			the partial derivative of $f(x_1,x_2,...,x_i, ...,x_n)$ to $x_i$, thus $\frac{\partial f}{\partial x_i}$, 
+			is the derivative of the function with $x_i$ left variable and $x_1$, $x_2$, ..., $x_n$ kept constant.
+		</p>
+		<h2>A sample</h2>
+		<p>Let us define the following function:</p>
+		<p>
+			$$f(x_1, x_2) = 0.01(x_1^2 + x_2^2)$$
+		</p>
+		<p>Then we can write the partial derivatives as:</p>
+		<div id="multivariable_differnetiable_sample">
+			$${}$$
 		</div>
-		<div>
+		<div class="divcentered">
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAt, valueUpdate: 'input'" />
 			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAt, valueUpdate: 'input'" />
 		</div>
 		<div>
@@ -82,24 +101,31 @@
 			<div id="partialderivy"></div>
 		</div>
 	</div>
+</div>>
 
 	<script type="text/javascript">
 
 		let coeff = 0.01;
 
-		let dim3dCurveFactory = function () {
-			let f = function (x, y) {
-				//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
-				//return Math.sqrt(x * x + y * y);
-				return coeff * (x * x + y * y);
-			}
+		let dim3dCurve = function (x, y) {
+			//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
+			//return Math.sqrt(x * x + y * y);
+			return coeff * (x * x + y * y);
+		};
 
-			return f;
+		let dim3dCurveFactory = function () {
+			// let f = function (x, y) {
+			// 	//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
+			// 	//return Math.sqrt(x * x + y * y);
+			// 	return coeff * (x * x + y * y);
+			// }
+
+			return dim3dCurve;
 		};
 
 		let xCurveFactory = function (y) {
 			let f = function (x) {
-				return coeff * (x * x + y * y);
+				return dim3dCurve(x, y); //coeff * (x * x + y * y);
 			}
 
 			return f;
@@ -115,7 +141,7 @@
 
 		let yCurveFactory = function (x) {
 			let f = function (y) {
-				return coeff * (x * x + y * y);
+				return dim3dCurve(x, y); //coeff * (x * x + y * y);
 			}
 
 			return f;
