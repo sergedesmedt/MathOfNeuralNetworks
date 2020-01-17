@@ -77,17 +77,17 @@
 			is the derivative of the function with $x_i$ left variable and $x_1$, $x_2$, ..., $x_n$ kept constant.
 		</p>
 		<h2>A sample</h2>
-		<p>Let us define the following function:</p>
+		<p>Let us define the following function (we're using $x$ and $y$ instead of $x_1$ and $x_2$ to avoid the subscript mess):</p>
 		<p>
-			$$f(x_1, x_2) = 0.01(x_1^2 + x_2^2)$$
+			$$f(x, y) = 0.01(x^2 + y^2)$$
 		</p>
 		<p>Then we can write the partial derivatives as:</p>
 		<div id="multivariable_differnetiable_sample">
 			$${}$$
 		</div>
 		<div class="divcentered">
-			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAt, valueUpdate: 'input'" />
-			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAt, valueUpdate: 'input'" />
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAtConstantY, valueUpdate: 'input'" />
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAtConstantX, valueUpdate: 'input'" />
 		</div>
 		<div>
 			<div id="space3dimdiv"></div>
@@ -108,24 +108,16 @@
 		let coeff = 0.01;
 
 		let dim3dCurve = function (x, y) {
-			//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
-			//return Math.sqrt(x * x + y * y);
 			return coeff * (x * x + y * y);
 		};
 
 		let dim3dCurveFactory = function () {
-			// let f = function (x, y) {
-			// 	//return Math.sin(Math.sqrt(x * x + y * y) / 5 * Math.PI) * 10;
-			// 	//return Math.sqrt(x * x + y * y);
-			// 	return coeff * (x * x + y * y);
-			// }
-
 			return dim3dCurve;
 		};
 
 		let xCurveFactory = function (y) {
 			let f = function (x) {
-				return dim3dCurve(x, y); //coeff * (x * x + y * y);
+				return dim3dCurve(x, y);
 			}
 
 			return f;
@@ -141,7 +133,7 @@
 
 		let yCurveFactory = function (x) {
 			let f = function (y) {
-				return dim3dCurve(x, y); //coeff * (x * x + y * y);
+				return dim3dCurve(x, y);
 			}
 
 			return f;
@@ -158,15 +150,15 @@
 
 		function createSpace3Dim() {
 			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, 100, -50, 50, -50, 50, -50, 50);
-			let space2dimDerivX = new Space2Dim("partialderivx", 100, 100, -50, 50, -50, 50);
-			let space2dimDerivY = new Space2Dim("partialderivy", 100, 100, -50, 50, -50, 50, 90);
+			let space2dimDerivX = new Space2Dim("partialderivx", 200, 200, -50, 50, -50, 50);
+			let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, 90);
 
 			let lineWidth = 1;
 
 			function ViewModel() {
 
-				this.partialDerivYAt = ko.observable(25);
-				this.partialDerivXAt = ko.observable(10);
+				this.partialDerivXAtConstantY = ko.observable(10);
+				this.partialDerivYAtConstantX = ko.observable(25);
 
 				this.xToShow = [];
 				this.yToShow = [];
@@ -178,45 +170,40 @@
 
 				let me = this;
 				let getFuncsToShow = function () {
-					console.log("partialDerivYAt.subscribe: " + me.partialDerivYAt());
 
-					let partialDerivYAtVal = parseInt(me.partialDerivYAt());
-					let partialDerivXAtVal = parseInt(me.partialDerivXAt());
-
-					let partialDerivYRangeXStart = (-1 * lineWidth) + partialDerivYAtVal;
-					let partialDerivYRangeXEnd = lineWidth + partialDerivYAtVal;
+					let partialDerivYValAtConstantX = parseInt(me.partialDerivYAtConstantX());
+					let partialDerivXValAtConstantY = parseInt(me.partialDerivXAtConstantY());
 
 					let partialDerivY = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYAtVal - lineWidth, partialDerivYAtVal + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
+					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYValAtConstantX - lineWidth, partialDerivYValAtConstantX + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
 
 					let partialDerivX = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXAtVal - lineWidth, partialDerivXAtVal + lineWidth], cssclass: "redFunc" });
+					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXValAtConstantY - lineWidth, partialDerivXValAtConstantY + lineWidth], cssclass: "redFunc" });
 
 					let deriveFunc11 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, partialDerivYAtVal + -1 * lineWidth], yrange: [-50, partialDerivXAtVal + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, partialDerivYValAtConstantX + -1 * lineWidth], yrange: [-50, partialDerivXValAtConstantY + -1 * lineWidth], cssclass: "blueFunc" });
 
 					let deriveFunc12 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, partialDerivYAtVal + -1 * lineWidth], yrange: [partialDerivXAtVal + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, partialDerivYValAtConstantX + -1 * lineWidth], yrange: [partialDerivXValAtConstantY + lineWidth, 50], cssclass: "blueFunc" });
 
 					let deriveFunc21 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [partialDerivYAtVal + lineWidth, 50], yrange: [-50, partialDerivXAtVal + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [partialDerivYValAtConstantX + lineWidth, 50], yrange: [-50, partialDerivXValAtConstantY + -1 * lineWidth], cssclass: "blueFunc" });
 
 					let deriveFunc22 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [partialDerivYAtVal + lineWidth, 50], yrange: [partialDerivXAtVal + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [partialDerivYValAtConstantX + lineWidth, 50], yrange: [partialDerivXValAtConstantY + lineWidth, 50], cssclass: "blueFunc" });
 
 					me.curvesToShow = [partialDerivY, partialDerivX, deriveFunc11, deriveFunc12, deriveFunc21, deriveFunc22];
-					//me.curvesToShow = [partialDerivY, partialDerivX];
 
 
-					let xFunc = new Function2Dim({ func: xCurveFactory(partialDerivYAtVal) }, {});
+					let xFunc = new Function2Dim({ func: xCurveFactory(partialDerivYValAtConstantX) }, {});
 					let derivXFunc = new Function2Dim({ func: derivXCurveFactory() }, {});
-					let posXX = ko.observable(partialDerivXAtVal);
+					let posXX = ko.observable(partialDerivXValAtConstantY);
 					let posXY1 = ko.observable(0);
 					let posXY2 = ko.observable(1);
 					let posX1 = new Point2Dim({ x: posXX, y: posXY1 }, {});
@@ -227,9 +214,9 @@
 						{}
 					);
 
-					let yFunc = new Function2Dim({ func: yCurveFactory(partialDerivXAtVal) }, {});
+					let yFunc = new Function2Dim({ func: yCurveFactory(partialDerivXValAtConstantY) }, {});
 					let derivYFunc = new Function2Dim({ func: derivYCurveFactory() }, {});
-					let posYX = ko.observable(partialDerivYAtVal);
+					let posYX = ko.observable(partialDerivYValAtConstantX);
 					let posYY1 = ko.observable(0);
 					let posYY2 = ko.observable(1);
 					let posY1 = new Point2Dim({ x: posYX, y: posYY1 }, {});
@@ -248,13 +235,13 @@
 
 				}
 
-				this.partialDerivXAt.subscribe(function (newValue) {
+				this.partialDerivXAtConstantY.subscribe(function (newValue) {
 					getFuncsToShow();
 					space3dimvsum.update();
 					space2dimDerivX.update();
 					space2dimDerivY.update();
 				});
-				this.partialDerivYAt.subscribe(function (newValue)
+				this.partialDerivYAtConstantX.subscribe(function (newValue)
 				{
 					getFuncsToShow();
 					space3dimvsum.update();
