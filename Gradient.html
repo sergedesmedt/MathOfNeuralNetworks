@@ -17,6 +17,7 @@
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
 	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/space3dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
@@ -63,12 +64,12 @@
 		<p>Then we can take the derivative for each variable:</p>
 		<p>
 			$$\begin{aligned}
-			\frac{\partial f}{\partial x_1} & =\lim_{h\to0}\frac{f(x_1+h,x_2,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
-			\frac{\partial f}{\partial x_2} & =\lim_{h\to0}\frac{f(x_1,x_2+h,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			\frac{\partial f}{\partial x_1} &= \lim_{h\to0}\frac{f(x_1+h,x_2,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			\frac{\partial f}{\partial x_2} &= \lim_{h\to0}\frac{f(x_1,x_2+h,...,x_i, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
 			...\\
-			\frac{\partial f}{\partial x_i} & =\lim_{h\to0}\frac{f(x_1,x_2,...,x_i+h, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
+			\frac{\partial f}{\partial x_i} &= \lim_{h\to0}\frac{f(x_1,x_2,...,x_i+h, ...,x_n) - f(x_1,x_2,...,x_i, ...,x_n)}{h}\\
 			...\\
-			\frac{\partial f}{\partial x_n} & =\lim_{h\to0}\frac{f(x_1,x_2,...,x_i, ...,x_n+h) - f(x_1,x_2,...,x_i, ...,x_n)}{h}
+			\frac{\partial f}{\partial x_n} &= \lim_{h\to0}\frac{f(x_1,x_2,...,x_i, ...,x_n+h) - f(x_1,x_2,...,x_i, ...,x_n)}{h}
 			\end{aligned}$$
 		</p>
 		<p>In words:</p>
@@ -77,15 +78,16 @@
 			is the derivative of the function with $x_i$ left variable and $x_1$, $x_2$, ..., $x_n$ kept constant.
 		</p>
 		<h2>A sample</h2>
-		<p>Let us define the following function (we're using $x$ and $y$ instead of $x_1$ and $x_2$ to avoid the subscript mess):</p>
+		<p>Let us define the following function (we're using $x$ and $y$ instead of $x_1$ and $x_2$ to avoid subscript hell):</p>
 		<p>
 			$$f(x, y) = 0.01(x^2 + y^2)$$
 		</p>
 		<p>Then we can write the partial derivatives as:</p>
-		<div id="multivariable_differnetiable_sample">
+		<div id="multivariable_differentiable_sample">
 			$${}$$
 		</div>
 		<div class="divcentered">
+			<p>You can use the following slider to change ...</p>
 			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAtConstantY, valueUpdate: 'input'" />
 			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAtConstantX, valueUpdate: 'input'" />
 		</div>
@@ -149,6 +151,7 @@
 
 
 		function createSpace3Dim() {
+			let functionMathExpression = new MathExpressions();
 			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, 100, -50, 50, -50, 50, -50, 50);
 			let space2dimDerivX = new Space2Dim("partialderivx", 200, 200, -50, 50, -50, 50);
 			let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, 90);
@@ -235,11 +238,23 @@
 
 				}
 
+				let getFunctionMathExpression = function() {
+					let mathExpression = "\\begin{aligned}"
+					+ "\\frac{\\partial f}{\\partial x} &= {0.01}\\times{2x}\\\\"
+					+ "\\frac{\\partial f}{\\partial y} &= {0.01}\\times{2y}\\\\"
+					+ "\\end{aligned}";
+
+					return mathExpression;
+				}
+
+				functionMathExpression.RegisterExpression("multivariable_differentiable_sample", getFunctionMathExpression);
+
 				this.partialDerivXAtConstantY.subscribe(function (newValue) {
 					getFuncsToShow();
 					space3dimvsum.update();
 					space2dimDerivX.update();
 					space2dimDerivY.update();
+					functionMathExpression.QueueUpdate();
 				});
 				this.partialDerivYAtConstantX.subscribe(function (newValue)
 				{
@@ -247,6 +262,7 @@
 					space3dimvsum.update();
 					space2dimDerivX.update();
 					space2dimDerivY.update();
+					functionMathExpression.QueueUpdate();
 				});
 
 				getFuncsToShow();
