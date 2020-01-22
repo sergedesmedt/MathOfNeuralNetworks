@@ -87,30 +87,37 @@
 			$${}$$
 		</div>
 		<div class="divcentered">
-			<p>You can use the following slider to change ...</p>
-			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivXAtConstantY, valueUpdate: 'input'" />
-			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.partialDerivYAtConstantX, valueUpdate: 'input'" />
+			<p>You can use the following slider to change the coordinate $x$ at which the derivative is taken</p>
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.atX, valueUpdate: 'input'" />
+			<p>You can use the following slider to change the coordinate $y$ at which the derivative is taken</p>
+			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.atY, valueUpdate: 'input'" />
 		</div>
 		<div>
-			<div id="space3dimdiv"></div>
-		</div>
-		<h2>Partial Derivative X</h2>
-		<div>
-			<div id="partialderivx"></div>
-		</div>
-		<h2>Partial Derivative Y</h2>
-		<div>
-			<div id="partialderivy"></div>
+			<table>
+				<tr><td><div id="space3dimdiv"></div><td><div id="partialderivy"></div></td></tr>
+				<tr><td><div id="partialderivx"></div></td><td></td></tr>
+			</table>
+			<!--<div>
+				<div id="space3dimdiv"></div>
+			</div>
+			<h2>Partial Derivative X</h2>
+			<div>
+				<div id="partialderivx"></div>
+			</div>
+			<h2>Partial Derivative Y</h2>
+			<div>
+				<div id="partialderivy"></div>
+			</div>-->
 		</div>
 	</div>
 </div>>
 
 	<script type="text/javascript">
 
-		let coeff = 0.01;
+		let coeff = 0.005;
 
 		let dim3dCurve = function (x, y) {
-			return coeff * (x * x + y * y);
+			return coeff * (x * x * x + y * y * y);
 		};
 
 		let dim3dCurveFactory = function () {
@@ -118,24 +125,27 @@
 		};
 
 		let xCurveFactory = function (y) {
+			let yconstant = y;
 			let f = function (x) {
-				return dim3dCurve(x, y);
+				return dim3dCurve(x, yconstant);
 			}
 
 			return f;
 		}
 
 		let derivXCurveFactory = function () {
+			let delta = 0.01;
 			let f = function (x) {
-				return 2 * coeff * x;
+				return 3 * coeff * x * x;
 			}
 
 			return f;
 		}
 
 		let yCurveFactory = function (x) {
+			let xconstant = x;
 			let f = function (y) {
-				return dim3dCurve(x, y);
+				return dim3dCurve(xconstant, y);
 			}
 
 			return f;
@@ -143,7 +153,7 @@
 
 		let derivYCurveFactory = function () {
 			let f = function (y) {
-				return 2 * coeff * y;
+				return 3 * coeff * y * y;
 			}
 
 			return f;
@@ -152,7 +162,7 @@
 
 		function createSpace3Dim() {
 			let functionMathExpression = new MathExpressions();
-			let space3dimvsum = new Space3Dim("space3dimdiv", 100, 100, 100, -50, 50, -50, 50, -50, 50);
+			let space3dimvsum = new Space3Dim("space3dimdiv", 200, 200, 100, -50, 50, -50, 50, -50, 50);
 			let space2dimDerivX = new Space2Dim("partialderivx", 200, 200, -50, 50, -50, 50);
 			let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, 90);
 
@@ -160,8 +170,8 @@
 
 			function ViewModel() {
 
-				this.partialDerivXAtConstantY = ko.observable(10);
-				this.partialDerivYAtConstantX = ko.observable(25);
+				this.atY = ko.observable(10);
+				this.atX = ko.observable(25);
 
 				this.xToShow = [];
 				this.yToShow = [];
@@ -174,39 +184,39 @@
 				let me = this;
 				let getFuncsToShow = function () {
 
-					let partialDerivYValAtConstantX = parseInt(me.partialDerivYAtConstantX());
-					let partialDerivXValAtConstantY = parseInt(me.partialDerivXAtConstantY());
+					let atXVal = parseInt(me.atX());
+					let atYVal = parseInt(me.atY());
 
 					let partialDerivY = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-					{ sampleFreq: 10, sampleFreqX: 2, xrange: [partialDerivYValAtConstantX - lineWidth, partialDerivYValAtConstantX + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
+					{ sampleFreq: 10, sampleFreqX: 2, xrange: [atXVal - lineWidth, atXVal + lineWidth], yrange: [-50, 50], cssclass: "redFunc" });
 
 					let partialDerivX = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [partialDerivXValAtConstantY - lineWidth, partialDerivXValAtConstantY + lineWidth], cssclass: "redFunc" });
+					{ sampleFreq: 2, sampleFreqX: 10, xrange: [-50, 50], yrange: [atYVal - lineWidth, atYVal + lineWidth], cssclass: "redFunc" });
 
 					let deriveFunc11 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, partialDerivYValAtConstantX + -1 * lineWidth], yrange: [-50, partialDerivXValAtConstantY + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "blueFunc" });
 
 					let deriveFunc12 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, partialDerivYValAtConstantX + -1 * lineWidth], yrange: [partialDerivXValAtConstantY + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [atYVal + lineWidth, 50], cssclass: "blueFunc" });
 
 					let deriveFunc21 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [partialDerivYValAtConstantX + lineWidth, 50], yrange: [-50, partialDerivXValAtConstantY + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "blueFunc" });
 
 					let deriveFunc22 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [partialDerivYValAtConstantX + lineWidth, 50], yrange: [partialDerivXValAtConstantY + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [atYVal + lineWidth, 50], cssclass: "blueFunc" });
 
 					me.curvesToShow = [partialDerivY, partialDerivX, deriveFunc11, deriveFunc12, deriveFunc21, deriveFunc22];
 
 
-					let xFunc = new Function2Dim({ func: xCurveFactory(partialDerivYValAtConstantX) }, {});
+					let xFunc = new Function2Dim({ func: xCurveFactory(atYVal) }, {});
 					let derivXFunc = new Function2Dim({ func: derivXCurveFactory() }, {});
-					let posXX = ko.observable(partialDerivXValAtConstantY);
+					let posXX = ko.observable(atXVal);
 					let posXY1 = ko.observable(0);
 					let posXY2 = ko.observable(1);
 					let posX1 = new Point2Dim({ x: posXX, y: posXY1 }, {});
@@ -217,9 +227,9 @@
 						{}
 					);
 
-					let yFunc = new Function2Dim({ func: yCurveFactory(partialDerivXValAtConstantY) }, {});
+					let yFunc = new Function2Dim({ func: yCurveFactory(atXVal) }, {});
 					let derivYFunc = new Function2Dim({ func: derivYCurveFactory() }, {});
-					let posYX = ko.observable(partialDerivYValAtConstantX);
+					let posYX = ko.observable(atYVal);
 					let posYY1 = ko.observable(0);
 					let posYY2 = ko.observable(1);
 					let posY1 = new Point2Dim({ x: posYX, y: posYY1 }, {});
@@ -249,14 +259,14 @@
 
 				functionMathExpression.RegisterExpression("multivariable_differentiable_sample", getFunctionMathExpression);
 
-				this.partialDerivXAtConstantY.subscribe(function (newValue) {
+				this.atY.subscribe(function (newValue) {
 					getFuncsToShow();
 					space3dimvsum.update();
 					space2dimDerivX.update();
 					space2dimDerivY.update();
 					functionMathExpression.QueueUpdate();
 				});
-				this.partialDerivYAtConstantX.subscribe(function (newValue)
+				this.atX.subscribe(function (newValue)
 				{
 					getFuncsToShow();
 					space3dimvsum.update();
