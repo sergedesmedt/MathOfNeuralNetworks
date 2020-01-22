@@ -1,4 +1,4 @@
-﻿function Space3Dim(
+function Space3Dim(
     elemId
     , htmlWidth, htmlHeight, htmlZ
     , domainXMin, domainXMax, domainYMin, domainYMax, domainZMin, domainZMax
@@ -27,7 +27,8 @@
         .range([0, this._htmlWidth]);
     this._yscale = d3.scaleLinear()
         .domain([this._domainYMin, this._domainYMax])
-        .range([this._htmlHeight, 0]);
+        //.range([this._htmlHeight, 0]);
+        .range([0, this._htmlHeight]);
     this._zscale = d3.scaleLinear()
         .domain([this._domainZMin, this._domainZMax])
         .range([0, this._htmlZ]);
