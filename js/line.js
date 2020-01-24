@@ -1,4 +1,4 @@
-﻿function Line2Dim(props, config) {
+function Line2Dim(props, config) {
 
     this._deftype = "unknown";
     if (props.hasOwnProperty("p1")) {
@@ -45,6 +45,12 @@
     if (config.hasOwnProperty("id")) {
         this._id = config["id"];
         //console.log("this._id: " + this._id);
+    }
+
+    this._cssclass = "";
+    if (config.hasOwnProperty("cssclass")) {
+        this._cssclass = config["cssclass"];
+        //console.log("this._cssclass: " + this._cssclass);
     }
 
     if (this._deftype == "unknown") {
@@ -142,7 +148,11 @@ Line2Dim.draw = function (space2Dim, lines) {
         .attr("class", "ray");
 
     gray.append("line")
-        .attr("class", "rayline")
+        //.attr("class", "rayline")
+        .attr("class", function (d) {
+            return "rayline"
+                + ((d._cssclass == "") ? "" : (" " + d._cssclass));
+        })
         .attr("x1", function (d) { return calcRayDRicoX1(space, d);} )
         .attr("y1", function (d) { return calcRayDRicoY1(space, d);} )
         .attr("x2", function (d) { return calcRayDRicoX2(space, d);} )
