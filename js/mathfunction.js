@@ -1,4 +1,4 @@
-﻿function Function2Dim(props, config) {
+function Function2Dim(props, config) {
     this._func = props["func"];
 
     this._minDomain = Number.MIN_SAFE_INTEGER;
@@ -84,7 +84,7 @@ function createFuncs(space2Dim, newFuncs) {
 
     var domainX = space2Dim.getDomain()[0];
     gfunc.append('path')
-        .attr('class', 'funcplot')
+        .attr('class', function (d) { return 'funcplot' + ((d._cssclass == "") ? "" : (" " + d._cssclass));})
         .attr('d', function (d) {
             var domainMinValue = d._minDomain;
             if (domainMinValue < domainX[0])
