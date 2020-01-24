@@ -38,18 +38,26 @@
 			stroke: #ff0000;
 			stroke-width: 1;
 			fill: #ff0000;
-		}
-
-		.blueFunc {
-			stroke: #000000;
-			stroke-width: 1;
-			fill: #ffffff;
+			color: #ff0000;
 		}
 
 		.funcplot {
 			stroke: #000000;
 			stroke-width: 1;
 			fill: none;
+		}
+
+		.funcAt {
+			stroke: #ff0000;
+			color: #ff0000;
+		}
+		.funcDerivAt {
+			stroke: #2ef11ce0;
+			color: #2ef11ce0;
+		}
+		.pointAt {
+			stroke: #f10bcbe0;
+			color: #f10bcbe0;
 		}
 	</style>
 
@@ -80,7 +88,7 @@
 		<h2>A sample</h2>
 		<p>Let us define the following function (we're using $x$ and $y$ instead of $x_1$ and $x_2$ to avoid subscript hell):</p>
 		<p>
-			$$f(x, y) = 0.01(x^2 + y^2)$$
+			$$f(x, y) = 0.005(x^3 + y^3)$$
 		</p>
 		<p>Then we can write the partial derivatives as:</p>
 		<div id="multivariable_differentiable_sample">
@@ -93,8 +101,18 @@
 			<input type="range" min="-50" max="50" step="1" data-bind="value: Func3d.atY, valueUpdate: 'input'" />
 		</div>
 		<div>
+			In following, the
+			<ul>
+				<li><span class="pointAt">Purple lines</span> are the points of constant $x$ and $y$. (These are the values you influence with the sliders)</li>
+				<li><span class="funcAt">Red lines</span> are the functions at a respective constant $x$ and $y$</li>
+				<li><span class="funcDerivAt">Green lines</span> are the respective partial derivatives $\frac{\partial f}{\partial x}$ and $\frac{\partial f}{\partial y}$ </li>
+			</ul>
+		</div>
+		<div>
 			<table>
+				<tr><td>The function $$f(x, y) = 0.005(x^3 + y^3)$$</td><td>The partial derivative $$\frac{\partial f}{\partial y} = {0.005}\times{3y^2}$$</td></tr>
 				<tr><td><div id="space3dimdiv"></div><td><div id="partialderivy"></div></td></tr>
+				<tr><td>The partial derivative $$\frac{\partial f}{\partial x} = {0.005}\times{3x^2}$$</td><td></td></tr>
 				<tr><td><div id="partialderivx"></div></td><td></td></tr>
 			</table>
 			<!--<div>
@@ -197,25 +215,25 @@
 
 					let deriveFunc11 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "funcplot" });
 
 					let deriveFunc12 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [atYVal + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [-50, atXVal + -1 * lineWidth], yrange: [atYVal + lineWidth, 50], cssclass: "funcplot" });
 
 					let deriveFunc21 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [-50, atYVal + -1 * lineWidth], cssclass: "funcplot" });
 
 					let deriveFunc22 = new Function3Dim(
 						{ func: dim3dCurveFactory() },
-						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [atYVal + lineWidth, 50], cssclass: "blueFunc" });
+						{ sampleFreq: 10, xrange: [atXVal + lineWidth, 50], yrange: [atYVal + lineWidth, 50], cssclass: "funcplot" });
 
 					me.curvesToShow = [partialDerivY, partialDerivX, deriveFunc11, deriveFunc12, deriveFunc21, deriveFunc22];
 
 
-					let xFunc = new Function2Dim({ func: xCurveFactory(atYVal) }, {});
-					let derivXFunc = new Function2Dim({ func: derivXCurveFactory() }, {});
+					let xFunc = new Function2Dim({ func: xCurveFactory(atYVal) }, { cssclass: "funcAt" });
+					let derivXFunc = new Function2Dim({ func: derivXCurveFactory() }, { cssclass: "funcDerivAt" });
 					let posXX = ko.observable(atXVal);
 					let posXY1 = ko.observable(0);
 					let posXY2 = ko.observable(1);
@@ -224,11 +242,11 @@
 
 					let posXLine = new Line2Dim(
 						{ p1: posX1, p2: posX2 },
-						{}
+						{ cssclass: "pointAt" }
 					);
 
-					let yFunc = new Function2Dim({ func: yCurveFactory(atXVal) }, {});
-					let derivYFunc = new Function2Dim({ func: derivYCurveFactory() }, {});
+					let yFunc = new Function2Dim({ func: yCurveFactory(atXVal) }, { cssclass: "funcAt" });
+					let derivYFunc = new Function2Dim({ func: derivYCurveFactory() }, { cssclass: "funcDerivAt" });
 					let posYX = ko.observable(atYVal);
 					let posYY1 = ko.observable(0);
 					let posYY2 = ko.observable(1);
@@ -237,7 +255,7 @@
 
 					let posYLine = new Line2Dim(
 						{ p1: posY1, p2: posY2 },
-						{}
+						{ cssclass: "pointAt" }
 					);
 
 					me.xToShow = [xFunc, derivXFunc];
@@ -250,8 +268,8 @@
 
 				let getFunctionMathExpression = function() {
 					let mathExpression = "\\begin{aligned}"
-					+ "\\frac{\\partial f}{\\partial x} &= {0.01}\\times{2x}\\\\"
-					+ "\\frac{\\partial f}{\\partial y} &= {0.01}\\times{2y}\\\\"
+					+ "\\frac{\\partial f}{\\partial x} &= {0.005}\\times{3x^2}\\\\"
+					+ "\\frac{\\partial f}{\\partial y} &= {0.005}\\times{3y^2}\\\\"
 					+ "\\end{aligned}";
 
 					return mathExpression;
