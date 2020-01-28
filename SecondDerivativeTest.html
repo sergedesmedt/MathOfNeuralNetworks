@@ -1,215 +1,300 @@
-function Space2Dim(
-    elemId
-    , htmlWidth, htmlHeight
-    , domainXMin, domainXMax, domainYMin, domainYMax
-    , rotation
-) {
-    this._htmlWidth = htmlWidth;
-    this._htmlHeight = htmlHeight;
-    this._domainXMin = domainXMin;
-    this._domainXMax = domainXMax;
-    this._domainYMin = domainYMin;
-    this._domainYMax = domainYMax;
-    this._parentId = elemId;
-    this._canvasId = "svgcanvas" + this._parentId;
-    this._svgId = "svg" + elemId;
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Understanding the Second Derivative test</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
+	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
+	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="./d3/d3.v5.js"></script>
+	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./js/space2dim.js"></script>
+	<script type="text/javascript" src="./js/space3dim.js"></script>
+	<script type="text/javascript" src="./js/point.js"></script>
+	<script type="text/javascript" src="./js/circle.js"></script>
+	<script type="text/javascript" src="./js/vector.js"></script>
+	<script type="text/javascript" src="./js/mathfunction.js"></script>
+	<script type="text/javascript" src="./js/rico.js"></script>
+	<script type="text/javascript" src="./js/line.js"></script>
+	<script type="text/javascript" src="./js/dimlength.js"></script>
+	<script type="text/javascript" src="./js/mathfunction3d.js"></script>
 
-    this._handlers = [];
+	<link rel="stylesheet" type="text/css" href="./css/article.css">
+	<link rel="stylesheet" type="text/css" href="./css/space2dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/space3dim.css">
+	<link rel="stylesheet" type="text/css" href="./css/vector.css">
+	<link rel="stylesheet" type="text/css" href="./css/line.css">
+	<link rel="stylesheet" type="text/css" href="./css/dimlength.css">
 
-    this._valuedspacingx = 8;
-    this._valuedspacingy = 12;
+	<style>
+		.funcplot {
+			stroke: #000000;
+			stroke-width: 1;
+			fill: none;
+		}
+	</style>
+</head>
+<body>
+	<h1>The Second Derivative test</h1>
+	<p>Let's say we have a function $f(x)$ and we want to know at what value of $x$ it has a local maximum.</p>
+	<p>For this we can use following summary:</p>
+	<ol>
+		<li>If $f'(x) = 0$ and $f''(x) < 0$, then the function $f()$ has a maximum at $x$</li>
+		<li>If $f'(x) = 0$ and $f''(x) > 0$, then the function $f()$ has a minimum at $x$</li>
+		<li>If $f'(x) = 0$ and $f''(x) = 0$, then we gain no extra information (about the original function having a maximum or a mnimum)</li>
+	</ol>
+	<div>
+		<select data-bind="
+		options: testCases,
+		optionsText: 'description',
+		optionsValue: 'id',
+		value: selectedId">
+	</select>
+	</div>
+	<div>
+		<h1>The second derivative</h1>
+		<div id="secondderivative"></div>
+	</div>
+	<div>
+		<h1>The first derivative</h1>
+		<div id="firstderivative"></div>
+	</div>
+	<div>
+		<h1>The function</h1>
+		<div id="originalfunction"></div>
+	</div>
+	<script type="text/javascript">
 
-    this._margin = 20;
-    var margin = { top: this._margin, right: this._margin, bottom: this._margin, left: this._margin };
+		let selectedOption = ko.observable(1);
 
-    this._xscale = d3.scaleLinear()
-        .domain([this._domainXMin, this._domainXMax])
-        .range([0, this._htmlWidth]);
-    this._yscale = d3.scaleLinear()
-        .domain([this._domainYMin, this._domainYMax])
-        .range([this._htmlHeight, 0]);
+		let xrangemin = 0;
+		let xrangemax = 50;
+		let yrangemin = -0.05;
+		let yrangemax = 0.05;
 
-    var xAxis = d3.axisBottom()
-        .scale(this._xscale)
-        .ticks(10)
-        .tickSize(-1 * this._htmlHeight);
-    var yAxis = d3.axisLeft()
-        .scale(this._yscale)
-        .ticks(10)
-        .tickSize(-1 * this._htmlWidth);
+		let space2ndderiv = new Space2Dim("secondderivative", 300, 100, 0, xrangemax, yrangemin, yrangemax);
+		let space1stderiv = new Space2Dim("firstderivative", 300, 100, 0, xrangemax, -10, 10);
+		let spaceOrigFunc = new Space2Dim("originalfunction", 300, 300, 0, xrangemax, -150, 150);
 
-    this._rotate = 0;
-    if (rotation != undefined)
-    {
-        this._rotate = rotation;
-    }
-    var svg = d3.select("#" + this._parentId)
-        .append("svg")
-        .attr("id", this._svgId)
-        .attr("width", this._htmlWidth + margin.left + margin.right)
-        .attr("height", this._htmlHeight + margin.top + margin.bottom)
-        .append("g")
-        .attr("id", this._canvasId)
-        .attr("transform", "rotate(" + this._rotate + ", " + (margin.left + this._htmlWidth / 2) + "," + (margin.top + this._htmlHeight / 2) + ")"
-        + " translate(" + margin.left + "," + margin.top + ")");
+		let updateSpaces = function () {
+			space2ndderiv.update();
+			space1stderiv.update();
+			spaceOrigFunc.update();
+		}
 
-    svg.append("rect")
-        .attr("width", this._htmlWidth)
-        .attr("height", this._htmlHeight);
-    svg.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + this._htmlHeight + ")")
-        .call(xAxis);
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis);
-}
+		// // CASE 1
+		// p1xc = -0.01;
+		// p2axc = -0.01;
+		// p2bxc = -0.01;
+		// p3xc = -0.01;
+		// firstDivStartyc = 1.5;
+		// origfuncStartyc = 0;
 
-Space2Dim.prototype.getId = function() {
-    return this._canvasId;
-}
+		// // CASE 2
+		// p1xc = 0.01;
+		// p2axc = 0.01;
+		// p2bxc = 0.01;
+		// p3xc = 0.01;
+		// firstDivStartyc = -1.5;
+		// origfuncStartyc = 0;
 
-Space2Dim.prototype.getParentId = function () {
-    return this._parentId;
-}
+		// // CASE 3A
+		// Second derivative ging through zero, from negative to positive
+		// p1xc = -0.02;
+		// p2axc = -0.01;
+		// p2bxc = 0.01;
+		// p3xc = 0.02;
+		// firstDivStartyc = 2.475;
+		// origfuncStartyc = -140;
 
-Space2Dim.prototype.getSvg = function()
-{
-    let svg = d3.select("#" + this._svgId);
-    return svg;
-}
+		// // CASE 3B
+		// Second derivative ging through zero, from positive to negative
+		// p1xc = 0.02;
+		// p2axc = 0.01;
+		// p2bxc = -0.01;
+		// p3xc = -0.02;
+		// firstDivStartyc = -2.475;
+		// origfuncStartyc = 140;
 
-Space2Dim.prototype.getCanvas = function() {
-    return d3.select("#" + this.getId());
-}
+		// // CASE 3C
+		// // Second derivative "touching" zero from the positive side
+		// p1xc = 0.02;
+		// p2axc = 0.00;
+		// p2bxc = 0.00;
+		// p3xc = 0.02;
+		// firstDivStartyc = -1.45;
+		// origfuncStartyc = 20;
 
-Space2Dim.prototype.getParent = function () {
-    return d3.select("#" + this.getParentId());
-}
+		// CASE 3D
+		// Second derivative "touching" zero from the negative side
+		p1xc = -0.02;
+		p2axc = 0.00;
+		p2bxc = 0.00;
+		p3xc = -0.02;
+		firstDivStartyc = 1.45;
+		origfuncStartyc = -20;
 
-Space2Dim.prototype.getValueSpacingX = function (lvl) {
-    return this._yscale(this._domainYMin) + (10 + lvl * this._valuedspacingx);
-}
+		let p1HandleX = ko.computed(function () { return 0 * xrangemax; });
+		let p1HandleY = ko.observable(p1xc);
+		let p2aHandleX = ko.computed(function () { return 0.25 * xrangemax; });
+		let p2aHandleY = ko.observable(p2axc);
+		let p2bHandleX = ko.computed(function () { return 0.75 * xrangemax; });
+		let p2bHandleY = ko.observable(p2bxc);
+		let p3HandleX = ko.computed(function () { return 1 * xrangemax; });
+		let p3HandleY = ko.observable(p3xc)
 
-Space2Dim.prototype.getValueSpacingY = function (lvl) {
-    return this._xscale(this._domainXMin) - (20 + lvl * this._valuedspacingy);
-}
+		let p2HandleX = ko.computed(function () { return (p2aHandleX() + p2bHandleX()) / 2 });
+		let p2HandleY = ko.computed(function () { return (p2aHandleY() + p2bHandleY()) / 2 });
 
-Space2Dim.prototype.getDomain = function(){
-    return [
-        [this._domainXMin, this._domainXMax],
-        [this._domainYMin, this._domainYMax]
-    ];
-}
+		let firstDeriveStartHandleX = ko.computed(function () { return 0; });
+		let firstDeriveStart = ko.observable(firstDivStartyc);
 
-Space2Dim.prototype.convertXToCanvas = function (x) {
-    return this._xscale(x);
-}
+		let origFuncStartHandleX = ko.computed(function () { return 0; });
+		let origFuncStart = ko.observable(origfuncStartyc);
 
-Space2Dim.prototype.convertYToCanvas = function (y) {
-    return this._yscale(y);
-}
+		selectedOption.subscribe(function(newValue){
+			console.log("Newly seleted id: " + newValue);
 
-Space2Dim.prototype.convertXFromCanvas = function (x) {
-    return this._xscale.invert(x);
-}
+			p1HandleY(-0.01);
+			p2aHandleY(-0.01);
+			p2bHandleY(-0.01);
+			p3HandleY(-0.01);
 
-Space2Dim.prototype.convertYFromCanvas = function (y) {
-    return this._yscale.invert(y);
-}
-
-Space2Dim.prototype.getElemPosition = function (elem) {
-    // https://stackoverflow.com/questions/26049488/how-to-get-absolute-coordinates-of-object-inside-a-g-group/26053262
-    // https://stackoverflow.com/questions/36588261/d3-js-after-translate-wrong-mouse-coordinates-being-reported-why
-
-    //var coordinates = d3.mouse(this);
-
-
-    var bbox = elem.node().getBBox(),
-        middleX = bbox.x + (bbox.width / 2),
-        middleY = bbox.y + (bbox.height / 2);
-
-    //console.log("Space2Dim> bbox[" + middleX + "][" + middleY + "]");
-
-
-    var p = this.getSvg().node().createSVGPoint();
-    var ctm = elem.node().getCTM();
-    p.x = middleX;
-    p.y = middleY;
-    return p.matrixTransform(ctm);
-}
-
-Space2Dim.prototype.appenGlobalAttributes = function (globalHandlerMethod) {
-    globalHandlerMethod(this);
-}
-
-Space2Dim.prototype.registerHandler = function (drawMethod, updateMethod, itemFactory) {
-    this._handlers.push({ drawMethod: drawMethod, updateMethod: updateMethod, itemFactory: itemFactory });
-}
-
-Space2Dim.prototype.show = function () {
-    var space2dim = this;
-    this._handlers.forEach(function (item, index, arr) {
-        item.drawMethod(space2dim, item.itemFactory());
-    });
-} 
-
-Space2Dim.prototype.update = function () {
-    var space2dim = this;
-    this._handlers.forEach(function (item, index, arr) {
-        item.updateMethod(space2dim, item.itemFactory());
-    });
-} 
-
-Space2Dim.prototype.OnClick = function (func) {
-    var callback = func;
-    var svg = this.getSvg(); //d3.select("svg")
-    var me = this;
-    svg.on("click", function () {
-        var coords = d3.mouse(this);
-
-        //console.log("svg clicked at coord[" + coords[0] + "," + coords[1] + "]");
-
-        var xd = me.convertXFromCanvas(coords[0] - me._margin);
-        var yd = me.convertYFromCanvas(coords[1] - me._margin);
-
-        //console.log("svg clicked at coord[" + coords[0] + "," + coords[1] + "], domain[" + xd + "," + yd + "]");
+			firstDeriveStart(1.5);
+			origFuncStart(0);
+		});
+		let vm = {
+			testCases: [
+				{ id:1, description: '2nd derivative < 0'},
+				{ id:2, description: '2nd derivative > 0'}
+			],
+			selectedId: selectedOption
+		}
+		ko.applyBindings(vm);
 
 
-        callback(xd, yd, d3.event.shiftKey);
-        //var perceptron = vm.allPerceptrons[0];
-        //vm.allPerceptronResults.push(createPerceptron(perceptron, xd, yd));
+		p1HandleX.subscribe(function (newValue) { updateSpaces(); });
+		p1HandleY.subscribe(function (newValue) { updateSpaces(); });
+		p2aHandleX.subscribe(function (newValue) { updateSpaces(); });
+		p2aHandleY.subscribe(function (newValue) { updateSpaces(); });
+		p2bHandleX.subscribe(function (newValue) { updateSpaces(); });
+		p2bHandleY.subscribe(function (newValue) { updateSpaces(); });
+		p3HandleX.subscribe(function (newValue) { updateSpaces(); });
+		p3HandleY.subscribe(function (newValue) { updateSpaces(); });
 
+		firstDeriveStart.subscribe(function (newValue) { updateSpaces(); });
+		origFuncStart.subscribe(function (newValue) { updateSpaces(); });
 
-    });
+		let definingPoints = [p1HandleY, p2aHandleY, p2HandleY, p2bHandleY, p3HandleY];
 
-}
+		let integrationFunc = function (x, y0, func) {
+			let ye = y0, integrationStep = 0.1;
+			for (step = xrangemin + integrationStep; step < x; step += integrationStep) {
+				ye = ye + func(step);
+			}
 
-Space2Dim.prototype.CreatePoint = function (x, y) {
+			return ye;
+		}
 
-    var px = ko.observable(x);
-    var py = ko.observable(y);
+		let func2ndderiv =  function (x) {
+			let curveInterpolation = d3.interpolateBasis(definingPoints.map(function (p) {
+				//console.log("definingPoints[" + p() + "]");
+				return p();
+			}));
 
-    var space2dim = this;
+			let y = curveInterpolation(x / xrangemax);
+			//console.log("curveInterpolation["+x+"]["+y+"]");
+			return y;
+		}
 
-    px.subscribe(function (newValue) { space2dim.update(); });
-    py.subscribe(function (newValue) { space2dim.update(); });
+		let func1stderiv = function (x) {
+			return integrationFunc(x, firstDeriveStart(), func2ndderiv);
+		}
 
-    var p = new Point2Dim({ x: px, y: py }, {});
-    return p;
-}
+		let funcOrigFunc = function (x) {
+			return integrationFunc(x, origFuncStart(), func1stderiv);
+		}
 
-Space2Dim.prototype.CreatePointAndUpdate = function (x, y, updateFunc) {
+		function createSecondDerivativeSample() {
 
-    var px = ko.observable(x);
-    var py = ko.observable(y);
+			function SecondDerivativeVM() {
 
-    var space2dim = this;
-    var callFunc = updateFunc;
+				let p1 = new Point2Dim({ x: p1HandleX, y: p1HandleY }, {});
+				//p1.onDrag = function (x, y) {
+				//	console.log("dragging p1[" + x + "][" + y + "]");
+				//	return [0, y];
+				//};
+				let p2a = new Point2Dim({ x: p2aHandleX, y: p2aHandleY }, {});
+				let p2 = new Point2Dim({ x: p2HandleX, y: p2HandleY }, {});
+				let p2b = new Point2Dim({ x: p2bHandleX, y: p2bHandleY }, {});
+				let p3 = new Point2Dim({ x: p3HandleX, y: p3HandleY }, {});
+				//p3.onDrag = function (x, y) {
+				//	console.log("dragging p1[" + x + "][" + y + "]");
+				//	return [100, y];
+				//};
 
-    px.subscribe(function (newValue) { space2dim.update(); callFunc(); });
-    py.subscribe(function (newValue) { space2dim.update(); callFunc(); });
+				let func = new Function2Dim({ func: func2ndderiv }, {});
 
-    var p = new Point2Dim({ x: px, y: py }, {});
-    return p;
-}
+				this.pointsToShow = [p1, p2, p2a, p2b, p3];
+				this.funcsToShow = [func];
+			}
+
+			let vm = new SecondDerivativeVM();
+
+			space2ndderiv.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow; });
+			space2ndderiv.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vm.funcsToShow; });
+
+			space2ndderiv.show();
+		}
+
+		function createFirstDerivativeSample() {
+			function FirstDerivativeVM() {
+
+				let startHandle = new Point2Dim({ x: firstDeriveStartHandleX, y: firstDeriveStart }, {});
+				let func = new Function2Dim({ func: func1stderiv }, {});
+
+				this.pointsToShow = [startHandle];
+				this.funcsToShow = [func];
+			}
+
+			let vm = new FirstDerivativeVM();
+
+			space1stderiv.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow; });
+			space1stderiv.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vm.funcsToShow; });
+
+			space1stderiv.show();
+		}
+
+		function createOrigFunctionSample() {
+			function OrigFunctionVM() {
+
+				let startHandle = new Point2Dim({ x: origFuncStartHandleX, y: origFuncStart }, {});
+				let func = new Function2Dim({ func: funcOrigFunc }, {});
+
+				this.pointsToShow = [startHandle];
+				this.funcsToShow = [func];
+			}
+
+			let vm = new OrigFunctionVM();
+
+			spaceOrigFunc.registerHandler(Point2Dim.draw, Point2Dim.update, function () { return vm.pointsToShow; });
+			spaceOrigFunc.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vm.funcsToShow; });
+
+			spaceOrigFunc.show();
+		}
+
+		createSecondDerivativeSample();
+		createFirstDerivativeSample();
+		createOrigFunctionSample();
+	</script>
+</body>
+</html>
