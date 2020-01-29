@@ -62,14 +62,19 @@
 	</div>
 	<div>
 		<h1>The second derivative</h1>
+		<div>You can use the black dots to change the shape of the second derivative.</div>
 		<div id="secondderivative"></div>
 	</div>
 	<div>
 		<h1>The first derivative</h1>
+		<div>The derivative of a constant is zero. So the above second derivative determines the shape of the first derivative up to a constant</div>
+		<div>You can use the black dot to alter this constant.</div>
 		<div id="firstderivative"></div>
 	</div>
 	<div>
 		<h1>The function</h1>
+		<div>The derivative of a constant is zero. So the above second derivative determines the shape of the first derivative up to a constant</div>
+		<div>You can use the black dot to alter this constant.</div>
 		<div id="originalfunction"></div>
 	</div>
 	<script type="text/javascript">
@@ -82,7 +87,7 @@
 		let yrangemax = 0.05;
 
 		let space2ndderiv = new Space2Dim("secondderivative", 300, 100, 0, xrangemax, yrangemin, yrangemax);
-		let space1stderiv = new Space2Dim("firstderivative", 300, 100, 0, xrangemax, -10, 10);
+		let space1stderiv = new Space2Dim("firstderivative", 300, 100, 0, xrangemax, -8, 8);
 		let spaceOrigFunc = new Space2Dim("originalfunction", 300, 300, 0, xrangemax, -150, 150);
 
 		let updateSpaces = function () {
@@ -92,12 +97,12 @@
 		}
 
 		// // CASE 1
-		// p1xc = -0.01;
-		// p2axc = -0.01;
-		// p2bxc = -0.01;
-		// p3xc = -0.01;
-		// firstDivStartyc = 1.5;
-		// origfuncStartyc = 0;
+		p1xc = -0.01;
+		p2axc = -0.01;
+		p2bxc = -0.01;
+		p3xc = -0.01;
+		firstDivStartyc = 1.5;
+		origfuncStartyc = 0;
 
 		// // CASE 2
 		// p1xc = 0.01;
@@ -107,7 +112,7 @@
 		// firstDivStartyc = -1.5;
 		// origfuncStartyc = 0;
 
-		// // CASE 3A
+		// // CASE 3
 		// Second derivative ging through zero, from negative to positive
 		// p1xc = -0.02;
 		// p2axc = -0.01;
@@ -116,7 +121,7 @@
 		// firstDivStartyc = 2.475;
 		// origfuncStartyc = -140;
 
-		// // CASE 3B
+		// // CASE 4
 		// Second derivative ging through zero, from positive to negative
 		// p1xc = 0.02;
 		// p2axc = 0.01;
@@ -125,7 +130,7 @@
 		// firstDivStartyc = -2.475;
 		// origfuncStartyc = 140;
 
-		// // CASE 3C
+		// // CASE 5
 		// // Second derivative "touching" zero from the positive side
 		// p1xc = 0.02;
 		// p2axc = 0.00;
@@ -136,12 +141,12 @@
 
 		// CASE 3D
 		// Second derivative "touching" zero from the negative side
-		p1xc = -0.02;
-		p2axc = 0.00;
-		p2bxc = 0.00;
-		p3xc = -0.02;
-		firstDivStartyc = 1.45;
-		origfuncStartyc = -20;
+		// p1xc = -0.02;
+		// p2axc = 0.00;
+		// p2bxc = 0.00;
+		// p3xc = -0.02;
+		// firstDivStartyc = 1.45;
+		// origfuncStartyc = -20;
 
 		let p1HandleX = ko.computed(function () { return 0 * xrangemax; });
 		let p1HandleY = ko.observable(p1xc);
@@ -164,18 +169,75 @@
 		selectedOption.subscribe(function(newValue){
 			console.log("Newly seleted id: " + newValue);
 
-			p1HandleY(-0.01);
-			p2aHandleY(-0.01);
-			p2bHandleY(-0.01);
-			p3HandleY(-0.01);
+			if(newValue == 1)
+			{
+				p1HandleY(-0.01);
+				p2aHandleY(-0.01);
+				p2bHandleY(-0.01);
+				p3HandleY(-0.01);
 
-			firstDeriveStart(1.5);
-			origFuncStart(0);
+				firstDeriveStart(1.5);
+				origFuncStart(0);
+			}
+			if(newValue == 2)
+			{
+				p1HandleY(0.01);
+				p2aHandleY(0.01);
+				p2bHandleY(0.01);
+				p3HandleY(0.01);
+
+				firstDeriveStart(-1.5);
+				origFuncStart(0);
+			}
+			if(newValue == 3)
+			{
+				p1HandleY(-0.02);
+				p2aHandleY(-0.01);
+				p2bHandleY(0.01);
+				p3HandleY(0.02);
+
+				firstDeriveStart(2.475);
+				origFuncStart(-140);
+			}
+			if(newValue == 4)
+			{
+				p1HandleY(0.02);
+				p2aHandleY(0.01);
+				p2bHandleY(-0.01);
+				p3HandleY(-0.02);
+
+				firstDeriveStart(-2.475);
+				origFuncStart(140);
+			}
+			if(newValue == 5)
+			{
+				p1HandleY(0.02);
+				p2aHandleY(0.00);
+				p2bHandleY(0.00);
+				p3HandleY(0.02);
+
+				firstDeriveStart(-1.45);
+				origFuncStart(20);
+			}
+			if(newValue == 6)
+			{
+				p1HandleY(-0.02);
+				p2aHandleY(0.00);
+				p2bHandleY(0.00);
+				p3HandleY(-0.02);
+
+				firstDeriveStart(1.45);
+				origFuncStart(-20);
+			}
 		});
 		let vm = {
 			testCases: [
-				{ id:1, description: '2nd derivative < 0'},
-				{ id:2, description: '2nd derivative > 0'}
+				{ id: 1, description: '2nd derivative is always negative'},
+				{ id: 2, description: '2nd derivative is always positive'},
+				{ id: 3, description: '2nd derivative from negative to positive (1st derivative touching zero)'},
+				{ id: 4, description: '2nd derivative from positive to negative (1st derivative touching zero)'},
+				{ id: 5, description: '2nd derivative touching zero from the positive side'},
+				{ id: 6, description: '2nd derivative touching zero from the negative side'},
 			],
 			selectedId: selectedOption
 		}
