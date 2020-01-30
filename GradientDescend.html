@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Gradient Descend</title>
@@ -44,7 +44,7 @@
 </head>
 <body>
 	<h1>Gradient Descend</h1>
-	<input type="range" min="0" max="1" step="0.01" data-bind="value: Learning.learningrate, valueUpdate: 'input'">
+	<input type="range" min="0" max="50" step="0.01" data-bind="value: Learning.learningrate, valueUpdate: 'input'">
 	<button onclick="doSingleIteration()">Iterate once</button>
 	<div>
 		<table>
@@ -69,7 +69,6 @@
 	</div>
 
 	<script type="text/javascript">
-		let lambda = -10;
 
 		let coeff = 0.02;
 
@@ -150,6 +149,8 @@
 		function createGradientDescendSample() {
 
 			function ViewModel() {
+				this.learningrate = ko.observable(-50);
+
 
 				let startGenerator = d3.randomUniform(-50, 50);
 				let startX = startGenerator()
@@ -263,8 +264,8 @@
 					let xval1 = currentMinXAtVal;
 					let zval1 = errCurve(currentMinXAtVal, currentMinYAtVal);
 					//console.log("xval1[" + xval1 + "] - zval1[" + zval1 + "]");
-					let xval2 = currentMinXAtVal + lambda;
-					let zval2 = zval1 + lambda * derivXCurve(currentMinXAtVal);
+					let xval2 = currentMinXAtVal + me.learningrate();
+					let zval2 = zval1 + me.learningrate() * derivXCurve(currentMinXAtVal);
 					//console.log("xval2[" + xval2 + "] - zval2[" + zval2 + "]");
 
 					let tangentp1x = ko.observable(xval1);
@@ -365,8 +366,8 @@
 				let y1curr = vm.currMinAt.getY();
 				let dycurr = derivYCurve(y1curr);
 
-				let x1t = x1curr + lambda * dxcurr;
-				let y1t = y1curr + lambda * dycurr;
+				let x1t = x1curr + vm.learningrate() * dxcurr;
+				let y1t = y1curr + vm.learningrate() * dycurr;
 
 				return function (t) {
 					vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
