@@ -1,4 +1,4 @@
-﻿function Function3Dim(props, config) {
+function Function3Dim(props, config) {
     this._func = props["func"];
 
     if (config.hasOwnProperty("sampleFreq")) {
@@ -19,8 +19,8 @@
         this._colorFunc = config["colorFunc"];
     }
 
-    console.log("Function3Dim.xrange: " + this._xrange[0] + "," + this._xrange[1]);
-    console.log("Function3Dim.yrange: " + this._yrange[0] + "," + this._yrange[1]);
+    //console.log("Function3Dim.xrange: " + this._xrange[0] + "," + this._xrange[1]);
+    //console.log("Function3Dim.yrange: " + this._yrange[0] + "," + this._yrange[1]);
 
     var pnt = [];
     this._samples = [];
