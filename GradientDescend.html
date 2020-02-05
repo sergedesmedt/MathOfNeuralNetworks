@@ -44,7 +44,7 @@
 </head>
 <body>
 	<h1>Gradient Descend</h1>
-	<input type="range" min="0" max="50" step="0.01" data-bind="value: Learning.learningrate, valueUpdate: 'input'">
+	<input type="range" min="0" max="50" step="0.01" data-bind="value: vm.learningrate, valueUpdate: 'input'">
 	<button onclick="doSingleIteration()">Iterate once</button>
 	<div>
 		<table>
@@ -149,7 +149,7 @@
 		function createGradientDescendSample() {
 
 			function ViewModel() {
-				this.learningrate = ko.observable(-50);
+				this.learningrate = ko.observable(1);
 
 
 				let startGenerator = d3.randomUniform(-50, 50);
@@ -348,6 +348,8 @@
 
 		let vm = createGradientDescendSample();
 
+		ko.applyBindings(vm);
+
 		function doSingleIteration() {
 			//console.log("doSingleIteration");
 
@@ -366,8 +368,10 @@
 				let y1curr = vm.currMinAt.getY();
 				let dycurr = derivYCurve(y1curr);
 
-				let x1t = x1curr + vm.learningrate() * dxcurr;
-				let y1t = y1curr + vm.learningrate() * dycurr;
+				console.log("Iteration with learnigrate: "+vm.learningrate());
+
+				let x1t = x1curr - vm.learningrate() * dxcurr;
+				let y1t = y1curr - vm.learningrate() * dycurr;
 
 				return function (t) {
 					vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
