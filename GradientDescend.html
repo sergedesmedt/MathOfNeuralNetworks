@@ -2,6 +2,13 @@
 <html>
 <head>
 	<title>Gradient Descend</title>
+	<script type="text/x-mathjax-config">
+		MathJax.Hub.Config({
+		showProcessingMessages: false,
+		tex2jax: { inlineMath: [['$','$'],['\\(','\\)']] },
+		TeX: { extensions: ["color.js"] }
+		});
+	</script>
 	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
@@ -44,6 +51,26 @@
 </head>
 <body>
 	<h1>Gradient Descend</h1>
+	<p>Let's say we have a function of which we want to find a minimum:</p>
+	<p>
+		$$f(x_1,x_2,...,x_i, ...,x_n)$$
+	</p>
+	<p>in which $(x_1,x_2,...,x_i, ...,x_n)$ is the input vector $X$</p>
+	<p>If we are at a certain point $X$, we can get to the closest (local) minimum by iteratively applying the formula:</p>
+	<p>
+		$$X_m = X - \lambda \nabla{f}$$
+	</p>
+	<p>Thus:</p>
+	<p>
+		$$\begin{aligned}
+		x_{m1} &= x_1 - \lambda \frac{\partial f}{\partial x_1}\\
+		x_{m2} &= x_2 - \lambda \frac{\partial f}{\partial x_2}\\
+		... &= ...\\
+		x_{mi} &= x_i - \lambda \frac{\partial f}{\partial x_i}\\
+		... &= ...\\
+		x_{mn} &= x_n - \lambda \frac{\partial f}{\partial x_n}\\
+		\end{aligned}$$
+	</p>
 	<input type="range" min="0" max="50" step="0.01" data-bind="value: vm.learningrate, valueUpdate: 'input'">
 	<button onclick="doSingleIteration()">Iterate once</button>
 	<div>
@@ -111,14 +138,6 @@
 			return f;
 		}
 
-		//let derivXCurveFactory = function () {
-		//	let f = function (x) {
-		//		return 2 * coeff * x;
-		//	}
-
-		//	return f;
-		//}
-
 		let derivXCurve = function (x) {
 			return 2 * coeff * x;
 		}
@@ -131,13 +150,6 @@
 			return f;
 		}
 
-		//let derivYCurveFactory = function () {
-		//	let f = function (y) {
-		//		return 2 * coeff * y;
-		//	}
-
-		//	return f;
-		//}
 		let derivYCurve = function (y) {
 			return 2 * coeff * y;
 		}
