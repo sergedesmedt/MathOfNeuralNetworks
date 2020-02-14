@@ -326,7 +326,7 @@
 					me.yCurrPosTo = [posYLine];
 
 					me.curvesToShow = [errorCurve, currMinCurve];
-					//me.curvesToShow = [currMinCurve];
+					me.xVectorsToShow = [];
 				};
 
 				getAllToShown();
@@ -337,6 +337,8 @@
 			space3dim.registerMeshProvider(Function3DimZ.getMeshData, function () { return vmfunc.curvesToShow; });
 			space3dim.show();
 
+			space2dimDerivX.appenGlobalAttributes(Vector2Dim.global);
+			space2dimDerivX.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.xVectorsToShow; });
 			//space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.rayXToShow; });
 			space2dimDerivX.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.xToShow; });
 			space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.xCurrPosTo; });
@@ -365,25 +367,38 @@
 		function doSingleIteration() {
 			//console.log("doSingleIteration");
 
+			this.x1curr = vm.currMinAt.getX();
+			this.y1curr = vm.currMinAt.getY();
+			this.fcurr = dim2dCurrMinFunction(x1curr, y1curr);
+
+			let dxcurr = derivXCurve(this.x1curr);
+			let dycurr = derivYCurve(this.y1curr);
+
+			this.x1t = x1curr - vm.learningrate() * dxcurr;
+			this.y1t = y1curr - vm.learningrate() * dycurr;
+
+
+			let me = this;
 			let svg = space2dimDerivX.getSvg();
 
-			//vmfunc.xCurrPosTo[1].AnimateProperty(animationTransition1, { x1: -10 }, null, space2dimDerivX);
-			//vm.xCurrPosTo[1].AnimateValue(animationTransition1, { x1: -10 }, null, space2dimDerivX);
 
-			//let animationTransition2 = svg.transition().duration(2000);
-			//vm.xCurrPosTo[0].AnimateValue(animationTransition2, { x1: -10 }, null, space2dimDerivX);
+			this.p0x = ko.observable(x1curr);
+			this.p0y = ko.observable(fcurr);
+			let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+
+			this.p1x = ko.observable(x1t);
+			this.p1y = ko.observable(fcurr);
+			let p1 = new Point2Dim({x: this.p1x, y: this.p1y}, {});
+
+			let learnX = new Vector2Dim(
+				{ p1: p0, p2: p1 },
+				{ name: "", cssclass: "learnvector", p1draggable: 0, p2draggable: 0 }
+			);
+
+			vm.xVectorsToShow.push(learnX);
 
 			let valueTween = function () {
-				let x1curr = vm.currMinAt.getX();
-				let dxcurr = derivXCurve(x1curr);
-
-				let y1curr = vm.currMinAt.getY();
-				let dycurr = derivYCurve(y1curr);
-
-				console.log("Iteration with learnigrate: "+vm.learningrate());
-
-				let x1t = x1curr - vm.learningrate() * dxcurr;
-				let y1t = y1curr - vm.learningrate() * dycurr;
+				console.log("Iteration with learningrate: " + vm.learningrate());
 
 				return function (t) {
 					vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
