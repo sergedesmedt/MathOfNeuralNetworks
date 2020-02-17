@@ -156,7 +156,7 @@
 
 		let space3dim = new Space3Dim("gradentdescend", 200, 200, 4, -50, 50, 50, -50, 0, -1);
 		let space2dimDerivX = new Space2Dim("partialderivx", 200, 200, -50, 50, -50, 50);
-		let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, 90);
+		let space2dimDerivY = new Space2Dim("partialderivy", 200, 200, -50, 50, -50, 50, -90);
 
 		function createGradientDescendSample() {
 
@@ -240,6 +240,30 @@
 					return currMinCurve;
 				}
 
+				this.getPartialDerivXToShow = function() {
+
+					me.xToShow.length = 0
+
+					let currentMinXAtVal = parseInt(me.currentMinXAt());
+
+					let xFunc = new Function2Dim({ func: xCurveFactory(currentMinXAtVal) }, {});
+
+					me.xToShow = [xFunc];
+
+				}
+
+				this.getPartialDerivYToShow = function() {
+
+					me.yToShow.length = 0
+
+					let currentMinYAtVal = parseInt(me.currentMinYAt());
+
+					let yFunc = new Function2Dim({ func: yCurveFactory(currentMinYAtVal) }, {});
+
+					me.yToShow = [yFunc];
+
+				}
+
 				let getAllToShown = function () {
 
 					let currentMinXAtVal = parseInt(me.currentMinXAt());
@@ -250,19 +274,9 @@
 						{ sampleFreq: 40, xrange: [xMin, xMax], yrange: [yMin, yMax], colorFunc: getColorFunc() });
 
 					let currMinCurve = getAllToUpdate();
-					//let currMinCurve = new Function3Dim(
-					//	{ func: dim2dCurrMinFunction },
-					//	{ sampleFreq: 3, xrange: [startX - 2, startX + 2], yrange: [startY - 2, startY + 2], cssclass: "currMinFunc" });
-
 
 					let xFunc = new Function2Dim({ func: xCurveFactory(currentMinYAtVal) }, {});
 					let derivXFunc = new Function2Dim({ func: derivXCurve }, {});
-					//let posXX = ko.observable(currentMinXAtVal);
-					////let posXX = ko.observable(0);
-					//posXX.subscribe(function (newvalue) {
-					//	//console.log("tangentp1x: newvalue[" + newvalue + "]");
-					//	space2dimDerivX.update();
-					//});
 					let posXY1 = ko.observable(0);
 					let posXY2 = ko.observable(1);
 					let posX1 = new Point2Dim({ x: me.currentMinXAt, y: posXY1 }, {});
@@ -281,34 +295,15 @@
 					//console.log("xval2[" + xval2 + "] - zval2[" + zval2 + "]");
 
 					let tangentp1x = ko.observable(xval1);
-					////let tangentp1x = ko.observable(0);
-					//tangentp1x.subscribe(function (newvalue) {
-					//	//console.log("tangentp1x: newvalue[" + newvalue + "]");
-					//	space2dimDerivX.update();
-					//});
 					let tangentp1y = ko.observable(zval1);
 					let tangentp2x = ko.observable(xval2);
 					let tangentp2y = ko.observable(zval2);
-					//let tangentp1y = ko.observable(25);
-					//let tangentp2x = ko.observable(45);
-					//let tangentp2y = ko.observable(-10);
-					//let txp1 = new Point2Dim({ x: tangentp1x, y: tangentp1y }, {});
 					let txp1 = new Point2Dim({ x: tangentp1x, y: tangentp1y }, {});
 					let txp2 = new Point2Dim({ x: tangentp2x, y: tangentp2y }, {});
 
-					//let tangentx = new Line2Dim(
-					//	{ p1: txp1, p2: txp2 },
-					//	{ id: "tgx"}
-					//);
-					//console.log("tangentx: " +
-					//	"txp1=x[" + txp1.getX() + "]y[" + txp1.getY() + "]" +
-					//	"txp2=x[" + txp2.getX() + "]y[" + txp2.getY() + "]" +
-					//	""
-					//	);
-
 					let yFunc = new Function2Dim({ func: yCurveFactory(currentMinXAtVal) }, {});
 					let derivYFunc = new Function2Dim({ func: derivYCurve }, {});
-					//let posYX = ko.observable(currentMinYAtVal);
+
 					let posYY1 = ko.observable(0);
 					let posYY2 = ko.observable(1);
 					let posY1 = new Point2Dim({ x: me.currentMinYAt, y: posYY1 }, {});
@@ -319,10 +314,9 @@
 						{}
 					);
 
-					//me.rayXToShow = [tangentx];
-					me.xToShow = [xFunc/*, derivXFunc*/];
-					me.xCurrPosTo = [posXLine]; //, tangentx];
-					me.yToShow = [yFunc/*, derivYFunc*/];
+					me.xToShow = [xFunc];
+					me.xCurrPosTo = [posXLine];
+					me.yToShow = [yFunc];
 					me.yCurrPosTo = [posYLine];
 
 					me.curvesToShow = [errorCurve, currMinCurve];
@@ -448,6 +442,7 @@
 						.on("end", function () {
 							console.log("Animate out of view ended");
 							vm.xVectorsToShow.pop(learnX);
+							vm.getPartialDerivXToShow();
 							space2dimDerivX.update();
 						});
 
@@ -530,6 +525,7 @@
 						.on("end", function () {
 							console.log("Animate out of view ended");
 							vm.xVectorsToShow.pop(learnY);
+							vm.getPartialDerivYToShow();
 							space2dimDerivY.update();
 						});
 
