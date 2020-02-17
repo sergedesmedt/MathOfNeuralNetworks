@@ -327,6 +327,7 @@
 
 					me.curvesToShow = [errorCurve, currMinCurve];
 					me.xVectorsToShow = [];
+					me.yVectorsToShow = [];
 				};
 
 				getAllToShown();
@@ -344,6 +345,7 @@
 			space2dimDerivX.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.xCurrPosTo; });
 			space2dimDerivX.show();
 
+			space2dimDerivY.registerHandler(Vector2Dim.draw, Vector2Dim.update, function () { return vmfunc.yVectorsToShow; });
 			space2dimDerivY.registerHandler(Function2Dim.draw, Function2Dim.update, function () { return vmfunc.yToShow; });
 			space2dimDerivY.registerHandler(Line2Dim.draw, Line2Dim.update, function () { return vmfunc.yCurrPosTo; });
 			space2dimDerivY.show();
@@ -365,6 +367,11 @@
 		ko.applyBindings(vm);
 
 		function doSingleIteration() {
+			doSingleXIteration();
+			doSingleYIteration();
+		}
+
+		function doSingleXIteration() {
 			//console.log("doSingleIteration");
 
 			this.x1curr = vm.currMinAt.getX();
@@ -372,14 +379,14 @@
 			this.fcurr = dim2dCurrMinFunction(x1curr, y1curr);
 
 			let dxcurr = derivXCurve(this.x1curr);
-			let dycurr = derivYCurve(this.y1curr);
+			//let dycurr = derivYCurve(this.y1curr);
 
 			this.x1t = x1curr - vm.learningrate() * dxcurr;
-			this.y1t = y1curr - vm.learningrate() * dycurr;
+			//this.y1t = y1curr - vm.learningrate() * dycurr;
 
 
 			let me = this;
-			let svg = space2dimDerivX.getSvg();
+			let svgX = space2dimDerivX.getSvg();
 
 
 			this.p0x = ko.observable(x1curr);
@@ -392,22 +399,139 @@
 
 			let learnX = new Vector2Dim(
 				{ p1: p0, p2: p1 },
-				{ name: "", cssclass: "learnvector", p1draggable: 0, p2draggable: 0 }
+				{ name: "", cssclass: "learnxvector", p1draggable: 0, p2draggable: 0 }
 			);
 
 			vm.xVectorsToShow.push(learnX);
+
+			space2dimDerivX.update();
+
+			svgX.selectAll(".vectorline.learnxvector")
+						.style("opacity", 0)
+
+			let animationTransition = svgX
+				.transition();//.duration(1500);
+
+			animationTransition.selectAll(".vectorline.learnxvector")
+				.style("opacity", 1)
+				.on("start", function () {
+					console.log("Animate into view started");
+					//learningStepsDiv
+					//	.selectAll(".learnstep1")
+					//	.classed("hidden", false);
+				})
+				.on("end", function () {
+					console.log("Animate into view ended");
+					//perceptronLearnStepDesiredExpression.RegisterExpression("perceptronlearn_sample_desired", getPerceptronLearnStepDesiredMathExpression);
+					//perceptronLearnStepDesiredExpression.QueueUpdate(); 
+				});
 
 			let valueTween = function () {
 				console.log("Iteration with learningrate: " + vm.learningrate());
 
 				return function (t) {
 					vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
+					//vm.currMinAt.setY(y1curr + (y1t - y1curr) * t);
+				}
+			};
+
+			animationTransition = animationTransition.transition().duration(2000);
+			animationTransition.tween("learntween", valueTween);
+
+			animationTransition = animationTransition.transition().duration(1500);
+
+			animationTransition.selectAll(".vectorline.learnxvector")
+						.style("opacity", 0)
+						.on("start", function () {
+							console.log("Animate out of view started");
+						})
+						.on("end", function () {
+							console.log("Animate out of view ended");
+							vm.xVectorsToShow.pop(learnX);
+							space2dimDerivX.update();
+						});
+
+		};
+
+		function doSingleYIteration() {
+			//console.log("doSingleIteration");
+
+			this.x1curr = vm.currMinAt.getX();
+			this.y1curr = vm.currMinAt.getY();
+			this.fcurr = dim2dCurrMinFunction(x1curr, y1curr);
+
+			//let dxcurr = derivXCurve(this.x1curr);
+			let dycurr = derivYCurve(this.y1curr);
+
+			//this.x1t = x1curr - vm.learningrate() * dxcurr;
+			this.y1t = y1curr - vm.learningrate() * dycurr;
+
+
+			let me = this;
+			let svgY = space2dimDerivY.getSvg();
+
+
+			this.p0x = ko.observable(y1curr);
+			this.p0y = ko.observable(fcurr);
+			let p0 = new Point2Dim({x: this.p0x, y: this.p0y}, {});
+
+			this.p1x = ko.observable(y1t);
+			this.p1y = ko.observable(fcurr);
+			let p1 = new Point2Dim({x: this.p1x, y: this.p1y}, {});
+
+			let learnY = new Vector2Dim(
+				{ p1: p0, p2: p1 },
+				{ name: "", cssclass: "learnyvector", p1draggable: 0, p2draggable: 0 }
+			);
+
+			vm.yVectorsToShow.push(learnY);
+
+			space2dimDerivY.update();
+
+			svgY.selectAll(".vectorline.learnyvector")
+						.style("opacity", 0)
+
+			let animationTransition = svgY
+				.transition();//.duration(1500);
+
+			animationTransition.selectAll(".vectorline.learnyvector")
+				.style("opacity", 1)
+				.on("start", function () {
+					console.log("Animate into view started");
+					//learningStepsDiv
+					//	.selectAll(".learnstep1")
+					//	.classed("hidden", false);
+				})
+				.on("end", function () {
+					console.log("Animate into view ended");
+					//perceptronLearnStepDesiredExpression.RegisterExpression("perceptronlearn_sample_desired", getPerceptronLearnStepDesiredMathExpression);
+					//perceptronLearnStepDesiredExpression.QueueUpdate(); 
+				});
+
+			let valueTween = function () {
+				console.log("Iteration with learningrate: " + vm.learningrate());
+
+				return function (t) {
+					//vm.currMinAt.setX(x1curr + (x1t - x1curr) * t);
 					vm.currMinAt.setY(y1curr + (y1t - y1curr) * t);
 				}
 			};
 
-			let animationTransition1 = svg.transition().duration(2000);
-			animationTransition1.tween("learntween", valueTween);
+			animationTransition = animationTransition.transition().duration(2000);
+			animationTransition.tween("learntween", valueTween);
+
+			animationTransition = animationTransition.transition().duration(1500);
+
+			animationTransition.selectAll(".vectorline.learnyvector")
+						.style("opacity", 0)
+						.on("start", function () {
+							console.log("Animate out of view started");
+						})
+						.on("end", function () {
+							console.log("Animate out of view ended");
+							vm.xVectorsToShow.pop(learnY);
+							space2dimDerivY.update();
+						});
 
 		};
 
