@@ -10,14 +10,14 @@
 		});
 	</script>
 
-	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
-	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+	<!-- <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
-	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script> -->
 	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/space3dim.js"></script>
@@ -53,7 +53,7 @@
 </head>
 <body>
 	<div>
-		<h1>Sum of Squared Errors versus Sum of Errors</h1>
+		<h1 id="learn_sse_vs_se">Sum of Squared Errors versus Sum of Errors</h1>
 		<p>What if we take the sum of squared errors</p>
 		<p>
 			$$E(w) = \sum_{j=1}^{M} e_j^2$$
@@ -71,12 +71,12 @@
 		<div style="width:100%">
 			<p>You can use the red dots on the line to manipulate the line.</p>
 			<p>When you click somewhere on the graph a point will be added. The points used to calculate the error are the point clicked and the intersection of a vertical line through the clicked point with the reference line. These points are somewhat larger in diameter and colored green. They can be manipulated by dragging them.</p>
-			<p>If you two ppoints at a somewhat equal distance from the referene line, but one above and the other below, you will notice that the sum of errors will be close to zero. Because the points are on opposite sides of the line their error will add-up to zero.</p>
+			<p>If you create two points at a somewhat equal distance from the referene line, but one above and the other below, you will notice that the sum of errors will be close to zero. Because the points are on opposite sides of the line their error will add-up to zero.</p>
 			<div id="sumofsquarederrorsvssumoferrors" class="divcentered"></div>
 		</div>
 	</div>
 	<div>
-		<h1>Sum of Squared Errors versus Mean Squared Error</h1>
+		<h1 id="learn_sse_vs_sme">Sum of Squared Errors versus Mean Squared Error</h1>
 		<p>What if we take the sum of squared errors</p>
 		<p>
 			$$E(w) = \sum_{j=1}^{M} e_j^2$$
@@ -94,7 +94,7 @@
 		<div style="width:100%">
 			<p>You can use the red dots on the line to manipulate the line.</p>
 			<p>When you click somewhere on the graph a point will be added. The points used to calculate the error are the point clicked and the intersection of a vertical line through the clicked point with the reference line. These points are somewhat larger in diameter and colored green. They can be manipulated by dragging them.</p>
-			<p>When adding ponts at both sides of the reference line the mean error will remain more orless constant, while the pure sum will onnly get bigger. Image what would happen when having thousands of points.</p>
+			<p>When adding points at both sides of the reference line the mean error will remain more or less constant, while the pure sum will only get bigger. Image what would happen when having thousands of points.</p>
 			<div id="sumofsquarederrorsvsmeansquarederror" class="divcentered"></div>
 		</div>
 	</div>

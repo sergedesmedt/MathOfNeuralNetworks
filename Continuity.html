@@ -9,14 +9,14 @@
 		TeX: { extensions: ["color.js"] }
 		});
 	</script>
-	<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-debug.js"></script>
 	<script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
-	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>-->
-	<script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+	<!-- <script type="text/javascript" src="./ko/knockout-3.4.2.debug.js"></script>
 	<script type="text/javascript" src="./d3/d3.v5.js"></script>
 	<script type="text/javascript" src="./d3-selection-multi/d3-selection-multi.js"></script>
-	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+	<script type="text/javascript" src="./mathjax-2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script> -->
 	<script type="text/javascript" src="./js/mathexpressions.js"></script>
 	<script type="text/javascript" src="./js/space2dim.js"></script>
 	<script type="text/javascript" src="./js/point.js"></script>
@@ -68,14 +68,20 @@
 			\end{cases}
 			$$
 		</p>-->
-		<p><div id="pcwsfunc">
-			$${}$$
-		</div></p>
+		<p>
+			<div class="container_height100">
+				<div id="pcwsfunc">
+					$${}$$
+				</div>
+			</div>
+		</p>
 		<div style="width:100%">
 			<p>The limit $L$ of the piecewise function for $x\to{0}$ is $0$</p>
-			<div id="continuity_sample">
-				$${}$$
-			</div>
+			<div class="container_height100">
+				<div id="continuity_sample">
+					$${}$$
+				</div>
+				</div>
 			<div class="divcentered">
 				<p>You can use the following slider to regulate the function value at 0</p>
 				<input type="range" min="-30" max="30" step="10" data-bind="value: ContinuitySample.funcAtZero, valueUpdate: 'input'" />
