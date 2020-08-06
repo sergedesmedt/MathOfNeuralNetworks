@@ -44,6 +44,18 @@
 			stroke-width: 1;
 			fill: #000000;
 		}
+		.funcAt {
+			stroke: #ff0000;
+			color: #ff0000;
+		}
+		.funcDerivAt {
+			stroke: #2ef11ce0;
+			color: #2ef11ce0;
+		}
+		.pointAt {
+			stroke: #f10bcbe0;
+			color: #f10bcbe0;
+		}
 
 	</style>
 
@@ -78,10 +90,17 @@
 			<tr>
 				<td>
 					<h2>Error function</h2>
-					<div id="gradentdescend"></div>
+					<span>You can click and drag on the grid below<br> to see the function in 3d-space</span>
 				</td>
 				<td>
 					<h2>Partial Derivative Y</h2>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div id="gradentdescend"></div>
+				</td>
+				<td>
 					<div id="partialderivy"></div>
 				</td>
 			</tr>
@@ -275,8 +294,8 @@
 
 					let currMinCurve = getAllToUpdate();
 
-					let xFunc = new Function2Dim({ func: xCurveFactory(currentMinYAtVal) }, {});
-					let derivXFunc = new Function2Dim({ func: derivXCurve }, {});
+					let xFunc = new Function2Dim({ func: xCurveFactory(currentMinYAtVal) }, { cssclass: "funcAt" });
+					let derivXFunc = new Function2Dim({ func: derivXCurve }, { cssclass: "funcDerivAt" });
 					let posXY1 = ko.observable(0);
 					let posXY2 = ko.observable(1);
 					let posX1 = new Point2Dim({ x: me.currentMinXAt, y: posXY1 }, {});
@@ -284,7 +303,7 @@
 
 					let posXLine = new Line2Dim(
 						{ p1: posX1, p2: posX2 },
-						{ id: "posx" }
+						{ id: "posx", cssclass: "pointAt" }
 					);
 
 					let xval1 = currentMinXAtVal;
@@ -301,8 +320,8 @@
 					let txp1 = new Point2Dim({ x: tangentp1x, y: tangentp1y }, {});
 					let txp2 = new Point2Dim({ x: tangentp2x, y: tangentp2y }, {});
 
-					let yFunc = new Function2Dim({ func: yCurveFactory(currentMinXAtVal) }, {});
-					let derivYFunc = new Function2Dim({ func: derivYCurve }, {});
+					let yFunc = new Function2Dim({ func: yCurveFactory(currentMinXAtVal) }, { cssclass: "funcAt" });
+					let derivYFunc = new Function2Dim({ func: derivYCurve }, { cssclass: "funcDerivAt" });
 
 					let posYY1 = ko.observable(0);
 					let posYY2 = ko.observable(1);
@@ -311,7 +330,7 @@
 
 					let posYLine = new Line2Dim(
 						{ p1: posY1, p2: posY2 },
-						{}
+						{ cssclass: "pointAt" }
 					);
 
 					me.xToShow = [xFunc];
@@ -524,7 +543,7 @@
 						})
 						.on("end", function () {
 							console.log("Animate out of view ended");
-							vm.xVectorsToShow.pop(learnY);
+							vm.yVectorsToShow.pop(learnY);
 							vm.getPartialDerivYToShow();
 							space2dimDerivY.update();
 						});
