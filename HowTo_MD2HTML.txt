@@ -1,0 +1,22 @@
+#Omzetten voor publicatie
+
+##in StackEdit
+
+- vervang alle $$ door doubledollar``` (met die drie accenten inbegrepen !!!)
+- vervang alle $ door singledollar` (met dat ene accent inbegrepen !!!)
+- exporteer als "plain html"
+
+het resultaat is een bestand waarin alle
+- beginnende $$ zijn omgezet in doubledollar<code>
+- eindigende $$ zijn omgezet in doubledollar</code>
+- beginnende $ zijn omgezet in singledollar<code>
+- eindigende $ zijn omgezet in singledollar</code>
+
+#Transformatie voor CodeProject
+
+- vervang alle doubledollar<code> door <div class="math">$
+- vervang alle doubledollar</code> door $</div>
+- vervang alle singledollar<code> door <span class="math">\(
+- vervang alle singledollar</code> door \)</span>
+
+

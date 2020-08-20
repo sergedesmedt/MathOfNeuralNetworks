@@ -6,7 +6,7 @@ A deep dive into the mathematics of deep learning with a focus on Image Processi
 
 The first article discusses the basic math involved in the Rosenblatt perceptron. This is albeit relative simple math: mostly basic vector operations. The article discusses what a vector is, the main calculations used in the Rosenblatt perceptron and finishes by discussing the main drawbacks of this type of perceptron, thus laying ground for the next article on the ADALIN perceptron
 
-## Article 2: The ADALIN perceptron
+## Article 2: [The ADALIN perceptron](https://sergedesmedt.github.io/MathOfNeuralNetworks/AdalinePerceptronArticle.html)
 
 Discusses how the limitations of the Rosenblatt perceptron where resolved and finishes with the limitations that still remain by using a single perceptron
 
