@@ -1,9 +1,11 @@
 #Omzetten voor publicatie
 
-##in StackEdit
-
+## In Notepad++
 - vervang alle $$ door doubledollar``` (met die drie accenten inbegrepen !!!)
 - vervang alle $ door singledollar` (met dat ene accent inbegrepen !!!)
+
+##in StackEdit
+- Kopieer bovenstaande in StackEdit
 - exporteer als "plain html"
 
 het resultaat is een bestand waarin alle
@@ -18,5 +20,12 @@ het resultaat is een bestand waarin alle
 - vervang alle doubledollar</code> door $</div>
 - vervang alle singledollar<code> door <span class="math">\(
 - vervang alle singledollar</code> door \)</span>
+
+#Transformatie voor GitHub
+
+- vervang alle doubledollar<code> door $$
+- vervang alle doubledollar</code> door $$
+- vervang alle singledollar<code> door $
+- vervang alle singledollar</code> door $
 
 
